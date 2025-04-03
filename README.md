@@ -3,7 +3,7 @@
 Simplifique a gestão da sua empresa na palma da mão!
 📌 Sobre o Projeto
 
-O GestorizeMobile é um aplicativo mobile desenvolvido para auxiliar pequenas e médias empresas no gerenciamento de funcionários, clientes, produtos e orçamentos. Com uma interface intuitiva e moderna, permite um controle eficiente e organizado de informações essenciais para o funcionamento do negócio.
+O GestorizeMobile é um aplicativo mobile em desenvolvimento para auxiliar pequenas e médias empresas no gerenciamento de funcionários, clientes, produtos e orçamentos. Com uma interface intuitiva e moderna, permite um controle eficiente e organizado de informações essenciais para o funcionamento do negócio.
 🚀 Funcionalidades
 🔹 Cadastro de Funcionários
 
