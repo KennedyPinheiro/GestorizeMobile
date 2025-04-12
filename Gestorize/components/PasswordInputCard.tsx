@@ -4,12 +4,12 @@ import {
   Text,
   TextInput,
   View,
-  KeyboardTypeOptions,
+  TouchableOpacity,
   Dimensions,
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
 type Props = {
-  tipo?: "string" | "number";
   value?: string;
   onlyView?: boolean;
   title?: string;
@@ -17,20 +17,17 @@ type Props = {
   onChangeText?: (text: string) => void;
 };
 
-const {  height } = Dimensions.get("window");
+const { height } = Dimensions.get("window");
 
-const InputCard = ({
-  tipo = "string",
+const PasswordInputCard = ({
   value = "",
   onlyView = false,
-  title = "Digite algo...",
+  title = "Digite sua senha...",
   tipoVisual = "placeholder",
   onChangeText,
 }: Props) => {
   const [isFocused, setIsFocused] = useState(false);
-
-  const keyboardType: KeyboardTypeOptions =
-    tipo === "number" ? "numeric" : "default";
+  const [secureText, setSecureText] = useState(true);
 
   const showPlaceholder = tipoVisual === "placeholder" && !isFocused && !value;
   const showLabel = tipoVisual === "label";
@@ -46,21 +43,34 @@ const InputCard = ({
         <Text style={styles.title}>{title}</Text>
       )}
 
-      <TextInput
-        style={[
-          styles.input,
-          onlyView && { color: "#ddd" },
-          isFocused && styles.inputFocused 
-        ]}
-        keyboardType={keyboardType}
-        editable={!onlyView}
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
-        value={value}
-        onChangeText={onChangeText}
-        placeholder=""
-        placeholderTextColor="#cccccc9d"
-      />
+      <View style={styles.inputWrapper}>
+        <TextInput
+          style={[
+            styles.input,
+            onlyView && { color: "#ddd" },
+            isFocused && styles.inputFocused,
+          ]}
+          secureTextEntry={secureText}
+          editable={!onlyView}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          value={value}
+          onChangeText={onChangeText}
+          placeholder=""
+          placeholderTextColor="#cccccc9d"
+        />
+
+        <TouchableOpacity
+          onPress={() => setSecureText(!secureText)}
+          style={styles.icon}
+        >
+          <Ionicons
+            name={secureText ? "eye-off-outline" : "eye-outline"}
+            size={24}
+            color="#cccccc9d"
+          />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -82,25 +92,32 @@ const styles = StyleSheet.create({
     left: 30,
     right: 0,
     textAlign: "left",
-    justifyContent: "center",
-    alignItems: "center",
     fontSize: 20,
     color: "#ffffff3e",
     fontWeight: "600",
     zIndex: 1,
   },
+  inputWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    height: "100%",
+  },
   input: {
+    flex: 1,
     fontSize: 20,
     fontWeight: "bold",
     textAlign: "center",
     color: "#fff",
   },
+  icon: {
+    marginLeft: 10,
+  },
   inputFocused: {
     borderWidth: 2,
-    borderColor: "#ffffff70", 
+    borderColor: "#ffffff70",
     borderRadius: 10,
     padding: 5,
   },
 });
 
-export default InputCard;
+export default PasswordInputCard;
