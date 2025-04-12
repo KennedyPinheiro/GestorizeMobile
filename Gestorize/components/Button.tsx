@@ -34,7 +34,9 @@ const Button = ({
       : "transparent";
 
   const textColor =
-    variant === "contained" ? "#fff" : color === "primary" ? "#26579E" : "#888";
+    variant === 
+    "contained" ?
+     "#fff" : color === "primary" ? "#26579E" : "#888";
 
   return (
     <TouchableOpacity
