@@ -1,6 +1,6 @@
 import React from "react";
 import { useRouter } from "expo-router";
-import LoginView from "./LoginView"; 
+import LoginView from "./pages/LoginView"; 
 
 export default function LoginPage() {
   const router = useRouter();
