@@ -6,7 +6,7 @@ import { Ionicons } from "@expo/vector-icons";
 type props = {
   onPress: () => void;
 };
-
+ 
 const BackButton = ({ onPress }: props) => {
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
