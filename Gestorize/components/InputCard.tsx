@@ -23,7 +23,7 @@ const InputCard = ({
   tipo = "string",
   value = "",
   onlyView = false,
-  label = "Digite algo...",
+  label = "",
   placeholder = "",
   onChangeText,
 }: Props) => {
@@ -33,6 +33,7 @@ const InputCard = ({
     tipo === "number" ? "numeric" : "default";
 
   return (
+    
     <View
       style={[
         styles.container,

@@ -2,7 +2,7 @@ import { Image, StyleSheet } from "react-native";
 const LogoIcon = () => {
   return (
     <Image
-      source={require("../assets/images/LogoLogin.png")}
+      source={require("../assets/images/LogoIcon.png")}
       style={styles.container}
     />
   );
@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     height: "100%",
-    maxHeight:280,
-    maxWidth: 280,
+    maxHeight:90,
+    maxWidth: 80,
   }
 })

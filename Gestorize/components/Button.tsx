@@ -11,6 +11,8 @@ type ButtonProps = {
   variant?: "contained" | "outlined";
   color?: "primary" | "secondary";
   onPress?: (event: GestureResponderEvent) => void;
+  disabled?: boolean;
+  type?: "dialog" | "submit";
 };
 
 const Button = ({
@@ -18,6 +20,8 @@ const Button = ({
   variant = "contained",
   color = "primary",
   onPress,
+  disabled = false,
+  type = "submit",
 }: ButtonProps) => {
   const backgroundColor =
     variant === "contained"
@@ -34,23 +38,31 @@ const Button = ({
       : "transparent";
 
   const textColor =
-    variant === 
-    "contained" ?
-     "#fff" : color === "primary" ? "#26579E" : "#888";
+    variant === "contained"
+      ? "#fff"
+      : color === "primary"
+      ? "#26579E"
+      : "#888";
+
+  const containerStyle = [
+    styles.base,
+    type === "dialog" && styles.dialogButton,
+    {
+      backgroundColor: disabled ? "#ccc" : backgroundColor,
+      borderColor,
+      borderWidth: variant === "outlined" ? 2 : 0,
+    },
+  ];
 
   return (
     <TouchableOpacity
       onPress={onPress}
-      style={[
-        styles.base,
-        {
-          backgroundColor,
-          borderColor,
-          borderWidth: variant === "outlined" ? 2 : 0,
-        },
-      ]}
+      style={containerStyle}
+      disabled={disabled}
     >
-      <Text style={[styles.text, { color: textColor }]}>{title}</Text>
+      <Text style={[styles.text, { color: disabled ? "#888" : textColor }]}>
+        {title}
+      </Text>
     </TouchableOpacity>
   );
 };
@@ -70,6 +82,12 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.5,
     shadowRadius: 4,
+  },
+  dialogButton: {
+    width: "100%",
+    maxWidth: "110%",
+    height: 64, // similar ao InputCard
+    borderRadius: 15,
   },
   text: {
     fontSize: 18,
