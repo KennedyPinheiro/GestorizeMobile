@@ -12,19 +12,19 @@ type Props = {
   tipo?: "string" | "number";
   value?: string;
   onlyView?: boolean;
-  title?: string;
-  tipoVisual?: "placeholder" | "label";
+  label?: string;
+  placeholder?: string;
   onChangeText?: (text: string) => void;
 };
 
-const {  height } = Dimensions.get("window");
+const { height } = Dimensions.get("window");
 
 const InputCard = ({
   tipo = "string",
   value = "",
   onlyView = false,
-  title = "Digite algo...",
-  tipoVisual = "placeholder",
+  label = "",
+  placeholder = "",
   onChangeText,
 }: Props) => {
   const [isFocused, setIsFocused] = useState(false);
@@ -32,25 +32,23 @@ const InputCard = ({
   const keyboardType: KeyboardTypeOptions =
     tipo === "number" ? "numeric" : "default";
 
-  const showPlaceholder = tipoVisual === "placeholder" && !isFocused && !value;
-  const showLabel = tipoVisual === "label";
-
   return (
+    
     <View
       style={[
         styles.container,
         onlyView && { backgroundColor: "#B0B0B0" },
       ]}
     >
-      {(showPlaceholder || showLabel) && (
-        <Text style={styles.title}>{title}</Text>
+      {label && (
+        <Text style={styles.label}>{label}</Text>
       )}
 
       <TextInput
         style={[
           styles.input,
           onlyView && { color: "#ddd" },
-          isFocused && styles.inputFocused 
+          isFocused && styles.inputFocused,
         ]}
         keyboardType={keyboardType}
         editable={!onlyView}
@@ -58,7 +56,7 @@ const InputCard = ({
         onBlur={() => setIsFocused(false)}
         value={value}
         onChangeText={onChangeText}
-        placeholder=""
+        placeholder={placeholder}
         placeholderTextColor="#cccccc9d"
       />
     </View>
@@ -69,25 +67,19 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     maxWidth: "110%",
-    height: height * 0.06,
+    height: height * 0.08,
     backgroundColor: "#7294CA",
     paddingHorizontal: 20,
-    paddingVertical: 2,
+    paddingVertical: 8,
     borderRadius: 15,
     marginBottom: 15,
     justifyContent: "center",
   },
-  title: {
-    position: "absolute",
-    left: 30,
-    right: 0,
-    textAlign: "left",
-    justifyContent: "center",
-    alignItems: "center",
-    fontSize: 20,
-    color: "#ffffff3e",
+  label: {
+    fontSize: 14,
+    color: "#ffffffc0",
     fontWeight: "600",
-    zIndex: 1,
+    marginBottom: 2,
   },
   input: {
     fontSize: 20,
@@ -97,7 +89,7 @@ const styles = StyleSheet.create({
   },
   inputFocused: {
     borderWidth: 2,
-    borderColor: "#ffffff70", 
+    borderColor: "#ffffff70",
     borderRadius: 10,
     padding: 5,
   },

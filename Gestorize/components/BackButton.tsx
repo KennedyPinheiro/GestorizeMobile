@@ -29,15 +29,18 @@ export default BackButton;
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    marginRight: 10,
+    marginRight: 5,
     alignItems: "center",
   },
   icon: {
-    marginRight: -15,
-    marginLeft: -40,
+    marginRight: -20,
+    marginLeft: -50,
   },
   logoIcon:{
     marginTop: -10,
+    height: 50,
+    width: 50,
+    marginRight: 25,
     
   }
 

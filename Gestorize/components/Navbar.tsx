@@ -9,10 +9,11 @@ import DialogUserMenu from "./DialogUserMenu";
 type props = {
   backButton?: boolean;
   actionMenu?: () => void;
+  tittle: string;
 };
 
 
-const NavBar = ({ backButton, actionMenu }: props) => {
+const NavBar = ({ backButton, actionMenu ,tittle }: props) => {
   const [show, setShow] = useState(false);
 
 
@@ -21,6 +22,7 @@ const NavBar = ({ backButton, actionMenu }: props) => {
       display: "flex",
       backgroundColor: "#062046",
       height: "17%",
+      width: '100%',
     },
     nav: {
       flexDirection: "row",
@@ -28,10 +30,14 @@ const NavBar = ({ backButton, actionMenu }: props) => {
       justifyContent: "center",
       alignItems: "center",
       marginBottom: -35,
+      paddingHorizontal: 12
     },
     logoIcon: {
-      marginLeft: -40,
-      marginTop: -20,
+      marginRight: 4,         // Margem direita mínima
+    marginLeft: 4,          // Margem esquerda mínima
+    width: 30,              // Tamanho bem reduzido
+    height: 30,             // Proporcional à largura
+    resizeMode: 'contain'
     },
   });
 
@@ -53,7 +59,7 @@ const NavBar = ({ backButton, actionMenu }: props) => {
         ) : (
           <BackButton onPress={() => {}} />
         )}
-        <NavTittle tittle="CLIENTES PJ" />
+        <NavTittle tittle={tittle} />
         <UserIcon onPress={handleShowDialog} />
       </View>
       <DialogUserMenu show={show} onClose={handleClose} onSuccess={() => {}} />;

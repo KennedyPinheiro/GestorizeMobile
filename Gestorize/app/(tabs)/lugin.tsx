@@ -12,6 +12,7 @@ import LogoIcon from "@/components/LogoIcon";
 import Link from "@/components/Link";
 import Linha from "@/components/Linha";
 import PasswordInputCard from "@/components/PasswordInputCard";
+import LoginLogo from "@/components/LoginLogo";
 
 
 type Props = {
@@ -63,15 +64,14 @@ const lugin = ({ onLogin }:Props) => {
       <View style={styles.container}>
         <View style={styles.innerContainer}>
           <View style={styles.spacerTop} />
-          <LogoIcon />
+          <LoginLogo />
 
           <View style={styles.section}>
             <InputCard
               tipo="string"
+              placeholder="Email | Nome de Usuário"
               value={user}
-              title="Email | Nome de Usuário"
               onChangeText={setUser}
-              tipoVisual="placeholder"
             />
             <PasswordInputCard
               value={senha}
@@ -90,7 +90,8 @@ const lugin = ({ onLogin }:Props) => {
               title="Login"
               variant="contained"
               color="primary"
-              onPress={onLogin} // chama handleLogin
+              onPress={onLogin}
+              disabled={true}
             />
           </View>
 
