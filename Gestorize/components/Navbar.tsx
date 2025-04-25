@@ -1,19 +1,19 @@
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
-import NavTittle from "./NavTittle";
-import UserIcon from "./UserIcon";
-import LogoIcon from "./LogoIcon";
-import BackButton from "./BackButton";
-import DialogUserMenu from "./DialogUserMenu";
+import NavTitle from "@/components/NavTitle";
+import UserIcon from "@/components/UserIcon";
+import LogoIcon from "@/components/LogoIcon";
+import BackButton from "@/components/BackButton";
+import DialogUserMenu from "@/components/DialogUserMenu";
 
 type props = {
   backButton?: boolean;
   actionMenu?: () => void;
-  tittle: string;
+  title: string;
 };
 
 
-const NavBar = ({ backButton, actionMenu ,tittle }: props) => {
+const NavBar = ({ backButton, actionMenu ,title }: props) => {
   const [show, setShow] = useState(false);
 
 
@@ -21,7 +21,7 @@ const NavBar = ({ backButton, actionMenu ,tittle }: props) => {
     container: {
       display: "flex",
       backgroundColor: "#062046",
-      height: "17%",
+      height: "13%",
       width: '100%',
     },
     nav: {
@@ -33,10 +33,10 @@ const NavBar = ({ backButton, actionMenu ,tittle }: props) => {
       paddingHorizontal: 12
     },
     logoIcon: {
-      marginRight: 4,         // Margem direita mínima
-    marginLeft: 4,          // Margem esquerda mínima
-    width: 30,              // Tamanho bem reduzido
-    height: 30,             // Proporcional à largura
+      marginRight: 4,         
+    marginLeft: 4,          
+    width: 30,              
+    height: 30,             
     resizeMode: 'contain'
     },
   });
@@ -59,7 +59,7 @@ const NavBar = ({ backButton, actionMenu ,tittle }: props) => {
         ) : (
           <BackButton onPress={() => {}} />
         )}
-        <NavTittle tittle={tittle} />
+        <NavTitle title={title} />
         <UserIcon onPress={handleShowDialog} />
       </View>
       <DialogUserMenu show={show} onClose={handleClose} onSuccess={() => {}} />;

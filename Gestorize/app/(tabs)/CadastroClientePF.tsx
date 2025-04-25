@@ -1,25 +1,28 @@
-import {
-  ScrollView,
-  View,
-  StyleSheet,
-} from "react-native";
+import { ScrollView, View, StyleSheet } from "react-native";
 import InputCard from "@/components/InputCard";
 import DialogEndereço from "@/components/DialogEndereço";
 import Button from "@/components/Button";
 import NavBar from "@/components/Navbar";
 import { useState } from "react";
+import { MenuItem, Select } from "@/components/Select";
 
-const CadastroFornecedores = ({ onPress }) => {
-  const [razaoSocial, setRazaoSocial] = useState("");
-  const [cnpj, setCnpj] = useState("");
-  const [ramoAtividade, setRamoAtividade] = useState("");
-  const [telefone, setTelefone] = useState("");
+
+
+const generos = ["Masculino", "Feminino", "Prefiro não Dizer"];
+const estadoCivil = ["Casado(a)", "Solteiro(a)","Prefiro não Dizer" ]
+
+const CadastroClientePF = ({ onPress }) => {
+  const [nome, setNome] = useState("");
+  const [cpf, setCpf] = useState("");
+  const [data, setData] = useState("");
+  const [rg, setRG] = useState("");
+  const [genero, setGenero] = useState<string>("");
+  const [EstadoCivil, setEstadoCivil] = useState<string>("");
   const [email, setEmail] = useState("");
-  const [nomeResponsavel, setNomeResponsavel] = useState("");
-  const [chavePix, setChavePix] = useState("");
+  const [celular, setCelular] = useState("");
   const [endereço, setEndereco] = useState(false);
 
-  const isFormValid = razaoSocial.trim() !== "";
+  const isFormValid = nome.trim() !== "";
 
   const handleOpenEndereço = () => setEndereco(true);
   const handleCloseEndereço = () => setEndereco(false);
@@ -30,53 +33,58 @@ const CadastroFornecedores = ({ onPress }) => {
       contentContainerStyle={styles.contentContainer}
     >
       <View style={styles.container}>
-        <NavBar title="FORNECEDORES" />
+        <NavBar title="CLIENTES" />
 
         <View style={styles.formContainer}>
           <View style={styles.inputItem}>
             <InputCard
-              label="Razão Social"
-              placeholder="example complete name"
+              label="Nome"
+              placeholder="Complete Example Name"
               tipo="string"
-              value={razaoSocial}
-              onChangeText={setRazaoSocial}
+              value={nome}
+              onChangeText={setNome}
             />
           </View>
           <View style={styles.inputItem}>
             <InputCard
-              label="CNPJ"
-              placeholder="example complete name"
-              tipo="string"
-              value={cnpj}
-              onChangeText={setCnpj}
+              label="Data de Nascimento"
+              placeholder="0000 / 00 / 00"
+              tipo="number"
+              value={data}
+              onChangeText={setData}
             />
           </View>
           <View style={styles.inputItem}>
             <InputCard
-              label="Ramo de Atividade"
-              placeholder="example complete name"
+              label="Cpf"
+              placeholder="123.456.789-90"
               tipo="string"
-              value={ramoAtividade}
-              onChangeText={setRamoAtividade}
+              value={cpf}
+              onChangeText={setCpf}
             />
           </View>
           <View style={styles.inputItem}>
             <InputCard
-              label="Telefone"
-              placeholder="example complete name"
+              label="Rg"
+              placeholder="123.456.789"
               tipo="string"
-              value={telefone}
-              onChangeText={setTelefone}
+              value={rg}
+              onChangeText={setRG}
             />
           </View>
           <View style={styles.inputItem}>
-            <InputCard
-              label="Email"
-              placeholder="example complete name"
-              tipo="string"
-              value={email}
-              onChangeText={setEmail}
-            />
+            <Select
+              value={EstadoCivil}
+              onChange={setEstadoCivil}
+              label="Estado Civil"
+              size="small"
+            >
+              {estadoCivil.map((CD) => (
+                <MenuItem key={CD} value={CD}>
+                  {CD}
+                </MenuItem>
+              ))}
+            </Select>
           </View>
           <View style={styles.inputItem}>
             <Button
@@ -87,23 +95,36 @@ const CadastroFornecedores = ({ onPress }) => {
               type="dialog"
             />
           </View>
-
+          <View style={styles.inputItem}>
+            <Select
+              value={genero}
+              onChange={setGenero}
+              label="Gênero"
+              size="small"
+            >
+              {generos.map((MF) => (
+                <MenuItem key={MF} value={MF}>
+                  {MF}
+                </MenuItem>
+              ))}
+            </Select>
+          </View>
           <View style={styles.inputItem}>
             <InputCard
-              label="Nome do Responsavel"
-              placeholder="example complete name"
-              tipo="string"
-              value={nomeResponsavel}
-              onChangeText={setNomeResponsavel}
+              label="Celular"
+              placeholder="(00) 0 0000 - 0000"
+              tipo="number"
+              value={celular}
+              onChangeText={setCelular}
             />
           </View>
           <View style={styles.inputItem}>
             <InputCard
-              label="Chave Pix"
-              placeholder="example complete name"
+              label="Email"
+              placeholder="example@email.com"
               tipo="string"
-              value={chavePix}
-              onChangeText={setChavePix}
+              value={email}
+              onChangeText={setEmail}
             />
           </View>
 
@@ -146,7 +167,7 @@ const styles = StyleSheet.create({
   },
   formContainer: {
     marginTop: 24,
-    marginBottom:80,
+    marginBottom: 95,
     width: "100%",
     alignItems: "center",
     gap: 2,
@@ -157,4 +178,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CadastroFornecedores;
+export default CadastroClientePF;
