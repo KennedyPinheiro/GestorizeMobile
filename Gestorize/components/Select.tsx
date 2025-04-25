@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
   },
 });
 
-// Componente MenuItem (mantido igual ao original)
+
 const MenuItem = ({ value, children, onPress }: MenuItemProps) => (
   <TouchableOpacity onPress={onPress} style={menuStyles.menuItem}>
     <Text style={menuStyles.menuItemText}>{children}</Text>

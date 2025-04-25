@@ -1,10 +1,10 @@
 import { StyleSheet, Text, View } from "react-native";
 
 type props = {
-  tittle: string;
+  title: string;
 };
 
-const NavTittle = ({ tittle }: props) => {
+const NavTitle = ({ title }: props) => {
     const styes = StyleSheet.create({
         container:{
             display:'flex',
@@ -25,11 +25,11 @@ const NavTittle = ({ tittle }: props) => {
     })
   return (
     <View style={styes.container}>
-      <Text style={styes.tittle}>{tittle}</Text>
+      <Text style={styes.tittle}>{title}</Text>
     </View>
   );
 };
 
 
-export default NavTittle;
+export default NavTitle;
 
