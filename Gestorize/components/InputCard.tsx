@@ -76,10 +76,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   label: {
-    fontSize: 14,
-    color: "#ffffffc0",
+    fontSize: 13  ,
+    color: "#0f3164",
     fontWeight: "600",
-    marginBottom: 2,
+    marginBottom: 7,
+    marginTop: -12,
+    
+
   },
   input: {
     fontSize: 20,
@@ -91,6 +94,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "#ffffff70",
     borderRadius: 10,
+    marginTop:-5,
     padding: 5,
   },
 });

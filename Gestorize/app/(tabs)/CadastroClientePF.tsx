@@ -38,7 +38,7 @@ const CadastroClientePF = ({ onPress }) => {
         <View style={styles.formContainer}>
           <View style={styles.inputItem}>
             <InputCard
-              label="Nome"
+              label="NOME"
               placeholder="Complete Example Name"
               tipo="string"
               value={nome}
@@ -47,7 +47,7 @@ const CadastroClientePF = ({ onPress }) => {
           </View>
           <View style={styles.inputItem}>
             <InputCard
-              label="Data de Nascimento"
+              label="DATA DE NASCIMENTO"
               placeholder="0000 / 00 / 00"
               tipo="number"
               value={data}
@@ -56,7 +56,7 @@ const CadastroClientePF = ({ onPress }) => {
           </View>
           <View style={styles.inputItem}>
             <InputCard
-              label="Cpf"
+              label="CPF"
               placeholder="123.456.789-90"
               tipo="string"
               value={cpf}
@@ -65,7 +65,7 @@ const CadastroClientePF = ({ onPress }) => {
           </View>
           <View style={styles.inputItem}>
             <InputCard
-              label="Rg"
+              label="RG"
               placeholder="123.456.789"
               tipo="string"
               value={rg}
@@ -76,7 +76,7 @@ const CadastroClientePF = ({ onPress }) => {
             <Select
               value={EstadoCivil}
               onChange={setEstadoCivil}
-              label="Estado Civil"
+              label="ESTADO CIVIL"
               size="small"
             >
               {estadoCivil.map((CD) => (
@@ -99,7 +99,7 @@ const CadastroClientePF = ({ onPress }) => {
             <Select
               value={genero}
               onChange={setGenero}
-              label="Gênero"
+              label="GÊNERO"
               size="small"
             >
               {generos.map((MF) => (
@@ -111,7 +111,7 @@ const CadastroClientePF = ({ onPress }) => {
           </View>
           <View style={styles.inputItem}>
             <InputCard
-              label="Celular"
+              label="TELEFONE"
               placeholder="(00) 0 0000 - 0000"
               tipo="number"
               value={celular}
@@ -120,7 +120,7 @@ const CadastroClientePF = ({ onPress }) => {
           </View>
           <View style={styles.inputItem}>
             <InputCard
-              label="Email"
+              label="EMAIL"
               placeholder="example@email.com"
               tipo="string"
               value={email}

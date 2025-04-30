@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import {
   Modal,
   View,
-  TouchableOpacity,
   Text,
   StyleSheet,
   TouchableWithoutFeedback,
