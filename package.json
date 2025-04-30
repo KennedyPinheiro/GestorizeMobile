@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "react-native-svg": "^15.11.2"
+  },
+  "devDependencies": {
+    "react-native-svg-transformer": "^1.5.0"
+  }
+}

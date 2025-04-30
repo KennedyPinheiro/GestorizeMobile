@@ -35,8 +35,8 @@ const CadastroFornecedores = ({ onPress }) => {
         <View style={styles.formContainer}>
           <View style={styles.inputItem}>
             <InputCard
-              label="Razão Social"
-              placeholder="example complete name"
+              label="RAZÃO SOCIAL "
+              placeholder="Exemplo de Razão Social"
               tipo="string"
               value={razaoSocial}
               onChangeText={setRazaoSocial}
@@ -45,7 +45,7 @@ const CadastroFornecedores = ({ onPress }) => {
           <View style={styles.inputItem}>
             <InputCard
               label="CNPJ"
-              placeholder="example complete name"
+              placeholder="12.345.678/0001-95"
               tipo="string"
               value={cnpj}
               onChangeText={setCnpj}
@@ -53,8 +53,8 @@ const CadastroFornecedores = ({ onPress }) => {
           </View>
           <View style={styles.inputItem}>
             <InputCard
-              label="Ramo de Atividade"
-              placeholder="example complete name"
+              label="RAMO DE ATIVIDADE"
+              placeholder="Exemplo de Nome"
               tipo="string"
               value={ramoAtividade}
               onChangeText={setRamoAtividade}
@@ -62,8 +62,8 @@ const CadastroFornecedores = ({ onPress }) => {
           </View>
           <View style={styles.inputItem}>
             <InputCard
-              label="Telefone"
-              placeholder="example complete name"
+              label="TELEFONE"
+              placeholder="(00) 0 0000 - 0000"
               tipo="string"
               value={telefone}
               onChangeText={setTelefone}
@@ -71,8 +71,8 @@ const CadastroFornecedores = ({ onPress }) => {
           </View>
           <View style={styles.inputItem}>
             <InputCard
-              label="Email"
-              placeholder="example complete name"
+              label="EMAIL"
+              placeholder="example@email.com"
               tipo="string"
               value={email}
               onChangeText={setEmail}
@@ -90,8 +90,8 @@ const CadastroFornecedores = ({ onPress }) => {
 
           <View style={styles.inputItem}>
             <InputCard
-              label="Nome do Responsavel"
-              placeholder="example complete name"
+              label=" NOME DO RESPONSAVEL"
+              placeholder="Exemplo de Nome Completo"
               tipo="string"
               value={nomeResponsavel}
               onChangeText={setNomeResponsavel}
@@ -99,8 +99,8 @@ const CadastroFornecedores = ({ onPress }) => {
           </View>
           <View style={styles.inputItem}>
             <InputCard
-              label="Chave Pix"
-              placeholder="example complete name"
+              label="CHAVE PIX"
+              placeholder="Exemplo"
               tipo="string"
               value={chavePix}
               onChangeText={setChavePix}

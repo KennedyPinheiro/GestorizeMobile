@@ -8,7 +8,6 @@ import {
 } from "react-native";
 import InputCard from "@/components/InputCard";
 import Button from "@/components/Button";
-import LogoIcon from "@/components/LogoIcon";
 import Link from "@/components/Link";
 import Linha from "@/components/Linha";
 import PasswordInputCard from "@/components/PasswordInputCard";
@@ -56,7 +55,6 @@ const styles = StyleSheet.create({
 });
 const lugin = ({ onLogin }:Props) => {
   const [user, setUser] = useState("");
-  const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
 
   return (

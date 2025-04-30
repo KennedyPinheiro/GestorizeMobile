@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    color: "#ffffffc0",
+    color: "#0f3164",
     fontWeight: "600",
     marginTop:9,
   },
@@ -128,6 +128,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   placeholder: {
+    marginTop:-10,
     color: "#cccccc9d",
   },
   icon: {

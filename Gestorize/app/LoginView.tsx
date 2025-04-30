@@ -55,7 +55,6 @@ const styles = StyleSheet.create({
 });
 const LoginView = ({ onLogin }:Props) => {
   const [user, setUser] = useState("");
-  const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
 
   return (
@@ -69,9 +68,9 @@ const LoginView = ({ onLogin }:Props) => {
             <InputCard
               tipo="string"
               value={user}
-              title="Email | Nome de Usuário"
+              placeholder="Email | Nome de Usuário"
               onChangeText={setUser}
-              tipoVisual="placeholder"
+              
             />
             <PasswordInputCard
               value={senha}
