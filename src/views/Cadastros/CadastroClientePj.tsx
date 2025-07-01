@@ -5,13 +5,13 @@ import Button from "@components/botoes/Button";
 import NavBar from "@components/utilities/NavBar";
 import { useState } from "react";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "@App";
 import { useNavigation } from "@react-navigation/native";
 import SidebarAlert from "@components/sidebars/Sidebaralert";
 import ErrorSidebarAlert from "@components/sidebars/ErrorSidebarAlert";
 import { supabase } from "@lib/supabase";
 import { formatCNPJ, formatCpf, formatTelefone } from "src/@core/format";
-import { EnderecoType } from "@context/types";
+import { EnderecoType, RootStackParamList } from "@context/types";
+import Nav from "@components/utilities/Nav";
 
 const CadastroClientePJ = () => {
   const navigation =
@@ -106,16 +106,13 @@ const CadastroClientePJ = () => {
         "Erro ao salvar cliente: " + (error as any)?.message || "desconhecido"
       );
       setVisible(true);
-    }finally {
+    } finally {
       setTimeout(() => setIsLoading(false), 2000);
     }
   }
 
   return (
-    <ScrollView
-      style={styles.scrollContainer}
-      contentContainerStyle={styles.contentContainer}
-    >
+    <View style={styles.container}>
       <SidebarAlert
         message={message}
         visible={visible}
@@ -127,9 +124,14 @@ const CadastroClientePJ = () => {
         visible={erroVisible}
         onClose={() => setErroVisible(false)}
       />
-      <View style={styles.container}>
-        <NavBar title="Pessoa Juridica" backButton={false} />
-
+      <Nav
+          titulo="Pessoa Juridica"
+          onBackPress={() => navigation.navigate("Clientes")}
+        />
+      <ScrollView
+        style={styles.scrollContainer}
+        contentContainerStyle={styles.contentContainer}
+      >
         <View style={styles.formContainer}>
           <View style={styles.inputItem}>
             <InputCard
@@ -229,8 +231,7 @@ const CadastroClientePJ = () => {
             onPress={salvarCliente}
           />
         </View>
-      </View>
-
+      </ScrollView>
       {endereço && (
         <DialogEndereço
           onClose={handleCloseEndereço}
@@ -238,14 +239,13 @@ const CadastroClientePJ = () => {
           visible={endereço}
         />
       )}
-    </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  scrollContainer: {
-    flex: 1,
-    backgroundColor: "#F3F3F2",
+ scrollContainer: {
+    backgroundColor: "#ffffff",
     width: "100%",
     flexGrow: 1,
   },
@@ -256,11 +256,12 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     alignItems: "center",
-    backgroundColor: "#F3F3F2",
+    backgroundColor: "#ffffff",
+    flex: 1,
   },
   formContainer: {
     marginTop: 24,
-    marginBottom: 155,
+
     width: "100%",
     alignItems: "center",
     gap: 2,

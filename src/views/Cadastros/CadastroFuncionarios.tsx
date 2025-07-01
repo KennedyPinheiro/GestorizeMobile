@@ -8,7 +8,6 @@ import { MenuItem, Select } from "@components/utilities/Select";
 import { supabase } from "@lib/supabase";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "@App";
 import {
   formatCpf,
   formatDate,
@@ -17,9 +16,10 @@ import {
 } from "src/@core/format";
 import ErrorSidebarAlert from "@components/sidebars/ErrorSidebarAlert";
 import SidebarAlert from "@components/sidebars/Sidebaralert";
-import { EnderecoType} from "@context/types";
+import { EnderecoType, RootStackParamList } from "@context/types";
 import DialogRoles from "@components/dialogs/DialogRoles";
 import Selecionado from "@components/Selecionado";
+import Nav from "@components/utilities/Nav";
 
 const generos = ["Masculino", "Feminino", "Prefiro não Dizer"];
 const estadoCivil = ["Casado(a)", "Solteiro(a)", "Prefiro não Dizer"];
@@ -122,23 +122,26 @@ const CadastroFuncionarios = ({}) => {
 
       idEnderecoCriado = enderecoInserido[0].id;
 
-      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-        email,
-        password: senha,
-        options: {
-          data: {
-            nome,
+      const { data: signUpData, error: signUpError } =
+        await supabase.auth.signUp({
+          email,
+          password: senha,
+          options: {
+            data: {
+              nome,
+            },
           },
-        },
-      });
-      
+        });
+
       if (signUpError || !signUpData?.user) {
-        throw signUpError || new Error("Erro ao registrar usuário no Supabase Auth");
+        throw (
+          signUpError || new Error("Erro ao registrar usuário no Supabase Auth")
+        );
       }
-      
+
       const authUserId = signUpData.user.id;
       const funcionarioData = {
-        id: authUserId, 
+        id: authUserId,
         nome,
         cpf: cpf || null,
         rg: rg || null,
@@ -191,10 +194,7 @@ const CadastroFuncionarios = ({}) => {
     }
   }, [visible]);
   return (
-    <ScrollView
-      style={styles.scrollContainer}
-      contentContainerStyle={styles.contentContainer}
-    >
+    <View style={styles.container}>
       <SidebarAlert
         message={message}
         visible={visible}
@@ -205,9 +205,15 @@ const CadastroFuncionarios = ({}) => {
         message={erroMessage}
         visible={erroVisible}
         onClose={() => setErroVisible(false)}
-      />
-      <View style={styles.container}>
-        <NavBar title="Funcionario" backButton={false} />
+      /><Nav
+          titulo="Funcioario"
+          onBackPress={() => navigation.navigate("Funcionarios")}
+        />
+      <ScrollView
+        style={styles.scrollContainer}
+        contentContainerStyle={styles.contentContainer}
+      >
+        
 
         <View style={styles.formContainer}>
           <View style={styles.inputItem}>
@@ -356,12 +362,12 @@ const CadastroFuncionarios = ({}) => {
             title={isLoading ? "SALVANDO..." : "SALVAR"}
             variant="contained"
             color="primary"
-            disabled={!isFormValid || isLoading }
+            disabled={!isFormValid || isLoading}
             type="submit"
             onPress={salvarFuncionario}
           />
         </View>
-      </View>
+      </ScrollView>
 
       {endereço && (
         <DialogEndereço
@@ -377,14 +383,13 @@ const CadastroFuncionarios = ({}) => {
           onSelect={handleSelectRole}
         />
       )}
-    </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   scrollContainer: {
-    flex: 1,
-    backgroundColor: "#F3F3F2",
+    backgroundColor: "#ffffff",
     width: "100%",
     flexGrow: 1,
   },
@@ -395,11 +400,11 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     alignItems: "center",
-    backgroundColor: "#F3F3F2",
+    backgroundColor: "#ffffff",
+    flex: 1,
   },
   formContainer: {
     marginTop: 24,
-    marginBottom: 155,
     width: "100%",
     alignItems: "center",
     gap: 2,

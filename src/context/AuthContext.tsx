@@ -23,17 +23,26 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [roleId, setRoleId] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
+ 
+  
 
-  const fetchRole = async (userId: string) => {
-    const { data, error } = await supabase
-      .from("users")
-      .select("role_id")
-      .eq("id", userId)
-      .single();
+  const fetchRole = async (userId: string, retries = 5, delay = 500) => {
+    for (let attempt = 0; attempt < retries; attempt++) {
+      const { data, error } = await supabase
+        .from("users")
+        .select("role_id")
+        .eq("id", userId)
+        .maybeSingle();
 
-    if (!error && data) {
-      setRoleId(data.role_id);
+      if (data?.role_id !== undefined && data?.role_id !== null) {
+        setRoleId(data.role_id);
+        return;
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, delay));
     }
+
+    setRoleId(null); 
   };
 
   useEffect(() => {
@@ -65,6 +74,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return () => {
       listener.subscription.unsubscribe();
     };
+    
   }, []);
 
   const signOut = async () => {

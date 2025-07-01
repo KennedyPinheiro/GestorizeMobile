@@ -4,6 +4,7 @@ import {
   Text,
   TouchableOpacity,
   GestureResponderEvent,
+  ViewStyle,
 } from "react-native";
 
 type ButtonProps = {
@@ -14,6 +15,7 @@ type ButtonProps = {
   disabled?: boolean;
   type?: "dialog" | "submit";
 };
+
 const Button = ({
   title = "Button",
   variant = "contained",
@@ -22,34 +24,45 @@ const Button = ({
   disabled = false,
   type = "submit",
 }: ButtonProps) => {
+  const isOutlined = variant === "outlined";
+
   const backgroundColor =
-    variant === "contained"
+    !isOutlined
       ? color === "primary"
         ? "#26579E"
         : "#888"
       : "transparent";
 
-  const borderColor =
-    variant === "outlined"
-      ? color === "primary"
-        ? "#26579E"
-        : "#888"
-      : "transparent";
-
-  const textColor =
-    variant === "contained"
-      ? "#fff"
-      : color === "primary"
+  const borderColor = isOutlined
+    ? color === "primary"
       ? "#26579E"
-      : "#888";
+      : "#888"
+    : "transparent";
+
+  const textColor = !isOutlined
+    ? "#fff"
+    : color === "primary"
+    ? "#26579E"
+    : "#888";
+
+  const shadowStyle: ViewStyle = !isOutlined
+    ? {
+        elevation: 3,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.5,
+        shadowRadius: 4,
+      }
+    : {};
 
   const containerStyle = [
     styles.base,
     type === "dialog" && styles.dialogButton,
+    shadowStyle,
     {
       backgroundColor: disabled ? "#ccc" : backgroundColor,
       borderColor,
-      borderWidth: variant === "outlined" ? 2 : 0,
+      borderWidth: isOutlined ? 2 : 0,
     },
   ];
 
@@ -76,16 +89,11 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     alignItems: "center",
     justifyContent: "center",
-    elevation: 3,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.5,
-    shadowRadius: 4,
   },
   dialogButton: {
     width: "100%",
     maxWidth: "110%",
-    height: 64, // similar ao InputCard
+    height: 64,
     borderRadius: 15,
   },
   text: {

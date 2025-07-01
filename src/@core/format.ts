@@ -135,3 +135,7 @@ export function formatarMedida(titulo: string): string {
 
   return mapaFormatacao[normalizado] || titulo.toUpperCase();
 }
+
+export function formatarCampo(valor?: string | null): string {
+  return valor && valor.trim() !== "" ? valor : "Não informado";
+};

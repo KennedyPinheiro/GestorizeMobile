@@ -11,10 +11,10 @@ import SidebarAlert from "@components/sidebars/Sidebaralert";
 import { supabase } from "@lib/supabase";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "@App";
 import DialogFornecedores from "@components/dialogs/DialogFornecedores";
 import DialogMedida from "@components/dialogs/DialogMedida";
 import ErrorSidebarAlert from "@components/sidebars/ErrorSidebarAlert";
+import { RootStackParamList } from "@context/types";
 
 const unidades = ["Unidade", "Litro", "Quilo", "Caixa"];
 
@@ -135,16 +135,16 @@ const CadastroProdutos = () => {
         });
       }, 1500);
     } catch (error: any) {
-      setMessage("Erro ao salvar produto: " + error.message);
-      setAlertVisible(true);
+      setErroMessage("Erro ao salvar produto: " + error.message);
+      setErroAlertVisible(true);
       setIsLoading(false);
     }
   }
 
   useEffect(() => {
     if (alertVisible) {
-      const timer = setTimeout(() => {
-        setAlertVisible(false);
+        const timer = setTimeout(() => {
+          setAlertVisible(false);
       }, 3000);
       return () => clearTimeout(timer);
     }

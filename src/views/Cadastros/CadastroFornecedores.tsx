@@ -4,11 +4,10 @@ import DialogEndereço from "@components/dialogs/DialogEndereco";
 import Button from "@components/botoes/Button";
 import NavBar from "@components/utilities/NavBar";
 import { useState } from "react";
-import { RootStackParamList } from "@App";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
 import { supabase } from "@lib/supabase";
-import { EnderecoType } from "@context/types";
+import { EnderecoType, RootStackParamList } from "@context/types";
 import ErrorSidebarAlert from "@components/sidebars/ErrorSidebarAlert";
 import SidebarAlert from "@components/sidebars/Sidebaralert";
 import { formatCNPJ, formatTelefone } from "@@core/format";
@@ -234,7 +233,7 @@ const CadastroFornecedores = () => {
 const styles = StyleSheet.create({
   scrollContainer: {
     flex: 1,
-    backgroundColor: "#F3F3F2",
+    backgroundColor: "#ffffff",
     width: "100%",
     flexGrow: 1,
   },
@@ -245,7 +244,7 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     alignItems: "center",
-    backgroundColor: "#F3F3F2",
+    backgroundColor: "#ffffff",
   },
   formContainer: {
     marginTop: 24,

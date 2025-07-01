@@ -114,7 +114,8 @@ const styles = StyleSheet.create({
   input: {
     fontSize: 20,
     fontWeight: "bold",
-    textAlign: "center",
+    flex: 1, 
+  paddingRight: 10,
     color: "#fff",
   },
   inputFocused: {

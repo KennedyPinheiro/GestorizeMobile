@@ -8,7 +8,6 @@ import { MenuItem, Select } from "@components/utilities/Select";
 import { supabase } from "@lib/supabase";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "@App";
 import {
   formatCpf,
   formatDate,
@@ -17,7 +16,8 @@ import {
 } from "src/@core/format";
 import ErrorSidebarAlert from "@components/sidebars/ErrorSidebarAlert";
 import SidebarAlert from "@components/sidebars/Sidebaralert";
-import { EnderecoType } from "@context/types";
+import { EnderecoType, RootStackParamList } from "@context/types";
+import Nav from "@components/utilities/Nav";
 
 const generos = ["Masculino", "Feminino", "Prefiro não Dizer"];
 const estadoCivil = ["Casado(a)", "Solteiro(a)", "Prefiro não Dizer"];
@@ -129,10 +129,7 @@ const CadastroClientePF = ({}) => {
     }
   }, [visible]);
   return (
-    <ScrollView
-      style={styles.scrollContainer}
-      contentContainerStyle={styles.contentContainer}
-    >
+    <View style={styles.container}>
       <SidebarAlert
         message={message}
         visible={visible}
@@ -144,9 +141,14 @@ const CadastroClientePF = ({}) => {
         visible={erroVisible}
         onClose={() => setErroVisible(false)}
       />
-      <View style={styles.container}>
-        <NavBar title="Pessoa Fisica" backButton={false} />
-
+      <Nav
+        titulo="Pessoa Fisíca"
+        onBackPress={() => navigation.navigate("Clientes")}
+      />
+      <ScrollView
+        style={styles.scrollContainer}
+        contentContainerStyle={styles.contentContainer}
+      >
         <View style={styles.formContainer}>
           <View style={styles.inputItem}>
             <InputCard
@@ -257,7 +259,7 @@ const CadastroClientePF = ({}) => {
             onPress={salvarCliente}
           />
         </View>
-      </View>
+      </ScrollView>
 
       {endereço && (
         <DialogEndereço
@@ -266,14 +268,13 @@ const CadastroClientePF = ({}) => {
           visible={endereço}
         />
       )}
-    </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   scrollContainer: {
-    flex: 1,
-    backgroundColor: "#F3F3F2",
+    backgroundColor: "#ffffff",
     width: "100%",
     flexGrow: 1,
   },
@@ -284,11 +285,12 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     alignItems: "center",
-    backgroundColor: "#F3F3F2",
+    backgroundColor: "#ffffff",
+    flex: 1,
   },
   formContainer: {
     marginTop: 24,
-    marginBottom: 155,
+  
     width: "100%",
     alignItems: "center",
     gap: 2,

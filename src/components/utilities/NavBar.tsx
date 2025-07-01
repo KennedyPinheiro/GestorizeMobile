@@ -6,9 +6,9 @@ import LogoIcon from "@components/LogoIcon";
 import BackButton from "@components/botoes/BackButton";
 
 import { useNavigation } from "@react-navigation/native";
-import { RootStackParamList } from "@App";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import DialogUserMenu from "@components/dialogs/DialogUserMenu";
+import { RootStackParamList } from "@context/types";
 
 
 type props = {
