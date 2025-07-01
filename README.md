@@ -48,7 +48,6 @@ Certifique-se de ter instalado:
     Clone o repositório:
 
 git clone https://github.com/KennedyPinheiro/GestorizeMobile.git
-cd GestorizeMobile/backend
 
 Instale as dependências:
 
