@@ -33,8 +33,7 @@ O GestorizeMobile é um aplicativo mobile em desenvolvimento para auxiliar peque
 🛠 Tecnologias Utilizadas
 
     Frontend: React Native
-    Backend: Node.js (Express)
-    Banco de Dados: MySQL
+    Banco de Dados: SupaBase
 
 📂 Instalação e Configuração
 🔧 Pré-requisitos
@@ -42,7 +41,6 @@ O GestorizeMobile é um aplicativo mobile em desenvolvimento para auxiliar peque
 Certifique-se de ter instalado:
 
     Node.js
-    MySQL
     React Native CLI
 
 🔹 Backend (API)
@@ -54,34 +52,11 @@ cd GestorizeMobile/backend
 
 Instale as dependências:
 
-npm install
+    npm install
 
-Configure o banco de dados MySQL no arquivo .env:
-
-DB_HOST=localhost  
-DB_USER=seu_usuario  
-DB_PASSWORD=sua_senha  
-DB_NAME=gestorize_db  
-
-Execute as migrações do banco:
-
-npx sequelize-cli db:migrate
-
-Inicie o servidor:
-
-    npm start
-
-🔹 Frontend (Mobile)
-
-    Acesse a pasta do app:
-
-cd ../mobile
-
-Instale as dependências:
-
-npm install
 
 Execute o aplicativo no emulador ou dispositivo físico:
 
-npx react-native run-android  # Para Android  
-npx react-native run-ios
+    npx expo start
+    npx react-native run-android  
+    npx react-native run-ios
