@@ -4,6 +4,23 @@ Simplifique a gestão da sua empresa na palma da mão!
 📌 Sobre o Projeto
 
 O GestorizeMobile é um aplicativo mobile em desenvolvimento para auxiliar pequenas e médias empresas no gerenciamento de funcionários, clientes, produtos e orçamentos. Com uma interface intuitiva e moderna, permite um controle eficiente e organizado de informações essenciais para o funcionamento do negócio.
+
+<table>
+  <tr>  
+     <td><img src="https://github.com/user-attachments/assets/25355fb9-271d-4132-b784-694cce7cc16e" width="250"/></td>
+   <td><img src="https://github.com/user-attachments/assets/f34ef32d-f29a-4973-a0d7-08445babfe61"
+ width="250"/></td>
+    <td><img src="https://github.com/user-attachments/assets/5385e69a-7475-4607-95b4-9218c189c33a" width="250"/></td>
+  
+  </tr>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/48a30f92-7268-4795-a35f-7f29be8e67a5" width="250"/></td>
+    <td><img src="https://github.com/user-attachments/assets/574c025b-4c15-4cc7-8c3c-096461cc5124" width="250"/></td>
+    <td><img src="https://github.com/user-attachments/assets/bfeef6d4-abb3-483b-85a7-8c0a6415d3fc" width="250"/></td>
+  </tr>
+</table>
+
+
 🚀 Funcionalidades
 🔹 Cadastro de Funcionários
 
@@ -40,7 +57,7 @@ O GestorizeMobile é um aplicativo mobile em desenvolvimento para auxiliar peque
 
 Certifique-se de ter instalado:
 
-    Node.js
+    Node.js  - versão 22x
     React Native CLI
 
 🔹 Backend (API)
@@ -57,5 +74,3 @@ Instale as dependências:
 Execute o aplicativo no emulador ou dispositivo físico:
 
     npx expo start
-    npx react-native run-android  
-    npx react-native run-ios
