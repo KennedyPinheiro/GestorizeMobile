@@ -4,12 +4,32 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 type Props = {
   color?: string;
   style?: ViewStyle | ViewStyle[];
+  rounded?: boolean;
+  iconSize?: number;
+  size?: number;
 };
 
-const PessoaFisicaIcon = ({ color = "#FFF", style }: Props) => {
+const PessoaFisicaIcon = ({
+  color = "#FFF",
+  style,
+  size = 50,
+  rounded = true,
+  iconSize = 45,
+}: Props) => {
   return (
-    <View style={[styles.container, { borderColor: color }, style]}>
-      <MaterialCommunityIcons name="account" size={30} color={color} />
+    <View
+    style={[
+      {
+        width: size,
+        height: size,
+        borderColor: color,
+      },
+      styles.container,
+      rounded ? styles.rounded : styles.squared,
+      style,
+    ]}
+    >
+      <MaterialCommunityIcons name="account" size={iconSize} color={color} />
     </View>
   );
 };
@@ -20,10 +40,13 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 90,
-    width: 40,
-    height: 40,
     borderWidth: 1,
-    padding: 1,
+    
+  },
+  rounded: {
+    borderRadius: 90,
+  },
+  squared: {
+    borderRadius: 5,
   },
 });

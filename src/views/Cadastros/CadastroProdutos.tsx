@@ -1,9 +1,9 @@
 import { ScrollView, View, StyleSheet, Text, SafeAreaView } from "react-native";
-import InputCard from "@components/InputCard";
+
 import Button from "@components/botoes/Button";
-import NavBar from "@components/utilities/NavBar";
+
 import { useEffect, useState } from "react";
-import { MenuItem, Select } from "@components/utilities/Select";
+
 import DialogCategorias from "@components/dialogs/DialogCategoria";
 import { formatDate, parsePercent, parseReal } from "@@core/format";
 import Selecionado from "@components/Selecionado";
@@ -15,6 +15,9 @@ import DialogFornecedores from "@components/dialogs/DialogFornecedores";
 import DialogMedida from "@components/dialogs/DialogMedida";
 import ErrorSidebarAlert from "@components/sidebars/ErrorSidebarAlert";
 import { RootStackParamList } from "@context/types";
+import Nav from "@components/utilities/Nav";
+import EditableTextCard from "@components/EditableTextCard";
+import ClickableTextCard from "@components/ClickableTextCard";
 
 const unidades = ["Unidade", "Litro", "Quilo", "Caixa"];
 
@@ -35,16 +38,9 @@ const CadastroProdutos = () => {
   const [unidadeMedida, setUnidadeMedida] = useState(false);
   const [erroAlertVisible, setErroAlertVisible] = useState(false);
   const [erroMessage, setErroMessage] = useState("");
-  const [medidaSelecionada, setMedidaSelecionada] = useState<string | null>(
-    null
-  );
-  const [fornecedorSelecionado, setFornecedorSelecionado] = useState<
-    string | null
-  >(null);
-
-  const [categoriaSelecionada, setCategoriaSelecionada] = useState<
-    string | null
-  >(null);
+  const [medidaSelecionada, setMedidaSelecionada] = useState<string>();
+  const [fornecedorSelecionado, setFornecedorSelecionado] = useState<string>();
+  const [categoriaSelecionada, setCategoriaSelecionada] = useState<string>();
   const [alertVisible, setAlertVisible] = useState(false);
   const [message, setMessage] = useState("");
   const [margemLucro, setMargemLucro] = useState("");
@@ -62,22 +58,19 @@ const CadastroProdutos = () => {
     setCategoriaSelecionada(nomeCategoria);
     setAlertVisible(true);
     setMessage("Categoria Selecionada");
-    setAlertVisible(true);
   };
   const handleSelectForncedor = (id: number, nomeFornecedor: string) => {
     setCodigoFornecedor(id);
     setFornecedorSelecionado(nomeFornecedor);
     setAlertVisible(true);
     setMessage("Fornecedor Selecionada");
-    setAlertVisible(true);
   };
 
   const handleSelectMedida = (id: number, titulo: string) => {
     setCodigoMedida(id);
     setMedidaSelecionada(titulo);
     setAlertVisible(true);
-    setMessage("Categoria Selecionada");
-    setAlertVisible(true);
+    setMessage("Unidade de Medida Selecionada");
   };
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -143,17 +136,14 @@ const CadastroProdutos = () => {
 
   useEffect(() => {
     if (alertVisible) {
-        const timer = setTimeout(() => {
-          setAlertVisible(false);
+      const timer = setTimeout(() => {
+        setAlertVisible(false);
       }, 3000);
       return () => clearTimeout(timer);
     }
   }, [alertVisible]);
   return (
-    <ScrollView
-      style={styles.scrollContainer}
-      contentContainerStyle={styles.contentContainer}
-    >
+    <View style={styles.container}>
       <SidebarAlert
         message={message}
         visible={alertVisible}
@@ -165,12 +155,17 @@ const CadastroProdutos = () => {
         visible={erroAlertVisible}
         onClose={() => setErroAlertVisible(false)}
       />
-      <View style={styles.container}>
-        <NavBar title="Produto" backButton={false} />
-
+      <Nav
+        titulo="Produto"
+        onBackPress={() => navigation.navigate("Produtos")}
+      />
+      <ScrollView
+        style={styles.scrollContainer}
+        contentContainerStyle={styles.contentContainer}
+      >
         <View style={styles.formContainer}>
           <View style={styles.inputItem}>
-            <InputCard
+            <EditableTextCard
               label="Nome do Produto"
               placeholder="Produto Name"
               tipo="string"
@@ -180,7 +175,7 @@ const CadastroProdutos = () => {
           </View>
 
           <View style={styles.inputItem}>
-            <InputCard
+            <EditableTextCard
               label="Descrição"
               placeholder="Descrição"
               tipo="string"
@@ -189,23 +184,15 @@ const CadastroProdutos = () => {
             />
           </View>
           <View style={styles.inputItem}>
-            <Button
-              variant="contained"
-              type="dialog"
-              title="Categoria"
+            <ClickableTextCard
+              label=" Categoria"
+              placeholder="Selecionar Categoria"
+              value={categoriaSelecionada}
               onPress={handleOpenCategoria}
-              color="primary"
-              disabled={!!categoriaSelecionada}
             />
-            {categoriaSelecionada && (
-              <Selecionado
-                titulo={categoriaSelecionada}
-                onClear={() => setCategoriaSelecionada(null)}
-              />
-            )}
           </View>
           <View style={styles.inputItem}>
-            <InputCard
+            <EditableTextCard
               label="Data de Entrada"
               placeholder="0000 / 00 / 00"
               tipo="number"
@@ -217,7 +204,7 @@ const CadastroProdutos = () => {
           </View>
 
           <View style={styles.inputItem}>
-            <InputCard
+            <EditableTextCard
               label="Quantidade em Estoque"
               placeholder="000"
               tipo="number"
@@ -227,41 +214,25 @@ const CadastroProdutos = () => {
           </View>
 
           <View style={styles.inputItem}>
-            <Button
-              variant="contained"
-              type="dialog"
-              title="Unidade de Medida"
+            <ClickableTextCard
+              label=" Uidade de Medida"
+              placeholder="Selecionar Unidade de Medida"
+              value={medidaSelecionada}
               onPress={handleOpenMedida}
-              color="primary"
-              disabled={!!medidaSelecionada}
             />
-            {!!medidaSelecionada && (
-              <Selecionado
-                titulo={medidaSelecionada}
-                onClear={() => setMedidaSelecionada(null)}
-              />
-            )}
           </View>
 
           <View style={styles.inputItem}>
-            <Button
-              variant="contained"
-              type="dialog"
-              title="Fornecedor"
+            <ClickableTextCard
+              label="Fornecedor"
+              placeholder="Selecionar Fornecedor"
+              value={fornecedorSelecionado}
               onPress={handleOpenFornecedor}
-              color="primary"
-              disabled={!!fornecedorSelecionado}
             />
-            {fornecedorSelecionado && (
-              <Selecionado
-                titulo={fornecedorSelecionado}
-                onClear={() => setFornecedorSelecionado(null)}
-              />
-            )}
           </View>
 
           <View style={styles.inputItem}>
-            <InputCard
+            <EditableTextCard
               label="Data de Validade"
               placeholder="0000 / 00 / 00"
               tipo="number"
@@ -273,7 +244,7 @@ const CadastroProdutos = () => {
           </View>
 
           <View style={styles.inputItem}>
-            <InputCard
+            <EditableTextCard
               label="Preço de Custo"
               placeholder="R$ 0,00"
               tipo="number"
@@ -287,7 +258,7 @@ const CadastroProdutos = () => {
           </View>
 
           <View style={styles.inputItem}>
-            <InputCard
+            <EditableTextCard
               label="Margem de Lucro"
               placeholder="0,00%"
               tipo="number"
@@ -311,7 +282,7 @@ const CadastroProdutos = () => {
             onPress={salvarProduto}
           />
         </View>
-      </View>
+      </ScrollView>
       {categoria && (
         <DialogCategorias
           onClose={handleCloseCategoria}
@@ -333,14 +304,13 @@ const CadastroProdutos = () => {
           onSelect={handleSelectMedida}
         />
       )}
-    </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   scrollContainer: {
-    flex: 1,
-    backgroundColor: "#F3F3F2",
+    backgroundColor: "#ffffff",
     width: "100%",
     flexGrow: 1,
   },
@@ -351,11 +321,11 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     alignItems: "center",
-    backgroundColor: "#F3F3F2",
+    backgroundColor: "#ffffff",
+    flex: 1,
   },
   formContainer: {
     marginTop: 24,
-    marginBottom: 155,
     width: "100%",
     alignItems: "center",
     gap: 2,

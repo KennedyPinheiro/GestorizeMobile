@@ -1,89 +1,94 @@
 import { ScrollView, View, StyleSheet } from "react-native";
-import InputCard from "@components/InputCard";
-import DialogEndereço from "@components/dialogs/DialogEndereco";
+import EditableTextCard from "@components/EditableTextCard";
 import Button from "@components/botoes/Button";
-import NavBar from "@components/utilities/NavBar";
-import { useEffect, useState } from "react";
+import Nav from "@components/utilities/Nav";
+import SidebarAlert from "@components/sidebars/Sidebaralert";
+import ErrorSidebarAlert from "@components/sidebars/ErrorSidebarAlert";
 import { MenuItem, Select } from "@components/utilities/Select";
+import { estadosBrasileiros } from "@components/dialogs/DialogEndereco";
+import DialogRoles from "@components/dialogs/DialogRoles";
+import Selecionado from "@components/Selecionado";
 import { supabase } from "@lib/supabase";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useEffect, useState } from "react";
 import {
   formatCpf,
   formatDate,
   formatRg,
   formatTelefone,
 } from "src/@core/format";
-import ErrorSidebarAlert from "@components/sidebars/ErrorSidebarAlert";
-import SidebarAlert from "@components/sidebars/Sidebaralert";
-import { EnderecoType, RootStackParamList } from "@context/types";
-import DialogRoles from "@components/dialogs/DialogRoles";
-import Selecionado from "@components/Selecionado";
-import Nav from "@components/utilities/Nav";
+import { RootStackParamList } from "@context/types";
 
-const generos = ["Masculino", "Feminino", "Prefiro não Dizer"];
-const estadoCivil = ["Casado(a)", "Solteiro(a)", "Prefiro não Dizer"];
+const generos = ["Masculino", "Feminino", "Prefiro não dizer"];
+const estadosCivis = ["Casado(a)", "Solteiro(a)", "Prefiro não dizer"];
 
-const CadastroFuncionarios = ({}) => {
-  const navigation =
-    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+type Navigation = NativeStackNavigationProp<RootStackParamList>;
+
+const CadastroFuncionarios = () => {
+  const navigation = useNavigation<Navigation>();
+
   const [nome, setNome] = useState("");
   const [cpf, setCpf] = useState("");
-  const [data, setData] = useState("");
-  const [rg, setRG] = useState("");
+  const [rg, setRg] = useState("");
+  const [dataNasc, setDataNasc] = useState("");
   const [genero, setGenero] = useState<string>("");
-  const [EstadoCivil, setEstadoCivil] = useState<string>("");
-  const [email, setEmail] = useState("");
-  const [celular, setCelular] = useState("");
+  const [estadoCivil, setEstadoCivil] = useState<string>("");
   const [cargo, setCargo] = useState("");
-  const [endereço, setEndereco] = useState(false);
-  const [visible, setVisible] = useState(false);
+  const [telefone, setTelefone] = useState("");
+  const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [confirmarSenha, setConfirmarSenha] = useState("");
-  const [erroVisible, setErroVisible] = useState(false);
-  const [erroMessage, setErrorMessage] = useState("");
-  const [message, setMessage] = useState("");
-  const [dadosEndereco, setDadosEndereco] = useState<EnderecoType | null>(null);
-  const [role, setRole] = useState(false);
+  const [rua, setRua] = useState("");
+  const [bairro, setBairro] = useState("");
+  const [cidade, setCidade] = useState("");
+  const [cep, setCep] = useState("");
+  const [numero, setNumero] = useState("");
+  const [estadoSelecionado, setEstadoSelecionado] = useState<string>("");
+  const [showEnderecoForm, setShowEnderecoForm] = useState(false);
 
-  const [codigoRole, setCodigoRole] = useState(0);
+  const [showRoleDialog, setShowRoleDialog] = useState(false);
+  const [codigoRole, setCodigoRole] = useState<number | null>(null);
   const [roleSelecionada, setRoleSelecionada] = useState<string | null>(null);
-  const isFormValid = nome.trim() !== "";
+
   const [isLoading, setIsLoading] = useState(false);
+  const [msgSucesso, setMsgSucesso] = useState("");
+  const [sucessoVisivel, setSucessoVisivel] = useState(false);
+  const [msgErro, setMsgErro] = useState("");
+  const [erroVisivel, setErroVisivel] = useState(false);
 
-  const handleOpenEndereço = () => setEndereco(true);
-  const handleCloseEndereço = () => setEndereco(false);
+  const isFormValid = nome.trim() !== "";
 
-  const handleOpenRole = () => setRole(true);
-  const handleCloseRole = () => setRole(false);
+  useEffect(() => {
+    if (sucessoVisivel) {
+      const t = setTimeout(() => setSucessoVisivel(false), 3000);
+      return () => clearTimeout(t);
+    }
+  }, [sucessoVisivel]);
 
-  const handleSelectRole = (id: number, titulo: string) => {
-    setCodigoRole(id);
-    setRoleSelecionada(titulo);
-    setVisible(true);
-    setMessage("Role salvo com sucesso");
-    handleCloseRole();
-  };
+  useEffect(() => {
+    if (erroVisivel) {
+      const t = setTimeout(() => setErroVisivel(false), 4000);
+      return () => clearTimeout(t);
+    }
+  }, [erroVisivel]);
 
-  async function onPress(endereco: EnderecoType) {
-    setDadosEndereco(endereco);
-    setVisible(true);
-    setMessage("Endereço salvo com sucesso");
-    handleCloseEndereço();
-  }
-
-  async function salvarFuncionario() {
+  const salvarFuncionario = async () => {
     if (isLoading) return;
 
     if (senha !== confirmarSenha) {
-      setErrorMessage("As senhas não coincidem!");
-      setErroVisible(true);
+      setMsgErro("As senhas não coincidem!");
+      setErroVisivel(true);
       return;
     }
-
     if (senha.length < 6) {
-      setErrorMessage("A senha deve ter pelo menos 6 caracteres.");
-      setErroVisible(true);
+      setMsgErro("A senha deve ter pelo menos 6 caracteres.");
+      setErroVisivel(true);
+      return;
+    }
+    if (!roleSelecionada || codigoRole == null) {
+      setMsgErro("Selecione a permissão do usuário.");
+      setErroVisivel(true);
       return;
     }
 
@@ -91,36 +96,30 @@ const CadastroFuncionarios = ({}) => {
     let idEnderecoCriado: number | null = null;
 
     try {
-      if (!nome.trim()) {
-        setErrorMessage("Por favor, informe o nome");
-        setVisible(true);
-        return;
+      if (!nome.trim()) throw new Error("Por favor, informe o nome!");
+      if (showEnderecoForm && !rua.trim()) {
+        throw new Error("Preencha o endereço ou feche o formulário.");
       }
 
-      if (!dadosEndereco) {
-        setErrorMessage(
-          "Por favor, cadastre o endereço antes de salvar o funcionário."
-        );
-        setVisible(true);
-        return;
+      if (showEnderecoForm) {
+        const { data: endIns, error: errEnd } = await supabase
+          .from("endereco")
+          .insert([
+            {
+              rua,
+              bairro,
+              cidade,
+              cep,
+              numero,
+              estado: estadoSelecionado,
+            },
+          ])
+          .select()
+          .single();
+
+        if (errEnd) throw errEnd;
+        idEnderecoCriado = endIns.id;
       }
-
-      if (!roleSelecionada) {
-        setErrorMessage("Por favor,selecione uma permissão do usuario.");
-        setVisible(true);
-        return;
-      }
-
-      const { data: enderecoInserido, error: erroEndereco } = await supabase
-        .from("endereco")
-        .insert(dadosEndereco)
-        .select();
-
-      if (erroEndereco || !enderecoInserido || enderecoInserido.length === 0) {
-        throw erroEndereco || new Error("Falha ao inserir endereço");
-      }
-
-      idEnderecoCriado = enderecoInserido[0].id;
 
       const { data: signUpData, error: signUpError } =
         await supabase.auth.signUp({
@@ -129,235 +128,247 @@ const CadastroFuncionarios = ({}) => {
           options: {
             data: {
               nome,
+              role_id: codigoRole,
             },
           },
         });
 
-      if (signUpError || !signUpData?.user) {
-        throw (
-          signUpError || new Error("Erro ao registrar usuário no Supabase Auth")
-        );
-      }
-
+      if (signUpError || !signUpData?.user) throw signUpError;
       const authUserId = signUpData.user.id;
-      const funcionarioData = {
+
+      const funcionario = {
         id: authUserId,
         nome,
         cpf: cpf || null,
         rg: rg || null,
-        data_nascimento: data || null,
+        data_nascimento: dataNasc || null,
         genero: genero || null,
-        estado_civil: EstadoCivil || null,
-        telefone: celular || null,
+        estado_civil: estadoCivil || null,
+        telefone: telefone || null,
         email: email || null,
         cargo: cargo || null,
         role_id: codigoRole,
+        endereco_id: idEnderecoCriado,
         data_criacao: new Date().toISOString(),
         ultima_atualizacao: new Date().toISOString(),
-        endereco_id: idEnderecoCriado,
       };
 
-      const { error: erroFuncionario } = await supabase
+      const { error: errFunc } = await supabase
         .from("funcionarios")
-        .insert(funcionarioData);
+        .insert(funcionario);
+      if (errFunc) throw errFunc;
 
-      if (erroFuncionario) {
-        throw erroFuncionario;
-      }
-
-      setMessage("Funcionário cadastrado com sucesso!");
-      setVisible(true);
-      navigation.navigate("Funcionarios", {
-        novoFuncionario: true,
-      });
-    } catch (error) {
-      if (idEnderecoCriado) {
+      setMsgSucesso("Funcionário cadastrado com sucesso!");
+      setSucessoVisivel(true);
+      navigation.navigate("Funcionarios", { novoFuncionario: true });
+    } catch (e: any) {
+      if (idEnderecoCriado)
         await supabase.from("endereco").delete().eq("id", idEnderecoCriado);
-      }
-
-      setErrorMessage(
-        "Erro ao salvar funcionário: " + (error as any)?.message ||
-          "desconhecido"
+      setMsgErro(
+        "Erro ao salvar funcionário: " + (e?.message ?? "desconhecido")
       );
-      setErroVisible(true);
+      setErroVisivel(true);
     } finally {
-      setTimeout(() => setIsLoading(false), 2000);
+      setIsLoading(false);
     }
-  }
+  };
 
-  useEffect(() => {
-    if (visible) {
-      const timer = setTimeout(() => {
-        setVisible(false);
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [visible]);
   return (
     <View style={styles.container}>
       <SidebarAlert
-        message={message}
-        visible={visible}
+        message={msgSucesso}
+        visible={sucessoVisivel}
         type="success"
-        onClose={() => setVisible(false)}
+        onClose={() => setSucessoVisivel(false)}
       />
       <ErrorSidebarAlert
-        message={erroMessage}
-        visible={erroVisible}
-        onClose={() => setErroVisible(false)}
-      /><Nav
-          titulo="Funcioario"
-          onBackPress={() => navigation.navigate("Funcionarios")}
-        />
+        message={msgErro}
+        visible={erroVisivel}
+        onClose={() => setErroVisivel(false)}
+      />
+
+      <Nav titulo="Funcionário" onBackPress={() => navigation.goBack()} />
+
       <ScrollView
         style={styles.scrollContainer}
         contentContainerStyle={styles.contentContainer}
       >
-        
-
         <View style={styles.formContainer}>
-          <View style={styles.inputItem}>
-            <InputCard
-              label="NOME COMPLETO"
-              placeholder="Complete Example Name"
-              tipo="string"
-              value={nome}
-              onChangeText={setNome}
-            />
-          </View>
-          <View style={styles.inputItem}>
-            <InputCard
-              label="CPF"
-              placeholder="123.456.789-09"
-              tipo="string"
-              value={cpf}
-              onChangeText={(text) => {
-                setCpf(formatCpf(text));
-              }}
-            />
-          </View>
-          <View style={styles.inputItem}>
-            <InputCard
-              label="RG"
-              placeholder="12.345.678"
-              tipo="string"
-              value={rg}
-              onChangeText={(text) => {
-                setRG(formatRg(text));
-              }}
-            />
-          </View>
-          <View style={styles.inputItem}>
+          <EditableTextCard
+            label="NOME"
+            placeholder="Nome Completo"
+            value={nome}
+            onChangeText={setNome}
+          />
+          <EditableTextCard
+            label="CPF"
+            placeholder="000.000.000-00"
+            tipo="number"
+            value={cpf}
+            onChangeText={(t) => setCpf(formatCpf(t))}
+          />
+          <EditableTextCard
+            label="RG"
+            placeholder="00.000.000-X"
+            value={rg}
+            tipo="number"
+            onChangeText={(t) => setRg(formatRg(t))}
+          />
+
+          <View style={{ width: "100%" }}>
             <Select
+              width="100%"
+              label="GÊNERO"
               value={genero}
               onChange={setGenero}
-              label="GÊNERO"
-              size="small"
             >
-              {generos.map((MF) => (
-                <MenuItem key={MF} value={MF}>
-                  {MF}
+              {generos.map((g) => (
+                <MenuItem key={g} value={g}>
+                  {g}
                 </MenuItem>
               ))}
             </Select>
           </View>
-          <View style={styles.inputItem}>
+
+          <View style={{ width: "100%" }}>
             <Select
-              value={EstadoCivil}
-              onChange={setEstadoCivil}
+              width="100%"
               label="ESTADO CIVIL"
-              size="small"
+              value={estadoCivil}
+              onChange={setEstadoCivil}
             >
-              {estadoCivil.map((CD) => (
-                <MenuItem key={CD} value={CD}>
-                  {CD}
+              {estadosCivis.map((e) => (
+                <MenuItem key={e} value={e}>
+                  {e}
                 </MenuItem>
               ))}
             </Select>
           </View>
-          <View style={styles.inputItem}>
+
+          {!showEnderecoForm ? (
             <Button
-              title="ENDEREÇO"
-              onPress={handleOpenEndereço}
-              variant="contained"
-              color="primary"
+              title="Endereço"
+              variant="outlined"
               type="dialog"
+              onPress={() => setShowEnderecoForm(true)}
             />
-          </View>
-          <View style={styles.inputItem}>
-            <InputCard
-              label="DATA DE NASCIMENTO"
-              placeholder="0000 / 00 /00"
-              tipo="string"
-              value={data}
-              onChangeText={(text) => {
-                setData(formatDate(text));
-              }}
-            />
-          </View>
-          <View style={styles.inputItem}>
-            <InputCard
-              label="EMAIL"
-              placeholder="example@email.com"
-              tipo="string"
-              value={email}
-              onChangeText={setEmail}
-            />
-          </View>
-          <View style={styles.inputItem}>
-            <InputCard
-              label="TELEFONE"
-              placeholder="(00) 00000-0000"
-              tipo="number"
-              value={celular}
-              onChangeText={(text) => {
-                setCelular(formatTelefone(text));
-              }}
-            />
-          </View>
-          <View style={styles.inputItem}>
-            <InputCard
-              label="FUNÇÃO"
-              placeholder="Example"
-              tipo="string"
-              value={cargo}
-              onChangeText={setCargo}
-            />
-          </View>
-          <View style={styles.inputItem}>
-            <Button
-              title="PERMISSÃO"
-              variant="contained"
-              color="primary"
-              type="dialog"
-              onPress={handleOpenRole}
-              disabled={!!roleSelecionada}
-            />
-            {roleSelecionada && (
-              <Selecionado
-                titulo={roleSelecionada}
-                onClear={() => setRoleSelecionada(null)}
+          ) : (
+            <View style={styles.addressBlock}>
+              <EditableTextCard
+                label="Logradouro"
+                value={rua}
+                placeholder="Rua/Avenida"
+                onChangeText={setRua}
               />
-            )}
-          </View>
-          <View style={styles.inputItem}>
-            <InputCard
-              label="SENHA"
-              placeholder="Digite sua senha"
-              tipo="password"
-              value={senha}
-              onChangeText={setSenha}
+              <EditableTextCard
+                label="Bairro"
+                value={bairro}
+                placeholder="Bairro"
+                onChangeText={setBairro}
+              />
+              <View style={styles.row}>
+                <EditableTextCard
+                  label="Número"
+                  placeholder="000"
+                  tipo="number"
+                  value={numero}
+                  width="48%"
+                  onChangeText={setNumero}
+                />
+                <EditableTextCard
+                  label="CEP"
+                  placeholder="00000‑000"
+                  tipo="number"
+                  value={cep}
+                  width="48%"
+                  onChangeText={setCep}
+                />
+              </View>
+              <EditableTextCard
+                label="Cidade"
+                value={cidade}
+                placeholder="Cidade"
+                onChangeText={setCidade}
+              />
+              <View style={{ width: "100%" }}>
+                <Select
+                  width="100%"
+                  label="Estado"
+                  value={estadoSelecionado}
+                  onChange={setEstadoSelecionado}
+                >
+                  {estadosBrasileiros.map((uf) => (
+                    <MenuItem key={uf} value={uf}>
+                      {uf}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </View>
+              <Button
+                title="Fechar endereço"
+                variant="outlined"
+                type="dialog"
+                onPress={() => setShowEnderecoForm(false)}
+              />
+            </View>
+          )}
+
+          <EditableTextCard
+            label="DATA DE NASCIMENTO"
+            placeholder="aaaa/mm/dd"
+            value={dataNasc}
+            tipo="number"
+            onChangeText={(t) => setDataNasc(formatDate(t))}
+          />
+          <EditableTextCard
+            label="EMAIL"
+            placeholder="email@exemplo.com"
+            value={email}
+            onChangeText={setEmail}
+          />
+          <EditableTextCard
+            label="TELEFONE"
+            placeholder="(00) 00000-0000"
+            tipo="number"
+            value={telefone}
+            onChangeText={(t) => setTelefone(formatTelefone(t))}
+          />
+          <EditableTextCard
+            label="FUNÇÃO"
+            placeholder="Ex: Gerente"
+            value={cargo}
+            onChangeText={setCargo}
+          />
+
+          <Button
+            title="Permissão"
+            variant="outlined"
+            type="dialog"
+            onPress={() => setShowRoleDialog(true)}
+            disabled={!!roleSelecionada}
+          />
+          {roleSelecionada && (
+            <Selecionado
+              titulo={roleSelecionada}
+              onClear={() => setRoleSelecionada(null)}
             />
-          </View>
-          <View style={styles.inputItem}>
-            <InputCard
-              label="CONFIRMAR SENHA"
-              placeholder="Confirme sua senha"
-              tipo="password"
-              value={confirmarSenha}
-              onChangeText={setConfirmarSenha}
-            />
-          </View>
+          )}
+
+          <EditableTextCard
+            label="SENHA"
+            placeholder="Digite a senha"
+            value={senha}
+            tipo="password"
+            onChangeText={setSenha}
+          />
+          <EditableTextCard
+            label="CONFIRMAR SENHA"
+            placeholder="Confirme a senha"
+            tipo="password"
+            value={confirmarSenha}
+            onChangeText={setConfirmarSenha}
+          />
+
           <Button
             title={isLoading ? "SALVANDO..." : "SALVAR"}
             variant="contained"
@@ -369,18 +380,16 @@ const CadastroFuncionarios = ({}) => {
         </View>
       </ScrollView>
 
-      {endereço && (
-        <DialogEndereço
-          onClose={handleCloseEndereço}
-          onSave={onPress}
-          visible={endereço}
-        />
-      )}
-      {role && (
+      {showRoleDialog && (
         <DialogRoles
-          onClose={handleCloseRole}
-          open={role}
-          onSelect={handleSelectRole}
+          open={showRoleDialog}
+          onClose={() => setShowRoleDialog(false)}
+          onSelect={(id, titulo) => {
+            setCodigoRole(id);
+            setRoleSelecionada(titulo);
+            setMsgSucesso("Permissão selecionada com sucesso!");
+            setSucessoVisivel(true);
+          }}
         />
       )}
     </View>
@@ -388,30 +397,36 @@ const CadastroFuncionarios = ({}) => {
 };
 
 const styles = StyleSheet.create({
-  scrollContainer: {
-    backgroundColor: "#ffffff",
+  container: {
+    flex: 1,
     width: "100%",
+    alignItems: "center",
+    backgroundColor: "#fff",
+  },
+  scrollContainer: {
     flexGrow: 1,
+    width: "100%",
+    backgroundColor: "#fff",
   },
   contentContainer: {
     alignItems: "center",
     paddingBottom: 32,
   },
-  container: {
-    width: "100%",
-    alignItems: "center",
-    backgroundColor: "#ffffff",
-    flex: 1,
-  },
   formContainer: {
     marginTop: 24,
     width: "100%",
+    paddingHorizontal: 20,
     alignItems: "center",
-    gap: 2,
+    gap: 4,
   },
-  inputItem: {
-    width: "90%",
-    maxWidth: 400,
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 10,
+  },
+  addressBlock: {
+    width: "100%",
+    alignItems: "center",
   },
 });
 

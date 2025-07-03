@@ -16,6 +16,7 @@ import {
 } from "@context/types";
 import ErrorSidebarAlert from "@components/sidebars/ErrorSidebarAlert";
 import { formatCnpj } from "@@core/format";
+import Nav from "@components/utilities/Nav";
 
 const Fornecedores = () => {
   const navigation =
@@ -109,10 +110,9 @@ const Fornecedores = () => {
         visible={erroAlertVisible}
         onClose={() => setErroAlertVisible(false)}
       />
-      <NavBar
-        title="Fornecedores"
-        backButton={false}
-        onBack={() => navigation.navigate("Homepage")}
+      <Nav
+        titulo="Fornecedor"
+        onBackPress={() => navigation.navigate("Homepage")}
       />
 
       <BarraAdd
@@ -120,15 +120,11 @@ const Fornecedores = () => {
       />
       <View style={{ paddingHorizontal: 10, paddingTop: 10 }}>
         <TextInput
-          placeholder="Buscar fornecedor"
+          placeholder="Buscar fornecedor por nome"
+          placeholderTextColor="#999"
           value={termoBusca}
           onChangeText={setTermoBusca}
-          style={{
-            borderWidth: 1,
-            borderColor: "#ffffff0",
-            borderRadius: 8,
-            padding: 10,
-          }}
+          style={styles.inputBusca}
         />
       </View>
       <ScrollView contentContainerStyle={{ padding: 10 }}>
@@ -150,11 +146,12 @@ const Fornecedores = () => {
                   id: item.id,
                   razao_social: item.razao_social,
                   email: item.email,
-                  cnpj: cnpjFormatado,
-                  nome_responsavel: item.nome_responsavel,
-                  ramo_de_atividade: item.ramo_de_atividade,
-                  telefone: item.telefone,
-                  chave_pix: item.chave_pix,
+                  cnpj: cnpjFormatado || "Não informado",
+                  nome_responsavel: item.nome_responsavel || "Não informado",
+                  ramo_de_atividade: item.ramo_de_atividade || "Não informado",
+                  telefone: item.telefone || "Não informado",
+                  chave_pix: item.chave_pix || "Não informado",
+                  endereco_id: item.endereco_id,
                   rua: enderecoDoFornecedor?.rua || "Não informado",
                   bairro: enderecoDoFornecedor?.bairro || "Não informado",
                   cidade: enderecoDoFornecedor?.cidade || "Não informado",
@@ -175,6 +172,21 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#ffffff",
+  },
+  barraBuscaContainer: {
+    paddingHorizontal: 15,
+    paddingTop: 10,
+  },
+
+  inputBusca: {
+    backgroundColor: "#f2f2f2",
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    fontSize: 16,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    color: "#333",
   },
 });
 

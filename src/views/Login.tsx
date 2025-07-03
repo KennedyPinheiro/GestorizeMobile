@@ -6,15 +6,13 @@ import {
   Keyboard,
   Text,
 } from "react-native";
-import InputCard from "@components/InputCard";
 import Button from "@components/botoes/Button";
 import Link from "@components/utilities/Link";
-import Linha from "@components/Linha";
-import PasswordInputCard from "@components/PasswordInpuCard";
 import LoginLogo from "@components/LoginLogo";
 import { supabase } from "@lib/supabase";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "@context/types";
+import EditableTextCard from "@components/EditableTextCard";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Login">;
 
@@ -78,20 +76,22 @@ const Login = ({ navigation }: Props) => {
           <View style={styles.spacerTop} />
           <LoginLogo />
           <View style={styles.section}>
-            <InputCard
+            <EditableTextCard
+              label="Email"
               tipo="string"
               placeholder="Example@mail.com"
               value={email}
               onChangeText={setemail}
             />
-            <InputCard
+            <EditableTextCard
+              label="Senha"
               tipo="password"
               placeholder="Senha"
               value={senha}
               onChangeText={setSenha}
             />
           </View>
-          <View style={[styles.linkSection, { marginTop: -10 }]}>
+          <View style={[styles.linkSection, ]}>
             <Link title="Esqueceu a Senha?" onPress={() => {}} />
           </View>
 

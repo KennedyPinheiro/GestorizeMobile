@@ -42,12 +42,14 @@ const Nav = ({
   return (
     <View style={styles.container}>
       <View style={styles.nav}>
-      <TouchableOpacity style={styles.leftIcon} onPress={onBackPress}>
+        <TouchableOpacity style={styles.leftIcon} onPress={onBackPress}>
           <Ionicons name="chevron-back" size={30} color="#fff" />
-          {showPessoaFisicaIcon && <PessoaFisicaIcon  />}
-          {showPessoaJuridicaIcon && <PessoaJuridicaIcon  />}
-          {showFornecedorIcon && <FornecedorIcon  />}
-          {showProdutoIcon && <ProdutoIcon  />}
+          {showPessoaFisicaIcon && <PessoaFisicaIcon size={40} iconSize={30} />}
+          {showPessoaJuridicaIcon && (
+            <PessoaJuridicaIcon size={40} iconSize={30} />
+          )}
+          {showFornecedorIcon && <FornecedorIcon size={40} iconSize={30} />}
+          {showProdutoIcon && <ProdutoIcon size={40} iconSize={30} />}
           {hasExtraIcon && <Text style={styles.tituloInline}>{titulo}</Text>}
         </TouchableOpacity>
 

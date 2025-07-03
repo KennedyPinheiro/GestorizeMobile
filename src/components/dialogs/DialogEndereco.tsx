@@ -13,7 +13,7 @@ import { formatCep } from "@@core/format";
 import ErrorSidebarAlert from "@components/sidebars/ErrorSidebarAlert";
 import { EnderecoType } from "@context/types";
 
-const estadosBrasileiros = [
+export const estadosBrasileiros = [
   "Acre",
   "Alagoas",
   "Amapá",

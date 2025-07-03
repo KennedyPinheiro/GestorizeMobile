@@ -52,28 +52,42 @@ const SidebarAlert = ({
   const currentConfig = alertConfig[type];
 
   useEffect(() => {
+    let timer: NodeJS.Timeout;
+  
     if (visible) {
       setIsVisible(true);
+  
       Animated.timing(slideAnim, {
         toValue: 0,
         duration: 500,
         useNativeDriver: true,
       }).start();
-
-      const timer = setTimeout(() => {
+  
+      timer = setTimeout(() => {
         Animated.timing(slideAnim, {
           toValue: Dimensions.get("window").width,
           duration: 500,
           useNativeDriver: true,
-        }).start(() => {
-          setIsVisible(false);
+        }).start();
+  
+        setTimeout(() => {
           if (onClose) onClose();
-        });
+          setIsVisible(false);
+        }, 500);
       }, duration);
-
-      return () => clearTimeout(timer);
+    } else {
+      Animated.timing(slideAnim, {
+        toValue: Dimensions.get("window").width,
+        duration: 300,
+        useNativeDriver: true,
+      }).start(() => {
+        setTimeout(() => setIsVisible(false), 50); 
+      });
     }
+  
+    return () => clearTimeout(timer);
   }, [visible]);
+  
 
   if (!isVisible) return null;
 

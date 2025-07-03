@@ -1,25 +1,55 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, ViewStyle } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-const ProdutoIcon = () => {
+type Props = {
+  color?: string;
+  style?: ViewStyle | ViewStyle[];
+  rounded?: boolean;
+  iconSize?: number;
+  size?: number;
+};
+
+const ProdutoIcon = ({
+  color = "#FFF",
+  style,
+  size = 50,
+  rounded = true,
+  iconSize = 45,
+}: Props) => {
   return (
-    <View style={styles.container}>
-      <MaterialCommunityIcons name="package-variant" size={45} color="#ffffff" />
+    <View
+      style={[
+        {
+          width: size,
+          height: size,
+          borderColor: color,
+        },
+        styles.container,
+        rounded ? styles.rounded : styles.squared,
+        style,
+      ]}
+    >
+      <MaterialCommunityIcons
+        name="package-variant"
+        size={iconSize}
+        color={color}
+      />
     </View>
   );
 };
+
 export default ProdutoIcon;
 
 const styles = StyleSheet.create({
   container: {
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 90,
-    width:50,
-    height:50,
     borderWidth: 1,
-    padding: 1,
-    borderColor:"#FFF"
-
+  },
+  rounded: {
+    borderRadius: 90,
+  },
+  squared: {
+    borderRadius: 5,
   },
 });

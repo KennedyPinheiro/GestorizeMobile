@@ -1,25 +1,55 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, ViewStyle } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-const PessoaFisicaIcon = () => {
+type Props = {
+  color?: string;
+  style?: ViewStyle | ViewStyle[];
+  rounded?: boolean;
+  iconSize?: number;
+  size?: number;
+};
+
+const PessoaJuridicaIcon = ({
+  color = "#FFF",
+  style,
+  size = 50,
+  rounded = true,
+  iconSize = 45,
+}: Props) => {
   return (
-    <View style={styles.container}>
-      <MaterialCommunityIcons name="account-group" size={30} color="#ffffff" />
+    <View
+      style={[
+        {
+          width: size,
+          height: size,
+          borderColor: color,
+        },
+        styles.container,
+        rounded ? styles.rounded : styles.squared,
+        style,
+      ]}
+    >
+      <MaterialCommunityIcons
+        name="account-group"
+        size={iconSize}
+        color={color}
+      />
     </View>
   );
 };
-export default PessoaFisicaIcon;
+
+export default PessoaJuridicaIcon;
 
 const styles = StyleSheet.create({
   container: {
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 90,
-    width:40,
-    height:40,
     borderWidth: 1,
-    padding: 1,
-    borderColor:"#FFF"
-
+  },
+  rounded: {
+    borderRadius: 90,
+  },
+  squared: {
+    borderRadius: 5,
   },
 });

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Modal,
   StyleSheet,
@@ -6,25 +6,34 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import InputCard from "@components/InputCard";
+import EditableTextCard from "@components/EditableTextCard";
 import Button from "@components/botoes/Button";
 import ErrorSidebarAlert from "@components/sidebars/ErrorSidebarAlert";
-import {  MedidaType } from "@context/types";
+import { MedidaType } from "@context/types";
 import { supabase } from "@lib/supabase";
 
-type Props = {
+interface Props {
   open: boolean;
   onClose: () => void;
   onSave: (medida: MedidaType) => void;
   disabled?: boolean;
-};
+}
 
-const DialogAdicionarMedida = ({ disabled, open, onClose, onSave }: Props) => {
+const DialogAdicionarMedida = ({ open, onClose, onSave, disabled }: Props) => {
   const [titulo, setTitulo] = useState("");
   const [erroVisible, setErroVisible] = useState(false);
-  const [errorMessage, setErroMessage] = useState("");
+  const [erroMessage, setErroMessage] = useState("");
+  const isFormValid = titulo.trim() !== "";
 
-  async function salverMedida() {
+  useEffect(() => {
+    if (!open) {
+      setTitulo("");
+      setErroVisible(false);
+      setErroMessage("");
+    }
+  }, [open]);
+
+  const salvarMedida = async () => {
     try {
       if (!titulo.trim()) {
         setErroMessage("Por favor, informe o nome da medida");
@@ -32,66 +41,56 @@ const DialogAdicionarMedida = ({ disabled, open, onClose, onSave }: Props) => {
         return;
       }
 
-      const medidaData = {
-        titulo,
-      };
-
       const { data, error } = await supabase
         .from("medidas")
-        .insert(medidaData)
-        .select();
+        .insert({ titulo })
+        .select()
+        .single();
 
       if (error) throw error;
 
-      onSave(data[0]);
-      setTitulo("");
-      setErroVisible(false);
+      onSave(data);
       onClose();
-    } catch (error) {
+    } catch (e: any) {
       setErroMessage(
-        "Erro ao salvar medida: " +
-          ((error as any)?.message || "Erro desconhecido")
+        "Erro ao salvar medida: " + (e?.message ?? "Erro desconhecido")
       );
       setErroVisible(true);
     }
-  }
+  };
 
   return (
-    <Modal
-      transparent
-      visible={open}
-      onRequestClose={onClose}
-      animationType="fade"
-    >
+    <Modal transparent visible={open} onRequestClose={onClose} animationType="fade">
       <TouchableWithoutFeedback onPress={onClose}>
         <View style={styles.overlay}>
-          <TouchableWithoutFeedback onPress={() => {}}>
-            <View style={styles.container}>
+          <TouchableWithoutFeedback>
+            <View style={styles.modal}>
               <ErrorSidebarAlert
                 visible={erroVisible}
+                message={erroMessage}
                 onClose={() => setErroVisible(false)}
-                message={errorMessage}
               />
 
               <View style={styles.header}>
                 <Text style={styles.title}>Adicionar Medida</Text>
               </View>
 
-              <View style={styles.content}>
-                <InputCard
-                  tipo="string"
+              <View style={styles.body}>
+                <EditableTextCard
+                  label="TÍTULO"
+                  placeholder="Digite o título da medida"
                   value={titulo}
                   onChangeText={setTitulo}
-                  onlyView={false}
-                  placeholder="Titulo da medida"
                 />
               </View>
 
-              <View style={styles.buttonContainer}>
+              <View style={styles.footer}>
                 <Button
-                  title="Adicionar"
-                  onPress={salverMedida}
-                  disabled={disabled}
+                  title="ADICIONAR"
+                  onPress={salvarMedida}
+                  disabled={disabled || !isFormValid}
+                  variant="contained"
+                  color="primary"
                 />
               </View>
             </View>
@@ -107,35 +106,36 @@ export default DialogAdicionarMedida;
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
+    backgroundColor: "rgba(0,0,0,0.4)",
     justifyContent: "center",
-    paddingHorizontal: 20,
+    paddingHorizontal: 24,
   },
-  container: {
-    backgroundColor: "white",
-    borderRadius: 10,
+  modal: {
+    backgroundColor: "#fff",
+    borderRadius: 12,
     overflow: "hidden",
     borderColor: "#062046",
     borderWidth: 3,
+    paddingBottom: 20,
   },
   header: {
     backgroundColor: "#062046",
-    width: "100%",
-    paddingVertical: 15,
+    paddingVertical: 16,
     paddingHorizontal: 20,
+    alignItems: "center",
   },
   title: {
-    fontSize: 25,
+    fontSize: 22,
     fontWeight: "bold",
-    textAlign: "center",
-    color: "#fff",
+    color: "#FFF",
   },
-  content: {
-    padding: 16,
-    gap: 2,
+  body: {
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    gap: 12,
   },
-  buttonContainer: {
-    marginBottom: 20,
+  footer: {
+    marginTop: 20,
     alignItems: "center",
   },
 });

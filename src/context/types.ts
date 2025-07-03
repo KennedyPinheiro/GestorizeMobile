@@ -8,15 +8,15 @@ export type ClienteType = {
 
 export type PessoaFisicaType = {
   id: number;
-    nome: string;
-    email: string;
-    telefone: string;
-    genero: string;
-    estado_civil: string;
-    data_nascimento: string;
-    rg: string;
-    cpf: string;
-    endereco_id:number
+  nome: string;
+  email: string;
+  telefone: string;
+  genero: string;
+  estado_civil: string;
+  data_nascimento: string;
+  rg: string;
+  cpf: string;
+  endereco_id: number;
 };
 
 export type PessoaJuridicatype = {
@@ -28,7 +28,7 @@ export type PessoaJuridicatype = {
   nome_do_responsavel: string;
   cpf_responsavel: string;
   cargo_do_representante: string;
-  endereco_id:number;
+  endereco_id: number;
   telefone: string;
 };
 
@@ -105,13 +105,14 @@ export type ProdutoTipo = {
   nome: string;
   categoria_id: number;
   quantidade: number;
-  medida_id: number | null;
+  medida_id: number;
   data_validade?: string;
   preco_custo?: number;
   data_de_entrada?: string;
   margem_lucro?: string;
-  fornecedor_id?: number;
+  fornecedor_id: number;
   descricao?: string;
+  medida_titulo?: string;
 };
 
 export type ProdutoType = {
@@ -137,8 +138,8 @@ export type RoleType = {
 
 export type RootStackParamList = {
   Login: undefined;
-  ResetPassword:undefined;
-  ForgoutPassword:undefined;
+  ResetPassword: undefined;
+  ForgoutPassword: undefined;
   Homepage: undefined;
   Funcionarios: { novoFuncionario: boolean } | undefined;
   Clientes: { novoCliente: boolean } | undefined;
@@ -153,15 +154,18 @@ export type RootStackParamList = {
     id: number;
     nome: string;
     quantidade: number;
-    medida: string;
     descricao?: string;
-    validade?: string;
-    entrada?: string;
-    custo?: string;
-    margem?: string;
-    fornecedor?: string;
-    categoria: string;
-    categoriaDescricao: string;
+    data_validade?: string;
+    data_de_entrada?: string;
+    preco_custo?: string | number;
+    margem_lucro?: string | number;
+    fornecedor_razao_social?: string;
+    categoria_titulo: string;
+    categoria_id: number;
+    fornecedor_id: number;
+    medida_id: number;
+    medida_titulo: string;
+   
   };
   PerfilFornecedor: {
     id: number;
@@ -178,6 +182,7 @@ export type RootStackParamList = {
     estado: string;
     cep: string;
     numero: string;
+    endereco_id: number;
   };
   PerfilPessoaJuridica: {
     id: number;
@@ -186,8 +191,8 @@ export type RootStackParamList = {
     nome_fantasia: string;
     cnpj: string;
     nome_do_responsavel: string;
-    cpf_do_responsavel: string;
-    cargo_do_responsavel: string;
+    cpf_responsavel: string;
+    cargo_do_respresentante: string;
     telefone: string;
     rua: string;
     bairro: string;
@@ -195,6 +200,7 @@ export type RootStackParamList = {
     estado: string;
     cep: string;
     numero: string;
+    endereco_id: number;
   };
   PerfilPessoaFisica: {
     id: number;
@@ -212,6 +218,7 @@ export type RootStackParamList = {
     estado: string;
     cep: string;
     numero: string;
+    endereco_id: number;
   };
   PerfilFuncionario: {
     id: string;
@@ -230,6 +237,7 @@ export type RootStackParamList = {
     estado: string;
     cep: string;
     numero: string;
+    endereco_id: number;
   };
   UserPerfil: {
     id: string;
@@ -242,7 +250,7 @@ export type RootStackParamList = {
     rg: string;
     cpf: string;
     telefone: string;
-    endereco_id:number
+    endereco_id: number;
     rua: string;
     bairro: string;
     cidade: string;

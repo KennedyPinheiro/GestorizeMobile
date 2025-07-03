@@ -50,7 +50,6 @@ const UserPerfil = () => {
     cpf,
     rua,
     bairro,
-    endereco_id,
     cidade,
     estado,
     cep,
@@ -58,7 +57,6 @@ const UserPerfil = () => {
   });
 
   const [originalData] = useState({
-    // valores originais
     nome,
     email,
     telefone,
@@ -76,7 +74,7 @@ const UserPerfil = () => {
   });
 
   const [botaoHabilitado, setBotaoHabilitado] = useState(false);
-
+  const primeiroNome = nome.split(" ")[0];
   useEffect(() => {
     const houveMudanca = Object.entries(formData).some(
       ([campo, valor]) =>
@@ -86,21 +84,21 @@ const UserPerfil = () => {
   }, [formData, originalData]);
 
   useEffect(() => {
-    const canal = supabase.channel('user-profile-listener');
-  
+    const canal = supabase.channel("user-profile-listener");
+
     if (id) {
       canal
         .on(
-          'postgres_changes',
+          "postgres_changes",
           {
-            event: 'UPDATE',
-            schema: 'public',
-            table: 'funcionarios',
+            event: "UPDATE",
+            schema: "public",
+            table: "funcionarios",
             filter: `id=eq.${id}`,
           },
           async (payload) => {
             const dados = payload.new;
-  
+
             setFormData((prev) => ({
               ...prev,
               telefone: dados.telefone ?? prev.telefone,
@@ -113,16 +111,16 @@ const UserPerfil = () => {
           }
         )
         .on(
-          'postgres_changes',
+          "postgres_changes",
           {
-            event: 'UPDATE',
-            schema: 'public',
-            table: 'endereco',
+            event: "UPDATE",
+            schema: "public",
+            table: "endereco",
             filter: `id=eq.${endereco_id}`,
           },
           async (payload) => {
             const dados = payload.new;
-  
+
             setFormData((prev) => ({
               ...prev,
               rua: dados.rua ?? prev.rua,
@@ -134,93 +132,33 @@ const UserPerfil = () => {
             }));
           }
         );
-  
+
       canal.subscribe();
     }
-  
+
     return () => {
       supabase.removeChannel(canal);
     };
   }, [id, endereco_id]);
-  
+
   const updateCampoUsuario = async (
     campo: string,
     valor: string,
     funcionarioId: string,
     enderecoId?: number
   ) => {
-    const camposFuncionario = [
-      "nome",
-      "email",
-      "cpf",
-      "rg",
-      "data_nascimento",
-      "genero",
-      "estado_civil",
-      "telefone",
-      "cargo",
-    ];
-    const camposEndereco = [
-      "rua",
-      "bairro",
-      "cidade",
-      "estado",
-      "numero",
-      "cep",
-    ];
-    const { data, error } = await supabase
-      .from("users")
-      .select("*")
-      .eq("id", funcionarioId);
-    console.log(data);
+    const campoTable =
+      campo === "nome" || campo === "email" ? "users" : "funcionarios";
+    const { error } = await supabase
+      .from(campoTable)
+      .update({ [campo]: valor, ultima_atualizacao: new Date() })
+      .eq("id", campoTable === "users" ? funcionarioId : enderecoId);
 
-    try {
-      if (camposFuncionario.includes(campo)) {
-        const { error: funcionarioError } = await supabase
-          .from("funcionarios")
-          .update({ [campo]: valor, ultima_atualizacao: new Date() })
-          .eq("id", funcionarioId);
-
-        if (funcionarioError) {
-          console.error(
-            `Erro ao atualizar ${campo} na tabela funcionarios:`,
-            funcionarioError.message
-          );
-        }
-
-        if (campo === "nome" || campo === "email") {
-          const { error: userError } = await supabase
-            .from("users")
-            .update({ [campo]: valor })
-            .eq("id", funcionarioId);
-
-          if (userError) {
-            console.error(
-              `Erro ao atualizar ${campo} na tabela users:`,
-              userError.message
-            );
-          }
-        }
-      } else if (camposEndereco.includes(campo)) {
-        if (!enderecoId) {
-          console.error("Endereço não encontrado.");
-          return;
-        }
-
-        const { error } = await supabase
-          .from("endereco")
-          .update({ [campo]: valor })
-          .eq("id", enderecoId);
-
-        if (error) {
-          console.error(
-            `Erro ao atualizar ${campo} na tabela endereco:`,
-            error.message
-          );
-        }
-      }
-    } catch (err) {
-      console.error(`Erro inesperado ao atualizar ${campo}:`, err);
+    if (error) {
+      console.error(
+        `Erro ao atualizar ${campo} na tabela ${campoTable}:`,
+        error.message
+      );
     }
   };
 
@@ -237,7 +175,7 @@ const UserPerfil = () => {
         onClose={() => setAlertVisible(false)}
       />
       <Nav
-        titulo={nome}
+        titulo={primeiroNome}
         onBackPress={() => navigation.goBack()}
         showPessoaFisicaIcon
       />
@@ -293,7 +231,7 @@ const UserPerfil = () => {
           onChangeText={(text) => handleChange("cpf", text)}
         />
         {!showEndereco ? (
-          <View style={{ marginBottom: 70 }}>
+          <View style={{ marginBottom: 30 }}>
             <Button
               variant="outlined"
               type="dialog"
@@ -302,7 +240,7 @@ const UserPerfil = () => {
             />
           </View>
         ) : (
-          <View style={{ marginBottom: 70 }}>
+          <View style={{ marginBottom: 30 }}>
             <EditableTextCard
               label="Logradouro"
               value={formData.rua}
@@ -337,31 +275,39 @@ const UserPerfil = () => {
               value={formData.estado}
               onChangeText={(text) => handleChange("estado", text)}
             />
+            <Button
+              variant="outlined"
+              type="dialog"
+              title="Fechar"
+              onPress={() => setShowEndereco(false)}
+            />
           </View>
         )}
-        <View style={{ marginBottom: 40 }}>
-          <Button
-            title="Salvar"
-            type="dialog"
-            disabled={!botaoHabilitado}
-            onPress={async () => {
-              const campos = Object.entries(formData);
-              const promises = [];
+        <View style={{ marginBottom: 40 , paddingHorizontal: 30}}>
+          <View style={{ flex: 1, paddingHorizontal: 50 }}>
+            <Button
+              title="Salvar"
+              type="dialog"
+              disabled={!botaoHabilitado}
+              onPress={async () => {
+                const campos = Object.entries(formData);
+                const promises = [];
 
-              for (const [campo, valor] of campos) {
-                if (String(valor).trim() !== "Não informado") {
-                  promises.push(
-                    updateCampoUsuario(campo, String(valor), id, endereco_id)
-                  );
+                for (const [campo, valor] of campos) {
+                  if (String(valor).trim() !== "Não informado") {
+                    promises.push(
+                      updateCampoUsuario(campo, String(valor), id, endereco_id)
+                    );
+                  }
                 }
-              }
 
-              await Promise.all(promises);
+                await Promise.all(promises);
 
-              setBotaoHabilitado(false);
-              setAlertVisible(true);
-            }}
-          />
+                setBotaoHabilitado(false);
+                setAlertVisible(true);
+              }}
+            />
+          </View>
         </View>
       </ScrollView>
     </View>

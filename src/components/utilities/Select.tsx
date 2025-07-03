@@ -8,6 +8,7 @@ import {
   Modal,
   ScrollView,
   TouchableWithoutFeedback,
+  DimensionValue,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 
@@ -16,8 +17,8 @@ type SelectProps = {
   onChange: (value: string) => void;
   label?: string;
   placeholder?: string;
-  size?: "small" | "medium";
   children: React.ReactNode;
+  width?: DimensionValue;
 };
 
 type MenuItemProps = {
@@ -31,10 +32,10 @@ const { height } = Dimensions.get("window");
 const Select = ({
   value,
   onChange,
-  label = "Selecione",
-  placeholder = "Selecione...",
-  size = "medium",
+  label = "Campo",
+  placeholder = "Selecionar...",
   children,
+  width = "100%",
 }: SelectProps) => {
   const [visible, setVisible] = useState(false);
 
@@ -42,6 +43,7 @@ const Select = ({
     (child): child is React.ReactElement<MenuItemProps> =>
       React.isValidElement<MenuItemProps>(child) && child.props.value === value
   );
+
   const handleSelect = (val: string) => {
     onChange(val);
     setVisible(false);
@@ -57,84 +59,74 @@ const Select = ({
       return null;
     });
 
+  const isEmpty = !value;
+
   return (
-    <View style={styles.container}>
-      {label && <Text style={styles.label}>{label}</Text>}
-
-      <TouchableOpacity
-        style={[
-          styles.selectBox,
-          size === "small" && { height: height * 0.06 },
-        ]}
-        onPress={() => setVisible(true)}
-      >
-        <Text style={[styles.selectText, !value && styles.placeholder]}>
-          {selectedLabel?.props?.children || placeholder}
-        </Text>
-        <MaterialIcons
-          name="keyboard-arrow-down"
-          size={24}
-          color="#fff"
-          style={styles.icon}
-        />
-      </TouchableOpacity>
-
-      <Modal
-        transparent
-        visible={visible}
-        animationType="fade"
-        onRequestClose={() => setVisible(false)}
-      >
-        <TouchableWithoutFeedback onPress={() => setVisible(false)}>
-          <View style={styles.overlay}>
-            <TouchableWithoutFeedback>
-              <View style={styles.modalContent}>
-                <ScrollView>{renderChildren()}</ScrollView>
-              </View>
-            </TouchableWithoutFeedback>
+    <TouchableOpacity onPress={() => setVisible(true)} activeOpacity={0.7}>
+      <View style={[styles.container, { width }]}>
+        <View style={styles.textContainer}>
+          <View>
+            <Text style={styles.label}>{label}</Text>
+            <Text style={[styles.valueText, isEmpty && styles.placeholderText]}>
+              {value || placeholder}
+              
+            </Text>
           </View>
-        </TouchableWithoutFeedback>
-      </Modal>
-    </View>
+          <MaterialIcons name="arrow-drop-down" size={28} color="#666" />
+        </View>
+
+        <Modal
+          transparent
+          visible={visible}
+          animationType="fade"
+          onRequestClose={() => setVisible(false)}
+        >
+          
+          <TouchableWithoutFeedback onPress={() => setVisible(false)}>
+            <View style={styles.overlay}>
+              <TouchableWithoutFeedback>
+                <View style={styles.modalContent}>
+                  <ScrollView>{renderChildren()}</ScrollView>
+                </View>
+              </TouchableWithoutFeedback>
+            </View>
+          </TouchableWithoutFeedback>
+        </Modal>
+      </View>
+    </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    width: "100%",
-    maxWidth: "110%",
-    height: height * 0.08,
-    backgroundColor: "#7294CA",
-    paddingHorizontal: 20,
-    paddingVertical: 8,
+    borderWidth: 1,
+    borderColor: "#000",
     borderRadius: 15,
-    marginBottom: 15,
-    justifyContent: "center",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    marginVertical: 10,
+    backgroundColor: "#fff",
   },
   label: {
-    fontSize: 14,
-    color: "#0f3164",
-    fontWeight: "600",
-    marginTop: 5,
+    fontSize: 13,
+    color: "#6e6e6e",
+    fontWeight: "bold",
+    marginBottom: 5,
   },
-  selectBox: {
+  textContainer: {
     flexDirection: "row",
-    alignItems: "center",
     justifyContent: "space-between",
+    alignItems: "center",
   },
-  selectText: {
+  valueText: {
     fontSize: 20,
     fontWeight: "bold",
-    textAlign: "center",
-    color: "#fff",
+    color: "#111",
     flex: 1,
   },
-  placeholder: {
-    marginTop: -10,
-    color: "#cccccc9d",
-  },
-  icon: {
-    marginLeft: 10,
+  placeholderText: {
+    color: "#999",
+    fontWeight: "normal",
   },
   overlay: {
     flex: 1,

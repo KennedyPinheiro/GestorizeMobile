@@ -135,7 +135,7 @@ const Produtos = () => {
   useEffect(() => {
     const delay = setTimeout(() => {
       buscarProduto(termoBusca);
-    }, 400); 
+    }, 400);
 
     return () => clearTimeout(delay);
   }, [termoBusca]);
@@ -161,15 +161,11 @@ const Produtos = () => {
       <BarraAdd onPressAdd={() => navigation.navigate("CadastroProdutos")} />
       <View style={{ paddingHorizontal: 10, paddingTop: 10 }}>
         <TextInput
-          placeholder="Buscar produto"
+          placeholder="Buscar produto por nome"
+          placeholderTextColor="#999"
           value={termoBusca}
           onChangeText={setTermoBusca}
-          style={{
-            borderWidth: 1,
-            borderColor: "#ffffff0",
-            borderRadius: 8,
-            padding: 10,
-          }}
+          style={styles.inputBusca}
         />
       </View>
       <ScrollView contentContainerStyle={{ padding: 10 }}>
@@ -177,10 +173,6 @@ const Produtos = () => {
           const categoriaEncontrada = tituloCategoria.find(
             (cat) => cat.id === item.categoria_id
           );
-
-          const titulo = categoriaEncontrada
-            ? categoriaEncontrada.titulo
-            : "Sem Categoria";
 
           const medidaEncontrada = tituloMedida.find(
             (medida) => medida.id === item.medida_id
@@ -193,7 +185,7 @@ const Produtos = () => {
             <Produto
               key={item.id}
               nome={item.nome}
-              categoria={titulo}
+              categoria={categoriaEncontrada?.titulo}
               quantidade={item.quantidade}
               medida={medidaFormatada}
               onPress={() => {
@@ -205,19 +197,17 @@ const Produtos = () => {
                   id: item.id,
                   nome: item.nome,
                   quantidade: item.quantidade ?? 0,
-                  medida: medidaFormatada ?? "UNIDADE",
-                  categoria: titulo,
-                  descricao: item.descricao ?? "Sem Descrição",
-                  validade: item.data_validade ?? "0000 / 00 / 00",
-                  custo: item.preco_custo
-                    ? `R$ ${item.preco_custo.toFixed(2)}`
-                    : "R$ 000,00",
-                  entrada: item.data_de_entrada ?? "0000 / 00 / 00",
-                  margem: item.margem_lucro ? `${item.margem_lucro} %` : "00 %",
-                  fornecedor:
-                    fornecedorEncontrado?.razao_social ?? "Sem Fornecedor",
-                  categoriaDescricao:
-                    categoriaEncontrada?.descricao ?? "Sem Descrição",
+                  medida_id: item.medida_id,
+                  medida_titulo: medidaEncontrada?.titulo ?? "Não Informado",
+                  categoria_titulo: categoriaEncontrada?.titulo ?? "Não Informado",
+                  descricao: item.descricao ?? "",
+                  data_validade: item.data_validade,
+                  preco_custo: item.preco_custo ?? 0,
+                  data_de_entrada: item.data_de_entrada ,
+                  categoria_id: item.categoria_id,
+                  margem_lucro: item.margem_lucro ?? 0,
+                  fornecedor_razao_social: fornecedorEncontrado?.razao_social ?? "Não Informado",
+                  fornecedor_id: item.fornecedor_id,
                 });
               }}
             />
@@ -232,6 +222,21 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#ffffff",
+  },
+  barraBuscaContainer: {
+    paddingHorizontal: 15,
+    paddingTop: 10,
+  },
+
+  inputBusca: {
+    backgroundColor: "#f2f2f2",
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    fontSize: 16,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    color: "#333",
   },
 });
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, TextInput, View } from "react-native";
 import NavBar from "@components/utilities/NavBar";
 import BarraAdd from "@components/utilities/BarraAdd";
 import {
@@ -30,6 +30,7 @@ const Funcionarios = () => {
   const isFocused = useIsFocused();
   const [funcionario, setFuncionario] = useState<FuncionarioTipo[]>([]);
   const [endereco, setEndereco] = useState<EnderecoTipo[]>([]);
+  const [termoBusca, setTermoBusca] = useState("");
 
   const buscarEndereco = async () => {
     const { data, error } = await supabase
@@ -58,6 +59,22 @@ const Funcionarios = () => {
       setFuncionario(data || []);
     }
   };
+  const buscarFuncionarioFiltrado = async (termo: string) => {
+    const { data, error } = await supabase
+      .from("funcionarios")
+      .select(
+        "id, nome, cargo, email, data_nascimento, genero, estado_civil, telefone ,endereco_id,rg, cpf"
+      )
+      .ilike("nome", `%${termo}%`)
+      .order("nome", { ascending: true });
+
+    if (error) {
+      setErroMessage(`Erro ao buscar funcionario: ${error.message}`);
+      setErroAlertVisible(true);
+    } else {
+      setFuncionario(data || []);
+    }
+  };
   useEffect(() => {
     if (isFocused) {
       buscarFuncionario();
@@ -71,6 +88,17 @@ const Funcionarios = () => {
       }
     }
   }, [isFocused]);
+  useEffect(() => {
+    const delayDebounce = setTimeout(() => {
+      if (termoBusca.trim() === "") {
+        buscarFuncionario();
+      } else {
+        buscarFuncionarioFiltrado(termoBusca);
+      }
+    }, 400);
+
+    return () => clearTimeout(delayDebounce);
+  }, [termoBusca]);
   return (
     <View style={styles.container}>
       <SidebarAlert
@@ -92,6 +120,15 @@ const Funcionarios = () => {
       <BarraAdd
         onPressAdd={() => navigation.navigate("CadastroFuncionarios")}
       />
+      <View style={styles.barraBuscaContainer}>
+       <TextInput
+                placeholder="Buscar funcionario por nome"
+                placeholderTextColor="#999"
+                value={termoBusca}
+                onChangeText={setTermoBusca}
+                style={styles.inputBusca}
+              />
+      </View>
       <ScrollView contentContainerStyle={{ padding: 10 }}>
         {funcionario.map((item) => {
           const enderecoDoFuncionario = endereco.find(
@@ -121,6 +158,7 @@ const Funcionarios = () => {
                   estado: enderecoDoFuncionario?.estado || "Não informado",
                   cep: enderecoDoFuncionario?.cep || "Não informado",
                   numero: enderecoDoFuncionario?.numero || "Não informado",
+                  endereco_id: item.endereco_id,
                 });
               }}
             />
@@ -136,6 +174,22 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#ffffff",
   },
+  barraBuscaContainer: {
+    paddingHorizontal: 15,
+    paddingTop: 10,
+  },
+  
+  inputBusca: {
+    backgroundColor: "#f2f2f2",
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    fontSize: 16,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    color: "#333",
+  },
+
 });
 
 export default Funcionarios;

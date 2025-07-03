@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View, ScrollView, TextInput } from "react-native";
-import NavBar from "@components/utilities/NavBar";
 import BarraAdd from "@components/utilities/BarraAdd";
 import DialogSelecione from "@components/dialogs/DialogSelecione";
 import Cliente from "@components/ui-lists/Cliente";
@@ -17,6 +16,7 @@ import {
   RootStackParamList,
 } from "@context/types";
 import ErrorSidebarAlert from "@components/sidebars/ErrorSidebarAlert";
+import Nav from "@components/utilities/Nav";
 
 const Clientes = () => {
   const navigation =
@@ -79,13 +79,13 @@ const Clientes = () => {
         "id, nome, email, data_nascimento, cpf, rg, estado_civil, endereco_id, genero, telefone"
       )
       .order("id", { ascending: false });
-  
+
     if (termo.trim() !== "") {
       query = query.ilike("nome", `%${termo}%`);
     }
-  
+
     const { data, error } = await query;
-  
+
     if (error) {
       setErroMessage(`Erro ao buscar clientes PF: ${error.message}`);
       setErroAlertVisible(true);
@@ -101,13 +101,13 @@ const Clientes = () => {
         "id, razao_social, email, nome_fantasia, nome_do_responsavel, cnpj, cpf_responsavel, cargo_do_representante, endereco_id, telefone"
       )
       .order("id", { ascending: false });
-  
+
     if (termo.trim() !== "") {
       query = query.ilike("razao_social", `%${termo}%`);
     }
-  
+
     const { data, error } = await query;
-  
+
     if (error) {
       setErroMessage(`Erro ao buscar clientes PJ: ${error.message}`);
       setErroAlertVisible(true);
@@ -135,8 +135,8 @@ const Clientes = () => {
     const delayDebounce = setTimeout(() => {
       buscarClientesPF(termoBusca);
       buscarClientesPJ(termoBusca);
-    }, 400); // Debounce de 400ms
-  
+    }, 400);
+
     return () => clearTimeout(delayDebounce);
   }, [termoBusca]);
 
@@ -153,23 +153,18 @@ const Clientes = () => {
         visible={erroAlertVisible}
         onClose={() => setErroAlertVisible(false)}
       />
-      <NavBar
-        title="Clientes"
-        backButton={false}
-        onBack={() => navigation.navigate("Homepage")}
+      <Nav
+        titulo="Clientes"
+        onBackPress={() => navigation.navigate("Homepage")}
       />
       <BarraAdd onPressAdd={() => setShowDialog(true)} />
-      <View style={{ paddingHorizontal: 10, paddingTop: 10 }}>
+      <View style={styles.barraBuscaContainer}>
         <TextInput
-          placeholder="Buscar cliente"
+          placeholder="Buscar cliente por nome ou razão social"
+          placeholderTextColor="#999"
           value={termoBusca}
-          onChangeText={(text) => setTermoBusca(text)}
-          style={{
-            borderWidth: 1,
-            borderColor: "#ffffff0",
-            borderRadius: 8,
-            padding: 10,
-          }}
+          onChangeText={setTermoBusca}
+          style={styles.inputBusca}
         />
       </View>
 
@@ -205,12 +200,15 @@ const Clientes = () => {
                     id: cliente.pessoa_fisica.id,
                     nome: cliente.pessoa_fisica.nome,
                     email: cliente.pessoa_fisica.email,
-                    telefone: cliente.pessoa_fisica.telefone,
-                    genero: cliente.pessoa_fisica.telefone,
-                    estado_civil: cliente.pessoa_fisica.estado_civil,
-                    data_nascimento: cliente.pessoa_fisica.data_nascimento,
-                    rg: cliente.pessoa_fisica.rg,
-                    cpf: cliente.pessoa_fisica.cpf,
+                    telefone: cliente.pessoa_fisica.telefone || "Não informado",
+                    genero: cliente.pessoa_fisica.telefone || "Não informado",
+                    estado_civil:
+                      cliente.pessoa_fisica.estado_civil || "Não informado",
+                    data_nascimento:
+                      cliente.pessoa_fisica.data_nascimento || "Não informado",
+                    rg: cliente.pessoa_fisica.rg || "Não informado",
+                    cpf: cliente.pessoa_fisica.cpf || "Não informado",
+                    endereco_id: cliente.pessoa_fisica.endereco_id,
                     rua: enderecoCliente?.rua || "Não informado",
                     bairro: enderecoCliente?.bairro || "Não informado",
                     cidade: enderecoCliente?.cidade || "Não informado",
@@ -222,15 +220,22 @@ const Clientes = () => {
                   navigation.navigate("PerfilPessoaJuridica", {
                     id: cliente.pessoa_juridica.id,
                     razao_social: cliente.pessoa_juridica.razao_social,
-                    nome_fantasia: cliente.pessoa_juridica.nome_fantasia,
-                    email: cliente.pessoa_juridica.email,
-                    cnpj: cliente.pessoa_juridica.cnpj,
+                    nome_fantasia:
+                      cliente.pessoa_juridica.nome_fantasia || "Não informado",
+                    email: cliente.pessoa_juridica.email || "Não informado",
+                    cnpj: cliente.pessoa_juridica.cnpj || "Não informado",
                     nome_do_responsavel:
-                      cliente.pessoa_juridica.nome_do_responsavel,
-                    cpf_do_responsavel: cliente.pessoa_juridica.cpf_responsavel,
-                    cargo_do_responsavel:
-                      cliente.pessoa_juridica.cargo_do_representante,
-                    telefone: cliente.pessoa_juridica.telefone,
+                      cliente.pessoa_juridica.nome_do_responsavel ||
+                      "Não informado",
+                    cpf_responsavel:
+                      cliente.pessoa_juridica.cpf_responsavel ||
+                      "Não informado",
+                    cargo_do_respresentante:
+                      cliente.pessoa_juridica.cargo_do_representante ||
+                      "Não informado",
+                    telefone:
+                      cliente.pessoa_juridica.telefone || "Não informado",
+                    endereco_id: cliente.pessoa_juridica?.endereco_id ?? null,
                     rua: enderecoCliente?.rua || "Não informado",
                     bairro: enderecoCliente?.bairro || "Não informado",
                     cidade: enderecoCliente?.cidade || "Não informado",
@@ -267,6 +272,21 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#ffffff",
+  },
+  barraBuscaContainer: {
+    paddingHorizontal: 15,
+    paddingTop: 10,
+  },
+  
+  inputBusca: {
+    backgroundColor: "#f2f2f2",
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    fontSize: 16,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    color: "#333",
   },
 });
 

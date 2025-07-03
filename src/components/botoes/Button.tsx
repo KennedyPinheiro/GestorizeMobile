@@ -9,7 +9,7 @@ import {
 
 type ButtonProps = {
   title?: string;
-  variant?: "contained" | "outlined";
+  variant?: "contained" | "outlined" | "delete";
   color?: "primary" | "secondary";
   onPress?: (event: GestureResponderEvent) => void;
   disabled?: boolean;
@@ -25,13 +25,15 @@ const Button = ({
   type = "submit",
 }: ButtonProps) => {
   const isOutlined = variant === "outlined";
+  const isDelete = variant === "delete";
 
-  const backgroundColor =
-    !isOutlined
-      ? color === "primary"
-        ? "#26579E"
-        : "#888"
-      : "transparent";
+  const backgroundColor = isDelete
+    ? "#FF4C4C" 
+    : !isOutlined
+    ? color === "primary"
+      ? "#26579E"
+      : "#888"
+    : "transparent";
 
   const borderColor = isOutlined
     ? color === "primary"
@@ -39,7 +41,9 @@ const Button = ({
       : "#888"
     : "transparent";
 
-  const textColor = !isOutlined
+  const textColor = isDelete
+    ? "#000" 
+    : !isOutlined
     ? "#fff"
     : color === "primary"
     ? "#26579E"
@@ -63,6 +67,7 @@ const Button = ({
       backgroundColor: disabled ? "#ccc" : backgroundColor,
       borderColor,
       borderWidth: isOutlined ? 2 : 0,
+      marginBottom: isOutlined ? 0 : 15,
     },
   ];
 
@@ -86,7 +91,6 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderRadius: 25,
-    marginBottom: 15,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -104,3 +108,4 @@ const styles = StyleSheet.create({
 });
 
 export default Button;
+

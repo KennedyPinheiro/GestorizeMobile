@@ -12,7 +12,10 @@ export function formatDate(texto: string): string {
   if (limitado.length <= 6)
     return `${limitado.slice(0, 4)}/${limitado.slice(4)}`;
 
-  return `${limitado.slice(0, 4)}/${limitado.slice(4, 6)}/${limitado.slice(6)}`;
+  return `${limitado.slice(0, 4)}/${limitado.slice(4, 6)}/${limitado.slice(
+    6,
+    8
+  )}`;
 }
 
 export const formatToIsoDate = (data: string): StringfiedDate => {

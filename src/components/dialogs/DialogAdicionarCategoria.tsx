@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Modal,
   StyleSheet,
@@ -6,7 +6,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import InputCard from "@components/InputCard";
+import EditableTextCard from "@components/EditableTextCard";
 import Button from "@components/botoes/Button";
 import ErrorSidebarAlert from "@components/sidebars/ErrorSidebarAlert";
 import { CategoriaType } from "@context/types";
@@ -15,22 +15,31 @@ import { supabase } from "@lib/supabase";
 type Props = {
   open: boolean;
   onClose: () => void;
-  onSave: (categiria: CategoriaType) => void;
+  onSave: (categoria: CategoriaType) => void;
   disabled?: boolean;
 };
 
 const DialogAdicionarCategoria = ({
-  disabled,
   open,
   onClose,
   onSave,
+  disabled,
 }: Props) => {
   const [titulo, setTitulo] = useState("");
   const [descricao, setDescricao] = useState("");
   const [erroVisible, setErroVisible] = useState(false);
-  const [errorMessage, setErroMessage] = useState("");
+  const [erroMessage, setErroMessage] = useState("");
 
-  async function salvarCategoria() {
+  useEffect(() => {
+    if (!open) {
+      setTitulo("");
+      setDescricao("");
+      setErroVisible(false);
+      setErroMessage("");
+    }
+  }, [open]);
+
+  const salvarCategoria = async () => {
     try {
       if (!titulo.trim()) {
         setErroMessage("Por favor, informe o nome da categoria");
@@ -38,31 +47,23 @@ const DialogAdicionarCategoria = ({
         return;
       }
 
-      const categoriaData = {
-        titulo,
-        descricao,
-      };
-
       const { data, error } = await supabase
         .from("categorias")
-        .insert(categoriaData)
-        .select();
+        .insert({ titulo, descricao })
+        .select()
+        .single();
 
       if (error) throw error;
 
-      onSave(data[0]); 
-      setTitulo("");
-      setDescricao("");
-      setErroVisible(false);
+      onSave(data);
       onClose();
-    } catch (error) {
+    } catch (error: any) {
       setErroMessage(
-        "Erro ao salvar categoria: " +
-          ((error as any)?.message || "Erro desconhecido")
+        "Erro ao salvar categoria: " + (error?.message || "Erro desconhecido")
       );
       setErroVisible(true);
     }
-  }
+  };
 
   return (
     <Modal
@@ -73,40 +74,40 @@ const DialogAdicionarCategoria = ({
     >
       <TouchableWithoutFeedback onPress={onClose}>
         <View style={styles.overlay}>
-          <TouchableWithoutFeedback onPress={() => {}}>
-            <View style={styles.container}>
+          <TouchableWithoutFeedback>
+            <View style={styles.modal}>
               <ErrorSidebarAlert
                 visible={erroVisible}
+                message={erroMessage}
                 onClose={() => setErroVisible(false)}
-                message={errorMessage}
               />
 
               <View style={styles.header}>
                 <Text style={styles.title}>Adicionar Categoria</Text>
               </View>
 
-              <View style={styles.content}>
-                <InputCard
-                  tipo="string"
+              <View style={styles.body}>
+                <EditableTextCard
+                  label="TÍTULO"
+                  placeholder="Digite o título da categoria"
                   value={titulo}
                   onChangeText={setTitulo}
-                  onlyView={false}
-                  placeholder="Titulo da categoria"
                 />
-                <InputCard
-                  tipo="string"
+                <EditableTextCard
+                  label="DESCRIÇÃO"
+                  placeholder="Descrição opcional"
                   value={descricao}
                   onChangeText={setDescricao}
-                  onlyView={false}
-                  placeholder="Descrição"
                 />
               </View>
 
-              <View style={styles.buttonContainer}>
+              <View style={styles.footer}>
                 <Button
-                  title="Adicionar"
+                  title="ADICIONAR"
                   onPress={salvarCategoria}
                   disabled={disabled}
+                  variant="contained"
+                  color="primary"
                 />
               </View>
             </View>
@@ -122,35 +123,36 @@ export default DialogAdicionarCategoria;
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
+    backgroundColor: "rgba(0,0,0,0.4)",
     justifyContent: "center",
-    paddingHorizontal: 20,
+    paddingHorizontal: 24,
   },
-  container: {
-    backgroundColor: "white",
-    borderRadius: 10,
+  modal: {
+    backgroundColor: "#fff",
+    borderRadius: 12,
     overflow: "hidden",
     borderColor: "#062046",
     borderWidth: 3,
+    paddingBottom: 20,
   },
   header: {
     backgroundColor: "#062046",
-    width: "100%",
-    paddingVertical: 15,
+    paddingVertical: 16,
     paddingHorizontal: 20,
+    alignItems: "center",
   },
   title: {
-    fontSize: 25,
+    fontSize: 22,
     fontWeight: "bold",
-    textAlign: "center",
-    color: "#fff",
+    color: "#FFF",
   },
-  content: {
-    padding: 16,
-    gap: 2,
+  body: {
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    gap: 12,
   },
-  buttonContainer: {
-    marginBottom: 20,
+  footer: {
+    marginTop: 20,
     alignItems: "center",
   },
 });
