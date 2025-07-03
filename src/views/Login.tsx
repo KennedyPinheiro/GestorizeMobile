@@ -53,8 +53,8 @@ const styles = StyleSheet.create({
   erro: { color: "red", textAlign: "center", marginBottom: 10 },
 });
 const Login = ({ navigation }: Props) => {
-  const [email, setemail] = useState("");
-  const [senha, setSenha] = useState("");
+  const [email, setemail] = useState("admin@admin.com");
+  const [senha, setSenha] = useState("12345678");
   const [erro, setErro] = useState<string | null>(null);
 
   const isFormValid = email.trim() !== "" && senha.trim() !== "";

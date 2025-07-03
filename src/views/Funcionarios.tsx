@@ -113,7 +113,7 @@ const Funcionarios = () => {
         onClose={() => setErroAlertVisible(false)}
       />
       <Nav
-        titulo="Funcioarios"
+        titulo="Funcionários"
         onBackPress={() => navigation.navigate("Homepage")}
       />
 

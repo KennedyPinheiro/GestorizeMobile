@@ -221,7 +221,7 @@ const PerfilFuncionario = () => {
         <View style={styles.divider} />
         <EditableTextCard
           label="Nome Completo"
-          value={formData.nome}
+          value={formData.nome || "Não informado"}
           onChangeText={(text) => handleChange("nome", text)}
         />
         <EditableTextCard
@@ -232,35 +232,35 @@ const PerfilFuncionario = () => {
         <View style={styles.row}>
           <EditableTextCard
             label="Gênero"
-            value={formData.genero}
+            value={formData.genero || "Não informado" }
             width="48%"
             onChangeText={(text) => handleChange("genero", text)}
           />
           <EditableTextCard
             label="Estado Civil"
-            value={formData.estado_civil}
+            value={formData.estado_civil || "Não informado"}
             width="48%"
             onChangeText={(text) => handleChange("estado_civil", text)}
           />
         </View>
         <EditableTextCard
           label="Telefone"
-          value={formData.telefone}
+          value={formData.telefone || "Não informado"}
           onChangeText={(text) => handleChange("telefone", text)}
         />
         <EditableTextCard
           label="Data Nascimento"
-          value={formData.data_nascimento}
+          value={formData.data_nascimento || "Não informado" }
           onChangeText={(text) => handleChange("data_nascimento", text)}
         />
         <EditableTextCard
           label="Registro Geral (RG)"
-          value={formData.rg}
+          value={formData.rg || "Não informado" }
           onChangeText={(text) => handleChange("rg", text)}
         />
         <EditableTextCard
           label="Cadastro Pessoa Fisica (CPF)"
-          value={formData.cpf}
+          value={formData.cpf || "Não informado" }
           onChangeText={(text) => handleChange("cpf", text)}
         />
         {!showEndereco ? (
@@ -276,36 +276,36 @@ const PerfilFuncionario = () => {
           <View style={{ marginBottom: 30 }}>
             <EditableTextCard
               label="Logradouro"
-              value={formData.rua}
+              value={formData.rua || "Não informado" }
               onChangeText={(text) => handleChange("rua", text)}
             />
             <EditableTextCard
               label="Bairro"
-              value={formData.bairro}
+              value={formData.bairro || "Não informado" }
               onChangeText={(text) => handleChange("bairro", text)}
             />
             <View style={styles.row}>
               <EditableTextCard
                 label="Número"
-                value={formData.numero}
+                value={formData.numero || "Não informado" }
                 width="48%"
                 onChangeText={(text) => handleChange("numero", text)}
               />
               <EditableTextCard
                 label="CEP"
-                value={formData.cep}
+                value={formData.cep || "Não informado" }
                 width="48%"
                 onChangeText={(text) => handleChange("cep", text)}
               />
             </View>
             <EditableTextCard
               label="Cidade"
-              value={formData.cidade}
+              value={formData.cidade || "Não informado" }
               onChangeText={(text) => handleChange("cidade", text)}
             />
             <EditableTextCard
               label="Estado"
-              value={formData.estado}
+              value={formData.estado || "Não informado" }
               onChangeText={(text) => handleChange("estado", text)}
             />
             <View style={{ marginBottom: 30 }}>
