@@ -6,28 +6,27 @@ import {
   Keyboard,
   Text,
 } from "react-native";
-import InputCard from "@components/InputCard";
 import Button from "@components/botoes/Button";
 import Link from "@components/utilities/Link";
-import Linha from "@components/Linha";
-import PasswordInputCard from "@components/PasswordInpuCard";
 import LoginLogo from "@components/LoginLogo";
-import { RootStackParamList } from "@App";
 import { supabase } from "@lib/supabase";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RootStackParamList } from "@context/types";
+import EditableTextCard from "@components/EditableTextCard";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Login">;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#E8EAE1",
+    backgroundColor: "#ffffff",
     paddingHorizontal: 16,
   },
   innerContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    marginBottom: 20,
   },
   spacerTop: {
     marginBottom: -60,
@@ -77,20 +76,22 @@ const Login = ({ navigation }: Props) => {
           <View style={styles.spacerTop} />
           <LoginLogo />
           <View style={styles.section}>
-            <InputCard
+            <EditableTextCard
+              label="Email"
               tipo="string"
-              placeholder="Email | Nome de Usuário"
+              placeholder="Example@mail.com"
               value={email}
               onChangeText={setemail}
             />
-            <PasswordInputCard
+            <EditableTextCard
+              label="Senha"
+              tipo="password"
+              placeholder="Senha"
               value={senha}
-              title="Senha"
               onChangeText={setSenha}
-              tipoVisual="placeholder"
             />
           </View>
-          <View style={[styles.linkSection, { marginTop: -10 }]}>
+          <View style={[styles.linkSection, ]}>
             <Link title="Esqueceu a Senha?" onPress={() => {}} />
           </View>
 
@@ -105,13 +106,6 @@ const Login = ({ navigation }: Props) => {
               disabled={!isFormValid}
             />
           </View>
-          <View style={[styles.section]}>
-            <Linha />
-          </View>
-        </View>
-        <View style={styles.footer}>
-          <Text style={styles.footerTexto}>Novo por aqui? </Text>
-          <Link title="Faça seu pré-cadastro" onPress={() => {}} />
         </View>
       </View>
     </TouchableWithoutFeedback>

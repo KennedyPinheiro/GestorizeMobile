@@ -6,18 +6,17 @@ import { StyleSheet, View } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import CardRelatorios from "@components/CardRelatorios";
 import { useNavigation } from "@react-navigation/native";
-import { RootStackParamList } from "@App";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useAuth } from "@context/AuthContext";
+import { RootStackParamList } from "@context/types";
 
 const Homepage = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { roleId } = useAuth();
-
   return (
     <View style={styles.container}>
-      <NavBar title="TELA INICIAL" backButton={true} />
+      <NavBar title="Tela Inicial" backButton={true} />
 
       <View style={styles.contentWrapper}>
         <View style={styles.topCardWrapper}>
@@ -119,7 +118,7 @@ export default Homepage;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f2f2f3",
+    backgroundColor: "#ffffff",
   },
   contentWrapper: {
     paddingHorizontal: 20,

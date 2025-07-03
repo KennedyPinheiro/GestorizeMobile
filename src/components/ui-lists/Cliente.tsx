@@ -53,11 +53,12 @@ const styles = StyleSheet.create({
   },
   nome: {
     color: "#fff",
-    fontWeight: "bold",
+    fontWeight: 900,
     fontSize: 25,
   },
   email: {
     color: "#fff",
+    fontWeight: 600,
     fontSize: 18,
   },
 });

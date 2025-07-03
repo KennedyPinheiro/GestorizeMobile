@@ -34,7 +34,7 @@ const Card = ({ titulo, icon }: props) => {
         <View style={styles.column}>
           <View style={styles.row}>
             <Text style={styles.label}>Confirmados</Text>
-            <Text style={styles.value}>02</Text>
+            <Text style={styles.value}>00</Text>
           </View>
           <View style={styles.row}>
             <Text style={styles.label}>Recusados</Text>

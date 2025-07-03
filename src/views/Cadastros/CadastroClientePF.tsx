@@ -1,302 +1,325 @@
 import { ScrollView, View, StyleSheet } from "react-native";
-import InputCard from "@components/InputCard";
-import DialogEndereço from "@components/dialogs/DialogEndereco";
+import EditableTextCard from "@components/EditableTextCard";
 import Button from "@components/botoes/Button";
-import NavBar from "@components/utilities/NavBar";
-import { useEffect, useState } from "react";
+import Nav from "@components/utilities/Nav";
+
+import ErrorSidebarAlert from "@components/sidebars/ErrorSidebarAlert";
+
 import { MenuItem, Select } from "@components/utilities/Select";
-import { supabase } from "@lib/supabase";
+import { estadosBrasileiros } from "@components/dialogs/DialogEndereco";
+
+import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "@App";
-import {
-  formatCpf,
-  formatDate,
-  formatRg,
-  formatTelefone,
-} from "src/@core/format";
-import ErrorSidebarAlert from "@components/sidebars/ErrorSidebarAlert";
+
+import { supabase } from "@lib/supabase";
+import { RootStackParamList } from "@context/types";
+import { formatCpf, formatDate, formatRg, formatTelefone } from "@@core/format";
 import SidebarAlert from "@components/sidebars/Sidebaralert";
-import { EnderecoType } from "@context/types";
 
-const generos = ["Masculino", "Feminino", "Prefiro não Dizer"];
-const estadoCivil = ["Casado(a)", "Solteiro(a)", "Prefiro não Dizer"];
+const generos = ["Masculino", "Feminino", "Prefiro não dizer"];
+const estadosCivis = ["Casado(a)", "Solteiro(a)", "Prefiro não dizer"];
 
-const CadastroClientePF = ({}) => {
+const CadastroPessoaFisica = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
   const [nome, setNome] = useState("");
+  const [dataNasc, setDataNasc] = useState("");
   const [cpf, setCpf] = useState("");
-  const [data, setData] = useState("");
-  const [rg, setRG] = useState("");
+  const [rg, setRg] = useState("");
   const [genero, setGenero] = useState<string>("");
-  const [EstadoCivil, setEstadoCivil] = useState<string>("");
+  const [estadoCivil, setEstadoCivil] = useState<string>("");
+
+  const [telefone, setTelefone] = useState("");
   const [email, setEmail] = useState("");
-  const [celular, setCelular] = useState("");
-  const [endereço, setEndereco] = useState(false);
-  const [visible, setVisible] = useState(false);
-  const [erroVisible, setErroVisible] = useState(false);
-  const [erroMessage, setErrorMessage] = useState("");
-  const [message, setMessage] = useState("");
-  const [dadosEndereco, setDadosEndereco] = useState<EnderecoType | null>(null);
-  const isFormValid = nome.trim() !== "";
+
+  const [showEnderecoForm, setShowEnderecoForm] = useState(false);
+  const [rua, setRua] = useState("");
+  const [bairro, setBairro] = useState("");
+  const [cidade, setCidade] = useState("");
+  const [cep, setCep] = useState("");
+  const [numero, setNumero] = useState("");
+  const [estadoSelecionado, setEstadoSelecionado] = useState<string>("");
+
   const [isLoading, setIsLoading] = useState(false);
+  const [msgSucesso, setMsgSucesso] = useState("");
+  const [sucessoVisivel, setSucessoVisivel] = useState(false);
+  const [msgErro, setMsgErro] = useState("");
+  const [erroVisivel, setErroVisivel] = useState(false);
 
-  const handleOpenEndereço = () => setEndereco(true);
-  const handleCloseEndereço = () => setEndereco(false);
+  const isFormValid = nome.trim() !== "";
 
-  async function onPress(endereco: EnderecoType) {
-    setDadosEndereco(endereco);
-    setVisible(true);
-    setMessage("Endereço salvo com sucesso");
-    handleCloseEndereço();
-  }
-
-  async function salvarCliente() {
+  const salvarCliente = async () => {
     if (isLoading) return;
+    setIsLoading(true);
+
     let idEnderecoCriado: number | null = null;
-
     try {
-      if (!nome.trim()) {
-        setMessage("Por favor, informe o nome");
-        setVisible(true);
-        return;
+      if (!nome.trim()) throw new Error("Por favor, informe o nome!");
+      if (showEnderecoForm && !rua.trim()) {
+        throw new Error("Preencha o endereço ou feche o formulário.");
       }
 
-      if (!dadosEndereco) {
-        setMessage("Por favor, cadastre o endereço antes de salvar o cliente.");
-        setVisible(true);
-        return;
+      if (showEnderecoForm) {
+        const { data: endIns, error: errEnd } = await supabase
+          .from("endereco")
+          .insert([
+            {
+              rua,
+              bairro,
+              cidade,
+              cep,
+              numero,
+              estado: estadoSelecionado,
+            },
+          ])
+          .select()
+          .single();
+
+        if (errEnd) throw errEnd;
+        idEnderecoCriado = endIns.id;
       }
 
-      const { data: enderecoInserido, error: erroEndereco } = await supabase
-        .from("endereco")
-        .insert(dadosEndereco)
-        .select();
+      const { error: errPF } = await supabase.from("pessoa_fisica").insert([
+        {
+          nome,
+          data_nascimento: dataNasc || null,
+          cpf: cpf || null,
+          rg: rg || null,
+          genero: genero || null,
+          estado_civil: estadoCivil || null,
+          telefone: telefone || null,
+          email: email || null,
+          endereco_id: idEnderecoCriado,
+          data_criacao: new Date().toISOString(),
+          ultima_atualizacao: new Date().toISOString(),
+        },
+      ]);
+      if (errPF) throw errPF;
 
-      if (erroEndereco || !enderecoInserido || enderecoInserido.length === 0) {
-        throw erroEndereco || new Error("Falha ao inserir endereço");
-      }
-
-      idEnderecoCriado = enderecoInserido[0].id;
-
-      const clienteData = {
-        nome,
-        ultima_atualizacao: new Date().toISOString(),
-        data_nascimento: data || null,
-        data_criacao: new Date().toISOString(),
-        cpf: cpf || null,
-        rg: rg || null,
-        estado_civil: EstadoCivil || null,
-        endereco_id: idEnderecoCriado,
-        genero: genero || null,
-        telefone: celular || null,
-        email: email || null,
-      };
-
-      const { error: erroCliente } = await supabase
-        .from("pessoa_fisica")
-        .insert(clienteData);
-
-      if (erroCliente) {
-        throw erroCliente;
-      }
-
-      navigation.navigate("Clientes", {
-        novoCliente: true,
-      });
-      setMessage("Sucesso ao cadastrar cliente");
-    } catch (error) {
+      setMsgSucesso("Cliente salvo com sucesso!");
+      setSucessoVisivel(true);
+      navigation.navigate("Clientes", { novoCliente: true });
+    } catch (e: any) {
       if (idEnderecoCriado) {
         await supabase.from("endereco").delete().eq("id", idEnderecoCriado);
       }
-
-      setErrorMessage(
-        "Erro ao salvar cliente: " + (error as any)?.message || "desconhecido"
-      );
-      setVisible(true);
+      setMsgErro(`Erro ao salvar cliente: ${e?.message ?? "Desconhecido"}`);
+      setErroVisivel(true);
     } finally {
-      setTimeout(() => setIsLoading(false), 2000);
+      setIsLoading(false);
     }
-  }
+  };
 
-  useEffect(() => {
-    if (visible) {
-      const timer = setTimeout(() => {
-        setVisible(false);
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [visible]);
   return (
-    <ScrollView
-      style={styles.scrollContainer}
-      contentContainerStyle={styles.contentContainer}
-    >
+    <View style={styles.container}>
       <SidebarAlert
-        message={message}
-        visible={visible}
+        message={msgSucesso}
+        visible={sucessoVisivel}
         type="success"
-        onClose={() => setVisible(false)}
+        onClose={() => setSucessoVisivel(false)}
       />
       <ErrorSidebarAlert
-        message={erroMessage}
-        visible={erroVisible}
-        onClose={() => setErroVisible(false)}
+        message={msgErro}
+        visible={erroVisivel}
+        onClose={() => setErroVisivel(false)}
       />
-      <View style={styles.container}>
-        <NavBar title="Pessoa Fisica" backButton={false} />
 
+      <Nav
+        titulo="Pessoa Física"
+        onBackPress={() => navigation.navigate("Clientes")}
+      />
+
+      <ScrollView
+        style={styles.scrollContainer}
+        contentContainerStyle={styles.contentContainer}
+      >
         <View style={styles.formContainer}>
-          <View style={styles.inputItem}>
-            <InputCard
-              label="NOME"
-              placeholder="Complete Example Name"
-              tipo="string"
-              value={nome}
-              onChangeText={setNome}
-            />
-          </View>
-          <View style={styles.inputItem}>
-            <InputCard
-              label="DATA DE NASCIMENTO"
-              placeholder="0000 / 00 /00"
-              tipo="string"
-              value={data}
-              onChangeText={(text) => {
-                setData(formatDate(text));
-              }}
-            />
-          </View>
-          <View style={styles.inputItem}>
-            <InputCard
-              label="CPF"
-              placeholder="123.456.789-09"
-              tipo="string"
-              value={cpf}
-              onChangeText={(text) => {
-                setCpf(formatCpf(text));
-              }}
-            />
-          </View>
-          <View style={styles.inputItem}>
-            <InputCard
-              label="RG"
-              placeholder="12.345.678"
-              tipo="string"
-              value={rg}
-              onChangeText={(text) => {
-                setRG(formatRg(text));
-              }}
-            />
-          </View>
-          <View style={styles.inputItem}>
+          <EditableTextCard
+            label="NOME"
+            placeholder="Nome Completo"
+            value={nome}
+            onChangeText={setNome}
+          />
+          <EditableTextCard
+            label="DATA DE NASCIMENTO"
+            tipo="number"
+            placeholder="aaaa/mm/dd"
+            value={dataNasc}
+            onChangeText={(t) => setDataNasc(formatDate(t))}
+          />
+          <EditableTextCard
+            label="CPF"
+            tipo="number"
+            placeholder="000.000.000-00"
+            value={cpf}
+            onChangeText={(t) => setCpf(formatDate(t))}
+          />
+          <EditableTextCard
+            label="RG"
+            placeholder="00.000.000‑X"
+            tipo="number"
+
+            value={rg}
+            onChangeText={(t) => setRg(formatRg(t))}
+          />
+          <View style={{ width: "100%" }}>
             <Select
-              value={EstadoCivil}
-              onChange={setEstadoCivil}
+              width={"100%"}
               label="ESTADO CIVIL"
-              size="small"
+              value={estadoCivil}
+              onChange={setEstadoCivil}
             >
-              {estadoCivil.map((CD) => (
-                <MenuItem key={CD} value={CD}>
-                  {CD}
+              {estadosCivis.map((c) => (
+                <MenuItem key={c} value={c}>
+                  {c}
                 </MenuItem>
               ))}
             </Select>
           </View>
-          <View style={styles.inputItem}>
+
+          {!showEnderecoForm ? (
             <Button
-              title="ENDEREÇO"
-              onPress={handleOpenEndereço}
-              variant="contained"
-              color="primary"
+              title="Endereço"
+              variant="outlined"
               type="dialog"
+              onPress={() => setShowEnderecoForm(true)}
             />
-          </View>
-          <View style={styles.inputItem}>
+          ) : (
+            <View style={styles.addressBlock}>
+              <EditableTextCard
+                label="Logradouro"
+                value={rua}
+                placeholder="Rua/Avenida"
+                onChangeText={setRua}
+              />
+              <EditableTextCard
+                label="Bairro"
+                value={bairro}
+                placeholder="Bairro"
+                onChangeText={setBairro}
+              />
+              <View style={styles.row}>
+                <EditableTextCard
+                  label="Número"
+                  placeholder="000"
+                  tipo="number"
+                  value={numero}
+                  width="48%"
+                  onChangeText={setNumero}
+                />
+                <EditableTextCard
+                  label="CEP"
+                  tipo="number"
+                  placeholder="00000‑000"
+                  value={cep}
+                  width="48%"
+                  onChangeText={setCep}
+                />
+              </View>
+              <EditableTextCard
+                label="Cidade"
+                value={cidade}
+                placeholder="Cidade"
+                onChangeText={setCidade}
+              />
+              <View style={{ width: "100%" }}>
+                <Select
+                  width={"100%"}
+                  label="Estado"
+                  value={estadoSelecionado}
+                  onChange={setEstadoSelecionado}
+                >
+                  {estadosBrasileiros.map((uf) => (
+                    <MenuItem key={uf} value={uf}>
+                      {uf}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </View>
+
+              <Button
+                title="Fechar endereço"
+                variant="outlined"
+                type="dialog"
+                onPress={() => setShowEnderecoForm(false)}
+              />
+            </View>
+          )}
+
+          <View style={{ width: "100%" }}>
             <Select
+              width={"100%"}
+              label="GÊNERO"
               value={genero}
               onChange={setGenero}
-              label="GÊNERO"
-              size="small"
             >
-              {generos.map((MF) => (
-                <MenuItem key={MF} value={MF}>
-                  {MF}
+              {generos.map((g) => (
+                <MenuItem key={g} value={g}>
+                  {g}
                 </MenuItem>
               ))}
             </Select>
           </View>
-          <View style={styles.inputItem}>
-            <InputCard
-              label="TELEFONE"
-              placeholder="(00) 00000-0000"
-              tipo="number"
-              value={celular}
-              onChangeText={(text) => {
-                setCelular(formatTelefone(text));
-              }}
-            />
-          </View>
-          <View style={styles.inputItem}>
-            <InputCard
-              label="EMAIL"
-              placeholder="example@email.com"
-              tipo="string"
-              value={email}
-              onChangeText={setEmail}
-            />
-          </View>
+
+          <EditableTextCard
+            label="TELEFONE"
+            placeholder="(00) 00000‑0000"
+            tipo="number"
+            value={telefone}
+            onChangeText={(t) => setTelefone(formatTelefone(t))}
+          />
+          <EditableTextCard
+            label="EMAIL"
+            placeholder="email@exemplo.com"
+            value={email}
+            onChangeText={setEmail}
+          />
 
           <Button
-            title="CADASTRAR"
+            title={isLoading ? "SALVANDO..." : "SALVAR"}
             variant="contained"
             color="primary"
-            disabled={!isFormValid}
+            disabled={!isFormValid || isLoading}
             type="submit"
             onPress={salvarCliente}
           />
         </View>
-      </View>
-
-      {endereço && (
-        <DialogEndereço
-          onClose={handleCloseEndereço}
-          onSave={onPress}
-          visible={endereço}
-        />
-      )}
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  scrollContainer: {
+  container: {
     flex: 1,
-    backgroundColor: "#F3F3F2",
     width: "100%",
+    alignItems: "center",
+    backgroundColor: "#fff",
+  },
+  scrollContainer: {
     flexGrow: 1,
+    width: "100%",
+    backgroundColor: "#fff",
   },
   contentContainer: {
     alignItems: "center",
     paddingBottom: 32,
   },
-  container: {
-    width: "100%",
-    alignItems: "center",
-    backgroundColor: "#F3F3F2",
-  },
   formContainer: {
     marginTop: 24,
-    marginBottom: 155,
     width: "100%",
+    paddingHorizontal: 20,
     alignItems: "center",
-    gap: 2,
+    gap: 4,
   },
-  inputItem: {
-    width: "90%",
-    maxWidth: 400,
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 10,
   },
+  addressBlock: { width: "100%", alignItems: "center" },
 });
 
-export default CadastroClientePF;
+export default CadastroPessoaFisica;

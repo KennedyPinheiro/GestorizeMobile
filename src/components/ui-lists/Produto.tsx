@@ -13,24 +13,8 @@ type Props = {
 };
 
 const Produto = ({ medida, nome, quantidade, categoria, onPress }: Props) => {
-  const [alertVisible, setAlertVisible] = useState(false);
-  const [message, setMessage] = useState("");
-  const [erroAlertVisible, setErroAlertVisible] = useState(false);
-  const [erroMessage, setErroMessage] = useState("");
-
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
-      <SidebarAlert
-        message={message}
-        visible={alertVisible}
-        type="success"
-        onClose={() => setAlertVisible(false)}
-      />
-      <ErrorSidebarAlert
-        message={erroMessage}
-        visible={erroAlertVisible}
-        onClose={() => setErroAlertVisible(false)}
-      />
       <View style={styles.iconContainer}>
         <MaterialCommunityIcons name="package-variant" size={60} color="#000" />
       </View>
@@ -74,18 +58,19 @@ const styles = StyleSheet.create({
   },
   nome: {
     color: "#fff",
-    fontWeight: "bold",
+    fontWeight: 900,
     fontSize: 25,
   },
   categoria: {
     color: "#fff",
+    fontWeight: 600,
     fontSize: 18,
     marginTop: 2,
   },
   quantidade: {
     color: "#fff",
     fontSize: 17,
-    fontWeight: "600",
+    fontWeight: 600,
   },
 });
 

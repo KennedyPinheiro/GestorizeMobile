@@ -63,7 +63,7 @@ const DialogMedida = ({ open, onClose, onSelect }: props) => {
             <TouchableWithoutFeedback>
               <View style={styles.container}>
                 <View style={styles.header}>
-                  <Text style={styles.title}>Categorias</Text>
+                  <Text style={styles.title}>Unidade de Medida</Text>
                 </View>
 
                 <BarraAdd onPressAdd={() => setDialogVisible(true)} />

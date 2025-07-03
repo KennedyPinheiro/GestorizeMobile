@@ -47,11 +47,12 @@ const styles = StyleSheet.create({
   },
   nome: {
     color: "#fff",
-    fontWeight: "bold",
+    fontWeight: 900,    
     fontSize: 25,
   },
   funcao: {
     color: "#fff",
+    fontWeight: 600,
     fontSize: 18,
   },
 });

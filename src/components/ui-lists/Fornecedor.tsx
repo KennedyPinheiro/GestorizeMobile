@@ -13,7 +13,7 @@ const Fornecedor = ({ nome, email, onPress }: Props) => {
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
       <View style={styles.imageContainer}>
-        <MaterialCommunityIcons name="account-tie" size={70} color="#000" />
+        <MaterialCommunityIcons name="account-tie" size={70} color="#000000" />
       </View>
       <View style={styles.textContainer}>
         <Text style={styles.nome}>{nome}</Text>
@@ -47,11 +47,12 @@ const styles = StyleSheet.create({
   },
   nome: {
     color: "#fff",
-    fontWeight: "bold",
+    fontWeight: 900,
     fontSize: 25,
   },
   email: {
     color: "#fff",
+    fontWeight: 600,
     fontSize: 18,
   },
 });
