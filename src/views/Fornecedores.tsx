@@ -1,22 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, TextInput, View } from "react-native";
-import NavBar from "@components/utilities/NavBar";
-import BarraAdd from "@components/utilities/BarraAdd";
-
-import { useIsFocused, useNavigation } from "@react-navigation/native";
+import {
+  useIsFocused,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import Fornecedor from "@components/ui-lists/Fornecedor";
 import { supabase } from "@lib/supabase";
-import { useRoute } from "@react-navigation/native";
 import SidebarAlert from "@components/sidebars/Sidebaralert";
+import ErrorSidebarAlert from "@components/sidebars/ErrorSidebarAlert";
+import FloatingButton from "@components/botoes/FloatingButton";
+import Fornecedor from "@components/ui-lists/Fornecedor";
+import Nav from "@components/utilities/Nav";
 import {
   EnderecoTipo,
   FornecedorTipo,
   RootStackParamList,
 } from "@context/types";
-import ErrorSidebarAlert from "@components/sidebars/ErrorSidebarAlert";
 import { formatCnpj } from "@@core/format";
-import Nav from "@components/utilities/Nav";
 
 const Fornecedores = () => {
   const navigation =
@@ -34,7 +35,7 @@ const Fornecedores = () => {
   const buscarEndereco = async () => {
     const { data, error } = await supabase
       .from("endereco")
-      .select("id, rua, bairro ,cidade , estado, numero, cep")
+      .select("id, rua, bairro, cidade, estado, numero, cep")
       .order("id", { ascending: false });
     if (error) {
       setErroAlertVisible(true);
@@ -43,6 +44,7 @@ const Fornecedores = () => {
       setEndereco(data);
     }
   };
+
   const buscarFornecedor = async (termo: string = "") => {
     let query = supabase
       .from("fornecedor")
@@ -66,7 +68,6 @@ const Fornecedores = () => {
     }
 
     const { data, error } = await query;
-
     if (error) {
       setErroMessage(`Erro ao buscar fornecedores: ${error.message}`);
       setErroAlertVisible(true);
@@ -93,7 +94,6 @@ const Fornecedores = () => {
     const delay = setTimeout(() => {
       buscarFornecedor(termoBusca);
     }, 400);
-
     return () => clearTimeout(delay);
   }, [termoBusca]);
 
@@ -110,25 +110,24 @@ const Fornecedores = () => {
         visible={erroAlertVisible}
         onClose={() => setErroAlertVisible(false)}
       />
+
       <Nav
-        titulo="Fornecedor"
+        titulo="FORNECEDORES"
         onBackPress={() => navigation.navigate("Homepage")}
       />
 
-      <BarraAdd
-        onPressAdd={() => navigation.navigate("CadastroFornecedores")}
-      />
-      <View style={{ paddingHorizontal: 10, paddingTop: 10 }}>
+      <View style={styles.barraBuscaContainer}>
         <TextInput
           placeholder="Buscar fornecedor por nome"
-          placeholderTextColor="#999"
+          placeholderTextColor="#444141"
           value={termoBusca}
           onChangeText={setTermoBusca}
           style={styles.inputBusca}
         />
       </View>
+
       <ScrollView contentContainerStyle={{ padding: 10 }}>
-        {fornecedor.map((item) => {
+        {fornecedor.map((item, index) => {
           const enderecoDoFornecedor = endereco.find(
             (end) => end.id === item.endereco_id
           );
@@ -137,33 +136,46 @@ const Fornecedores = () => {
             : "CNPJ não informado";
 
           return (
-            <Fornecedor
+            <View
               key={item.id}
-              nome={item.razao_social}
-              email={item.email}
-              onPress={() => {
-                navigation.navigate("PerfilFornecedor", {
-                  id: item.id,
-                  razao_social: item.razao_social,
-                  email: item.email,
-                  cnpj: cnpjFormatado || "Não informado",
-                  nome_responsavel: item.nome_responsavel || "Não informado",
-                  ramo_de_atividade: item.ramo_de_atividade || "Não informado",
-                  telefone: item.telefone || "Não informado",
-                  chave_pix: item.chave_pix || "Não informado",
-                  endereco_id: item.endereco_id,
-                  rua: enderecoDoFornecedor?.rua || "Não informado",
-                  bairro: enderecoDoFornecedor?.bairro || "Não informado",
-                  cidade: enderecoDoFornecedor?.cidade || "Não informado",
-                  estado: enderecoDoFornecedor?.estado || "Não informado",
-                  cep: enderecoDoFornecedor?.cep || "Não informado",
-                  numero: enderecoDoFornecedor?.numero || "Não informado",
-                });
+              style={{
+                borderBottomWidth: index < fornecedor.length - 1 ? 1 : 0,
+                borderBottomColor: "#ccc",
+                paddingVertical: 8,
               }}
-            />
+            >
+              <Fornecedor
+                nome={item.razao_social}
+                email={item.email}
+                onPress={() => {
+                  navigation.navigate("PerfilFornecedor", {
+                    id: item.id,
+                    razao_social: item.razao_social,
+                    email: item.email,
+                    cnpj: cnpjFormatado,
+                    nome_responsavel: item.nome_responsavel || "Não informado",
+                    ramo_de_atividade:
+                      item.ramo_de_atividade || "Não informado",
+                    telefone: item.telefone || "Não informado",
+                    chave_pix: item.chave_pix || "Não informado",
+                    endereco_id: item.endereco_id,
+                    rua: enderecoDoFornecedor?.rua || "Não informado",
+                    bairro: enderecoDoFornecedor?.bairro || "Não informado",
+                    cidade: enderecoDoFornecedor?.cidade || "Não informado",
+                    estado: enderecoDoFornecedor?.estado || "Não informado",
+                    cep: enderecoDoFornecedor?.cep || "Não informado",
+                    numero: enderecoDoFornecedor?.numero || "Não informado",
+                  });
+                }}
+              />
+            </View>
           );
         })}
       </ScrollView>
+
+      <FloatingButton
+        onPress={() => navigation.navigate("CadastroFornecedores")}
+      />
     </View>
   );
 };
@@ -174,16 +186,18 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
   },
   barraBuscaContainer: {
-    paddingHorizontal: 15,
+    paddingHorizontal: 10,
     paddingTop: 10,
+    paddingBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
   },
-
   inputBusca: {
     backgroundColor: "#f2f2f2",
-    borderRadius: 8,
+    borderRadius: 10,
     paddingHorizontal: 12,
     paddingVertical: 10,
-    fontSize: 16,
+    fontSize: 20,
     borderWidth: 1,
     borderColor: "#ddd",
     color: "#333",

@@ -60,17 +60,15 @@ const UserIcon = ({ children, onPress }: Props) => {
   };
 
   return (
-    <View>
-      <TouchableOpacity onPress={onPress || toggleMenu}>
-        <View style={styles.container}>
-          <Animated.View style={[styles.bar, topBarStyle]} />
-          <Animated.View style={[styles.bar, middleBarStyle]} />
-          <Animated.View style={[styles.bar, bottomBarStyle]} />
-        </View>
-      </TouchableOpacity>
+    <TouchableOpacity onPress={onPress || toggleMenu}>
+      <View style={styles.container}>
+        <Animated.View style={[styles.bar, topBarStyle]} />
+        <Animated.View style={[styles.bar, middleBarStyle]} />
+        <Animated.View style={[styles.bar, bottomBarStyle]} />
+      </View>
 
       {active && children}
-    </View>
+    </TouchableOpacity>
   );
 };
 

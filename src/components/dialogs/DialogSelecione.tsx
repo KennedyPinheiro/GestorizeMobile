@@ -50,8 +50,16 @@ const DialogSelecione = ({
                 <Text style={styles.titulo}>SELECIONE</Text>
               </View>
               <View style={styles.body}>
-                <Button title={titulo01} onPress={handlePress01} />
-                <Button title={titulo02} onPress={handlePress02} />
+                <Button
+                  title={titulo01}
+                  onPress={handlePress01}
+                  type="dialog"
+                />
+                <Button
+                  title={titulo02}
+                  onPress={handlePress02}
+                  type="dialog"
+                />
               </View>
             </View>
           </TouchableWithoutFeedback>
@@ -69,11 +77,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   container: {
-    width: 280,
+    width: 300,
     backgroundColor: "#F3F3F2",
-    borderRadius: 12,
+    borderRadius: 10,
     overflow: "hidden",
-    elevation: 4,
+    elevation: 5,
     borderWidth: 1,
     borderColor: "#062046",
     shadowColor: "#000",
@@ -85,8 +93,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#062046",
     paddingVertical: 20,
     alignItems: "center",
-    borderTopLeftRadius: 12,
-    borderTopRightRadius: 12,
   },
   titulo: {
     color: "#FFFFFF",
@@ -95,9 +101,11 @@ const styles = StyleSheet.create({
   },
   body: {
     backgroundColor: "#F3F3F2",
-    paddingVertical: 10,
-    paddingHorizontal: 2,
+    paddingVertical: 5,
+    paddingHorizontal: 5,
     alignItems: "center",
+    gap: 5
+    
   },
 });
 

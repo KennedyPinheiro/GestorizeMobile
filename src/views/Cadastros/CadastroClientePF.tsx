@@ -125,12 +125,10 @@ const CadastroPessoaFisica = () => {
         visible={erroVisivel}
         onClose={() => setErroVisivel(false)}
       />
-
       <Nav
         titulo="Pessoa Física"
         onBackPress={() => navigation.navigate("Clientes")}
       />
-
       <ScrollView
         style={styles.scrollContainer}
         contentContainerStyle={styles.contentContainer}
@@ -160,7 +158,6 @@ const CadastroPessoaFisica = () => {
             label="RG"
             placeholder="00.000.000‑X"
             tipo="number"
-
             value={rg}
             onChangeText={(t) => setRg(formatRg(t))}
           />
@@ -178,76 +175,58 @@ const CadastroPessoaFisica = () => {
               ))}
             </Select>
           </View>
-
-          {!showEnderecoForm ? (
-            <Button
-              title="Endereço"
-              variant="outlined"
-              type="dialog"
-              onPress={() => setShowEnderecoForm(true)}
+          <View style={styles.addressBlock}>
+            <EditableTextCard
+              label="Logradouro"
+              value={rua}
+              placeholder="Rua/Avenida"
+              onChangeText={setRua}
             />
-          ) : (
-            <View style={styles.addressBlock}>
+            <EditableTextCard
+              label="Bairro"
+              value={bairro}
+              placeholder="Bairro"
+              onChangeText={setBairro}
+            />
+            <View style={styles.row}>
               <EditableTextCard
-                label="Logradouro"
-                value={rua}
-                placeholder="Rua/Avenida"
-                onChangeText={setRua}
+                label="Número"
+                placeholder="000"
+                tipo="number"
+                value={numero}
+                width="48%"
+                onChangeText={setNumero}
               />
               <EditableTextCard
-                label="Bairro"
-                value={bairro}
-                placeholder="Bairro"
-                onChangeText={setBairro}
-              />
-              <View style={styles.row}>
-                <EditableTextCard
-                  label="Número"
-                  placeholder="000"
-                  tipo="number"
-                  value={numero}
-                  width="48%"
-                  onChangeText={setNumero}
-                />
-                <EditableTextCard
-                  label="CEP"
-                  tipo="number"
-                  placeholder="00000‑000"
-                  value={cep}
-                  width="48%"
-                  onChangeText={setCep}
-                />
-              </View>
-              <EditableTextCard
-                label="Cidade"
-                value={cidade}
-                placeholder="Cidade"
-                onChangeText={setCidade}
-              />
-              <View style={{ width: "100%" }}>
-                <Select
-                  width={"100%"}
-                  label="Estado"
-                  value={estadoSelecionado}
-                  onChange={setEstadoSelecionado}
-                >
-                  {estadosBrasileiros.map((uf) => (
-                    <MenuItem key={uf} value={uf}>
-                      {uf}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </View>
-
-              <Button
-                title="Fechar endereço"
-                variant="outlined"
-                type="dialog"
-                onPress={() => setShowEnderecoForm(false)}
+                label="CEP"
+                tipo="number"
+                placeholder="00000‑000"
+                value={cep}
+                width="48%"
+                onChangeText={setCep}
               />
             </View>
-          )}
-
+            <EditableTextCard
+              label="Cidade"
+              value={cidade}
+              placeholder="Cidade"
+              onChangeText={setCidade}
+            />
+            <View style={{ width: "100%" }}>
+              <Select
+                width={"100%"}
+                label="Estado"
+                value={estadoSelecionado}
+                onChange={setEstadoSelecionado}
+              >
+                {estadosBrasileiros.map((uf) => (
+                  <MenuItem key={uf} value={uf}>
+                    {uf}
+                  </MenuItem>
+                ))}
+              </Select>
+            </View>
+          </View>
           <View style={{ width: "100%" }}>
             <Select
               width={"100%"}
@@ -282,7 +261,7 @@ const CadastroPessoaFisica = () => {
             variant="contained"
             color="primary"
             disabled={!isFormValid || isLoading}
-            type="submit"
+            type="dialog"
             onPress={salvarCliente}
           />
         </View>

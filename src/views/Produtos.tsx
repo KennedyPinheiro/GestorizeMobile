@@ -21,6 +21,7 @@ import { supabase } from "@lib/supabase";
 import Produto from "@components/ui-lists/Produto"; // componente que exibe nome e preço
 import { formatarMedida } from "@@core/format";
 import Nav from "@components/utilities/Nav";
+import FloatingButton from "@components/botoes/FloatingButton";
 
 const Produtos = () => {
   const navigation =
@@ -158,18 +159,17 @@ const Produtos = () => {
         onBackPress={() => navigation.navigate("Homepage")}
       />
 
-      <BarraAdd onPressAdd={() => navigation.navigate("CadastroProdutos")} />
-      <View style={{ paddingHorizontal: 10, paddingTop: 10 }}>
+      <View style={styles.barraBuscaContainer}>
         <TextInput
           placeholder="Buscar produto por nome"
-          placeholderTextColor="#999"
+          placeholderTextColor="#444141"
           value={termoBusca}
           onChangeText={setTermoBusca}
           style={styles.inputBusca}
         />
       </View>
       <ScrollView contentContainerStyle={{ padding: 10 }}>
-        {produto.map((item) => {
+        {produto.map((item, index) => {
           const categoriaEncontrada = tituloCategoria.find(
             (cat) => cat.id === item.categoria_id
           );
@@ -181,59 +181,72 @@ const Produtos = () => {
           const medidaFormatada = medidaEncontrada
             ? formatarMedida(medidaEncontrada.titulo)
             : "UN";
-          return (
-            <Produto
-              key={item.id}
-              nome={item.nome}
-              categoria={categoriaEncontrada?.titulo}
-              quantidade={item.quantidade}
-              medida={medidaFormatada}
-              onPress={() => {
-                const fornecedorEncontrado = fornecedor.find(
-                  (f) => f.id === item.fornecedor_id
-                );
 
-                navigation.navigate("PerfilProduto", {
-                  id: item.id,
-                  nome: item.nome,
-                  quantidade: item.quantidade ?? 0,
-                  medida_id: item.medida_id,
-                  medida_titulo: medidaEncontrada?.titulo ?? "Não Informado",
-                  categoria_titulo: categoriaEncontrada?.titulo ?? "Não Informado",
-                  descricao: item.descricao ?? "",
-                  data_validade: item.data_validade,
-                  preco_custo: item.preco_custo ?? 0,
-                  data_de_entrada: item.data_de_entrada ,
-                  categoria_id: item.categoria_id,
-                  margem_lucro: item.margem_lucro ?? 0,
-                  fornecedor_razao_social: fornecedorEncontrado?.razao_social ?? "Não Informado",
-                  fornecedor_id: item.fornecedor_id,
-                });
+          return (
+            <View
+              key={item.id}
+              style={{
+                borderBottomWidth: index < produto.length - 1 ? 1 : 0,
+                borderBottomColor: "#ccc",
+                paddingVertical: 8,
               }}
-            />
+            >
+              <Produto
+                nome={item.nome}
+                categoria={categoriaEncontrada?.titulo}
+                quantidade={item.quantidade}
+                medida={medidaFormatada}
+                onPress={() => {
+                  const fornecedorEncontrado = fornecedor.find(
+                    (f) => f.id === item.fornecedor_id
+                  );
+
+                  navigation.navigate("PerfilProduto", {
+                    id: item.id,
+                    nome: item.nome,
+                    quantidade: item.quantidade ?? 0,
+                    medida_id: item.medida_id,
+                    medida_titulo: medidaEncontrada?.titulo ?? "Não Informado",
+                    categoria_titulo:
+                      categoriaEncontrada?.titulo ?? "Não Informado",
+                    descricao: item.descricao ?? "",
+                    data_validade: item.data_validade,
+                    preco_custo: item.preco_custo ?? 0,
+                    data_de_entrada: item.data_de_entrada,
+                    categoria_id: item.categoria_id,
+                    margem_lucro: item.margem_lucro ?? 0,
+                    fornecedor_razao_social:
+                      fornecedorEncontrado?.razao_social ?? "Não Informado",
+                    fornecedor_id: item.fornecedor_id,
+                  });
+                }}
+              />
+            </View>
           );
         })}
       </ScrollView>
+      <FloatingButton onPress={() => navigation.navigate("CadastroProdutos")} />
     </View>
-  );
+  );    
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#ffffff",
   },
   barraBuscaContainer: {
-    paddingHorizontal: 15,
+    paddingHorizontal: 10,
     paddingTop: 10,
+    paddingBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
   },
-
   inputBusca: {
     backgroundColor: "#f2f2f2",
-    borderRadius: 8,
+    borderRadius: 10,
     paddingHorizontal: 12,
     paddingVertical: 10,
-    fontSize: 16,
+    fontSize: 20,
     borderWidth: 1,
     borderColor: "#ddd",
     color: "#333",

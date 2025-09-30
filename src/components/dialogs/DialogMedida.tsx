@@ -72,19 +72,21 @@ const DialogMedida = ({ open, onClose, onSelect }: props) => {
                   {loading ? (
                     <ActivityIndicator size="large" color="#062046" />
                   ) : dadosMedida.length === 0 ? (
-                    <Text style={styles.text}>
-                      Nenhuma medida cadastrada.
-                    </Text>
+                    <Text style={styles.text}>Nenhuma medida cadastrada.</Text>
                   ) : (
-                    dadosMedida.map((cat) => (
-                      <Medida
-                        key={cat.id}
-                        titulo={cat.titulo}
-                        onPress={() => {
-                          onSelect(cat.id, cat.titulo);
-                          onClose();
-                        }}
-                      />
+                    dadosMedida.map((cat, index) => (
+                      <View key={cat.id}>
+                        <Medida
+                          titulo={cat.titulo}
+                          onPress={() => {
+                            onSelect(cat.id, cat.titulo);
+                            onClose();
+                          }}
+                        />
+                        {index < dadosMedida.length - 1 && (
+                          <View style={styles.separator} />
+                        )}
+                      </View>
                     ))
                   )}
                 </ScrollView>
@@ -115,19 +117,28 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     overflow: "hidden",
     borderColor: "#062046",
-    borderWidth: 3,
+    borderWidth: 1,
     maxHeight: "80%",
   },
   header: {
     backgroundColor: "#062046",
-    paddingVertical: 15,
-    paddingHorizontal: 20,
+    justifyContent: "center",
+    alignItems: "center",
   },
+  separator: {
+    height: 1,
+    backgroundColor: "#ccc",
+    marginVertical: 5,
+  },
+
   title: {
     fontSize: 25,
     fontWeight: "bold",
-    textAlign: "center",
     color: "#fff",
+    width: "100%",
+    height: 60,
+    lineHeight: 60,
+    textAlign: "center",
   },
   content: {
     paddingHorizontal: 10,

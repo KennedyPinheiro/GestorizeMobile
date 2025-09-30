@@ -6,8 +6,6 @@ import SidebarAlert from "@components/sidebars/Sidebaralert";
 import ErrorSidebarAlert from "@components/sidebars/ErrorSidebarAlert";
 import { MenuItem, Select } from "@components/utilities/Select";
 import { estadosBrasileiros } from "@components/dialogs/DialogEndereco";
-import DialogRoles from "@components/dialogs/DialogRoles";
-import Selecionado from "@components/Selecionado";
 import { supabase } from "@lib/supabase";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -18,10 +16,23 @@ import {
   formatRg,
   formatTelefone,
 } from "src/@core/format";
-import { RootStackParamList } from "@context/types";
+import { RoleType, RootStackParamList } from "@context/types";
 
-const generos = ["Masculino", "Feminino", "Prefiro não dizer"];
-const estadosCivis = ["Casado(a)", "Solteiro(a)", "Prefiro não dizer"];
+export const generos = [
+  "Cisgênero",
+  "Transgênero",
+  "Gênero Fluido",
+  "Não-binário",
+  "Outro",
+];
+export const estadosCivis = [
+  "Casado(a)",
+  "Solteiro(a)",
+  "Divorciado(a)",
+  "Viúvo(a)",
+  "União Estável",
+  "Prefiro não dizer",
+];
 
 type Navigation = NativeStackNavigationProp<RootStackParamList>;
 
@@ -45,16 +56,16 @@ const CadastroFuncionarios = () => {
   const [cep, setCep] = useState("");
   const [numero, setNumero] = useState("");
   const [estadoSelecionado, setEstadoSelecionado] = useState<string>("");
+  const [roleSelecionada, setRoleSelecionada] = useState<string>("");
   const [showEnderecoForm, setShowEnderecoForm] = useState(false);
-
-  const [showRoleDialog, setShowRoleDialog] = useState(false);
   const [codigoRole, setCodigoRole] = useState<number | null>(null);
-  const [roleSelecionada, setRoleSelecionada] = useState<string | null>(null);
-
   const [isLoading, setIsLoading] = useState(false);
   const [msgSucesso, setMsgSucesso] = useState("");
   const [sucessoVisivel, setSucessoVisivel] = useState(false);
   const [msgErro, setMsgErro] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [roles, setRoles] = useState<RoleType[]>([]);
+
   const [erroVisivel, setErroVisivel] = useState(false);
 
   const isFormValid = nome.trim() !== "";
@@ -173,6 +184,29 @@ const CadastroFuncionarios = () => {
     }
   };
 
+  const carregarRoles = async () => {
+    try {
+      setLoading(true);
+
+      const { data, error } = await supabase
+        .from("roles")
+        .select("*")
+        .order("id", { ascending: true });
+
+      if (error) {
+        console.error("Erro ao buscar roles:", error.message);
+        setRoles([]);
+      } else {
+        setRoles(data as RoleType[]);
+      }
+    } catch (err) {
+      console.error("Erro inesperado ao carregar roles:", err);
+      setRoles([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <SidebarAlert
@@ -187,7 +221,7 @@ const CadastroFuncionarios = () => {
         onClose={() => setErroVisivel(false)}
       />
 
-      <Nav titulo="Funcionário" onBackPress={() => navigation.goBack()} />
+      <Nav titulo="FUNCIONÁRIO" onBackPress={() => navigation.goBack()} />
 
       <ScrollView
         style={styles.scrollContainer}
@@ -245,74 +279,58 @@ const CadastroFuncionarios = () => {
             </Select>
           </View>
 
-          {!showEnderecoForm ? (
-            <Button
-              title="Endereço"
-              variant="outlined"
-              type="dialog"
-              onPress={() => setShowEnderecoForm(true)}
+          <View style={styles.addressBlock}>
+            <EditableTextCard
+              label="Logradouro"
+              value={rua}
+              placeholder="Rua/Avenida"
+              onChangeText={setRua}
             />
-          ) : (
-            <View style={styles.addressBlock}>
+            <EditableTextCard
+              label="Bairro"
+              value={bairro}
+              placeholder="Bairro"
+              onChangeText={setBairro}
+            />
+            <View style={styles.row}>
               <EditableTextCard
-                label="Logradouro"
-                value={rua}
-                placeholder="Rua/Avenida"
-                onChangeText={setRua}
+                label="Número"
+                placeholder="000"
+                tipo="number"
+                value={numero}
+                width="48%"
+                onChangeText={setNumero}
               />
               <EditableTextCard
-                label="Bairro"
-                value={bairro}
-                placeholder="Bairro"
-                onChangeText={setBairro}
-              />
-              <View style={styles.row}>
-                <EditableTextCard
-                  label="Número"
-                  placeholder="000"
-                  tipo="number"
-                  value={numero}
-                  width="48%"
-                  onChangeText={setNumero}
-                />
-                <EditableTextCard
-                  label="CEP"
-                  placeholder="00000‑000"
-                  tipo="number"
-                  value={cep}
-                  width="48%"
-                  onChangeText={setCep}
-                />
-              </View>
-              <EditableTextCard
-                label="Cidade"
-                value={cidade}
-                placeholder="Cidade"
-                onChangeText={setCidade}
-              />
-              <View style={{ width: "100%" }}>
-                <Select
-                  width="100%"
-                  label="Estado"
-                  value={estadoSelecionado}
-                  onChange={setEstadoSelecionado}
-                >
-                  {estadosBrasileiros.map((uf) => (
-                    <MenuItem key={uf} value={uf}>
-                      {uf}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </View>
-              <Button
-                title="Fechar endereço"
-                variant="outlined"
-                type="dialog"
-                onPress={() => setShowEnderecoForm(false)}
+                label="CEP"
+                placeholder="00000‑000"
+                tipo="number"
+                value={cep}
+                width="48%"
+                onChangeText={setCep}
               />
             </View>
-          )}
-
+            <EditableTextCard
+              label="Cidade"
+              value={cidade}
+              placeholder="Cidade"
+              onChangeText={setCidade}
+            />
+            <View style={{ width: "100%" }}>
+              <Select
+                width="100%"
+                label="Estado"
+                value={estadoSelecionado}
+                onChange={setEstadoSelecionado}
+              >
+                {estadosBrasileiros.map((uf) => (
+                  <MenuItem key={uf} value={uf}>
+                    {uf}
+                  </MenuItem>
+                ))}
+              </Select>
+            </View>
+          </View>
           <EditableTextCard
             label="DATA DE NASCIMENTO"
             placeholder="aaaa/mm/dd"
@@ -340,19 +358,25 @@ const CadastroFuncionarios = () => {
             onChangeText={setCargo}
           />
 
-          <Button
-            title="Permissão"
-            variant="outlined"
-            type="dialog"
-            onPress={() => setShowRoleDialog(true)}
-            disabled={!!roleSelecionada}
-          />
-          {roleSelecionada && (
-            <Selecionado
-              titulo={roleSelecionada}
-              onClear={() => setRoleSelecionada(null)}
-            />
-          )}
+          <View style={{ width: "100%" }}>
+            <Select
+              width="100%"
+              label="PERMISSÕES"
+              value={roleSelecionada}
+              onChange={(nome) => {
+                setRoleSelecionada(nome);
+                const role = roles.find((r) => r.nome === nome);
+                setCodigoRole(role ? role.id : null);
+              }}
+              onOpen={carregarRoles}
+            >
+              {roles.map((role) => (
+                <MenuItem key={role.id} value={role.nome}>
+                  {role.nome}
+                </MenuItem>
+              ))}
+            </Select>
+          </View>
 
           <EditableTextCard
             label="SENHA"
@@ -368,30 +392,16 @@ const CadastroFuncionarios = () => {
             value={confirmarSenha}
             onChangeText={setConfirmarSenha}
           />
-
           <Button
             title={isLoading ? "SALVANDO..." : "SALVAR"}
             variant="contained"
             color="primary"
             disabled={!isFormValid || isLoading}
-            type="submit"
+            type="dialog"
             onPress={salvarFuncionario}
           />
         </View>
       </ScrollView>
-
-      {showRoleDialog && (
-        <DialogRoles
-          open={showRoleDialog}
-          onClose={() => setShowRoleDialog(false)}
-          onSelect={(id, titulo) => {
-            setCodigoRole(id);
-            setRoleSelecionada(titulo);
-            setMsgSucesso("Permissão selecionada com sucesso!");
-            setSucessoVisivel(true);
-          }}
-        />
-      )}
     </View>
   );
 };

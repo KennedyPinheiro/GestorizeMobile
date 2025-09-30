@@ -26,28 +26,37 @@ const HomeButton = ({
   disabled = false,
   type = "submit",
 }: HomeButtonProps) => {
-  const backgroundColor =
-    variant === "contained"
-      ? color === "primary"
-        ? "#26579E"
-        : "#888"
-      : "transparent";
+  const COLORS = {
+    primary: "#26579E",
+    secondary: "#888",
+    disabledBackground: "#ccc",
+    disabledText: "#888",
+    white: "#fff",
+    transparent: "transparent",
+  };
 
-  const borderColor =
-    variant === "outlined"
-      ? color === "primary"
-        ? "#26579E"
-        : "#888"
-      : "transparent";
+  const baseColor = color === "primary" ? COLORS.primary : COLORS.secondary;
+  const isContained = variant === "contained" || type === "dialog";
 
-  const textColor =
-    variant === "contained" ? "#fff" : color === "primary" ? "#26579E" : "#888";
+  const backgroundColor = disabled
+    ? COLORS.disabledBackground
+    : isContained
+    ? baseColor
+    : COLORS.transparent;
+
+  const borderColor = variant === "outlined" ? baseColor : COLORS.transparent;
+
+  const textColor = disabled
+    ? COLORS.disabledText
+    : isContained
+    ? COLORS.white
+    : baseColor;
 
   const containerStyle = [
     styles.base,
-    type === "dialog" && styles.dialogButton,
+    type === "dialog" ? styles.dialogButton : styles.roundedButton,
     {
-      backgroundColor: disabled ? "#ccc" : backgroundColor,
+      backgroundColor,
       borderColor,
       borderWidth: variant === "outlined" ? 2 : 0,
     },
@@ -60,11 +69,21 @@ const HomeButton = ({
       disabled={disabled}
     >
       <View style={styles.content}>
-        {icon && <View style={styles.icon}>{icon}</View>}
+        <View style={styles.icon}>{icon}</View>
         <View style={styles.textWrapper}>
-          <Text style={[styles.text, { color: disabled ? "#888" : textColor }]}>
-            {title}
-          </Text>
+          <View style={styles.teste}>
+            <Text
+              style={[
+                styles.text,
+                {
+                  color: textColor,
+                  fontSize: type === "dialog" ? 25 : 18,
+                },
+              ]}
+            >
+             {title}
+            </Text>
+          </View>
         </View>
       </View>
     </TouchableOpacity>
@@ -73,44 +92,45 @@ const HomeButton = ({
 
 const styles = StyleSheet.create({
   base: {
-    width: "95%",
-    maxWidth: "80%",
+    width: "100%",
     paddingVertical: 12,
     paddingHorizontal: 16,
-    borderRadius: 20,
     elevation: 3,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.5,
-    shadowRadius: 4,
+    boxShadow: "#000",
+    shadowOffset: { width: 0, height: 20 },
+    shadowOpacity: 1,
+    shadowRadius: 10,
+  },
+  roundedButton: {
+    borderRadius: 20,
   },
   dialogButton: {
-    width: "100%",
-    maxWidth: "110%",
-    height: 64,
-    borderRadius: 20,
+    alignItems: "center",
+    alignContent: "center",
+    borderRadius: 10,
+    height: 70,
   },
   content: {
     flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "flex-start",
-    width: "100%",
-    position: "relative",
+    height: "100%",
+    gap: 10,
   },
   icon: {
-    zIndex: 2, 
+    margin: 10,
   },
   textWrapper: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    alignItems: "center",
+    flex: 1,
+    alignItems: "flex-start",
   },
   text: {
-    fontSize: 18,
+    marginTop: 10,
     fontWeight: "bold",
     fontFamily: "Inter",
-    textAlign: "center",
+    textAlign: "left",
+  },
+  teste: {
+    alignContent: "center",
+    justifyContent: "flex-start",
   },
 });
 

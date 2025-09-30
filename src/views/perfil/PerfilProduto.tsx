@@ -128,7 +128,7 @@ const PerfilProduto = () => {
       <Nav
         titulo={primeiroNome}
         onBackPress={() => navigation.goBack()}
-        showPessoaFisicaIcon
+        showProdutoIcon
       />
 
       <ScrollView style={styles.container}>

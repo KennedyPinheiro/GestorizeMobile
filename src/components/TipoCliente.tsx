@@ -5,11 +5,11 @@ type props = {
 };
 
 const TipoCliente = ({ tipo }: props) => {
-  const backgroundColor = tipo === "PF" ? "#802D26" : "#660C7A"; 
+  const backgroundColor = tipo === "PF" ? "#922b227d" : "#8d05ac88"; 
 
   return (
     <View style={[styles.container, { backgroundColor }]}>
-      <Text style={styles.text }>{tipo}</Text>
+      <Text style={styles.text}>{tipo}</Text>
     </View>
   );
 };
@@ -18,14 +18,15 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 50,
-    borderWidth:1,
-    padding:10
+    borderRadius: 75, 
+    padding: 10,
+    width: 50, 
+    height: 50, 
   },
   text: {
-    color: "#fff",
-    fontSize:25,
-    fontWeight: "bold",
+    color: "#000000",
+    fontSize: 20,
+    fontWeight: "900",
   },
 });
 

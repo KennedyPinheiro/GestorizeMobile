@@ -370,7 +370,7 @@ const PerfilPessoaJuridica = () => {
         onSuccess={async () => {
           try {
             const response = await fetch(
-              `http://192.168.1.12:3001/delete-cliente/${id}`,
+              `http://192.168.1.12:3000/delete-cliente/${id}`,
               {
                 method: "DELETE",
               }

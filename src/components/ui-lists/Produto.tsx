@@ -1,8 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import SidebarAlert from "../sidebars/Sidebaralert";
-import ErrorSidebarAlert from "../sidebars/ErrorSidebarAlert";
 
 type Props = {
   nome: string;
@@ -10,67 +8,91 @@ type Props = {
   medida: string;
   categoria?: string;
   onPress?: () => void;
+  iconSize?: number;
 };
 
-const Produto = ({ medida, nome, quantidade, categoria, onPress }: Props) => {
+const Produto = ({
+  medida,
+  nome,
+  quantidade,
+  categoria,
+  onPress,
+  iconSize = 70,
+}: Props) => {
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
       <View style={styles.iconContainer}>
-        <MaterialCommunityIcons name="package-variant" size={60} color="#000" />
+        <MaterialCommunityIcons
+          name="package-variant"
+          size={iconSize}
+          color="#555"
+        />
       </View>
 
-      <View style={styles.infoContainer}>
-        <Text style={styles.nome}>{nome}</Text>
-        <Text style={styles.categoria}>
-          {categoria ? categoria : "Sem Categoria"}
-        </Text>
-      </View>
+      <View style={styles.textContainer}>
+        <View style={styles.leftContent}>
+          <Text style={styles.nome}>{nome}</Text>
+          <Text style={styles.categoria}>
+            {categoria ? categoria : "Sem categoria"}
+          </Text>
+        </View>
 
-      <Text style={styles.quantidade}>
-        {quantidade} {medida}
-      </Text>
+      
+        <View style={styles.rightContent}>
+          <Text style={styles.quantidade}>
+            {quantidade} {medida}
+          </Text>
+        </View>
+      </View>
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#516EBC",
     flexDirection: "row",
     alignItems: "center",
-    padding: 10,
+    backgroundColor: "#fff",
+    paddingVertical: 12,
+    paddingHorizontal: 15,
     borderRadius: 10,
-    justifyContent: "space-between",
     marginBottom: 10,
-    marginTop: 10,
-    borderWidth: 1,
-    borderColor: "#062046",
+    gap: 15,
   },
   iconContainer: {
-    backgroundColor: "#D9D9D9",
-    borderRadius: 10,
-    marginRight: 10,
-    borderWidth: 2,
-    borderColor: "#062046",
+    width: 70,
+    height: 70,
+    borderRadius: 25,
+    backgroundColor: "#eee",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 12,
   },
-  infoContainer: {
+  textContainer: {
+    flex: 1,
+    flexDirection: "row", 
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  leftContent: {
     flex: 1,
   },
+  rightContent: {
+    marginLeft: 10,
+  },
   nome: {
-    color: "#fff",
-    fontWeight: 900,
     fontSize: 25,
+    fontWeight: "bold",
+    color: "#222",
   },
   categoria: {
-    color: "#fff",
-    fontWeight: 600,
-    fontSize: 18,
+    fontSize: 20,
+    color: "#666",
     marginTop: 2,
   },
   quantidade: {
-    color: "#fff",
-    fontSize: 17,
-    fontWeight: 600,
+    fontSize: 20,
+    color: "#666",
   },
 });
 

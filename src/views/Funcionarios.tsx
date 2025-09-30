@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, TextInput, View } from "react-native";
-import NavBar from "@components/utilities/NavBar";
 import BarraAdd from "@components/utilities/BarraAdd";
 import {
   useIsFocused,
@@ -18,6 +17,7 @@ import {
 } from "@context/types";
 import Funcionario from "@components/ui-lists/Funcionario";
 import Nav from "@components/utilities/Nav";
+import FloatingButton from "@components/botoes/FloatingButton";
 
 const Funcionarios = () => {
   const navigation =
@@ -113,58 +113,67 @@ const Funcionarios = () => {
         onClose={() => setErroAlertVisible(false)}
       />
       <Nav
-        titulo="Funcionários"
+        titulo="FUNCIONÁRIOS"
         onBackPress={() => navigation.navigate("Homepage")}
       />
 
-      <BarraAdd
-        onPressAdd={() => navigation.navigate("CadastroFuncionarios")}
-      />
       <View style={styles.barraBuscaContainer}>
-       <TextInput
-                placeholder="Buscar funcionario por nome"
-                placeholderTextColor="#999"
-                value={termoBusca}
-                onChangeText={setTermoBusca}
-                style={styles.inputBusca}
-              />
+        <TextInput
+          placeholder="Buscar funcionario por nome"
+          placeholderTextColor="#444141"
+          value={termoBusca}
+          onChangeText={setTermoBusca}
+          style={styles.inputBusca}
+        />
       </View>
       <ScrollView contentContainerStyle={{ padding: 10 }}>
-        {funcionario.map((item) => {
+        {funcionario.map((item, index) => {
           const enderecoDoFuncionario = endereco.find(
             (end) => end.id === item.endereco_id
           );
 
           return (
-            <Funcionario
+            <View
               key={item.id}
-              nome={item.nome}
-              funcao={item.cargo || "Example"}
-              onPress={() => {
-                navigation.navigate("PerfilFuncionario", {
-                  id: item.id,
-                  nome: item.nome,
-                  funcao: item.cargo,
-                  email: item.email,
-                  data_nascimento: item.data_nascimento,
-                  genero: item.genero,
-                  estado_civil: item.estado_civil,
-                  rg: item.rg,
-                  cpf: item.cpf,
-                  telefone: item.telefone,
-                  rua: enderecoDoFuncionario?.rua || "Não informado",
-                  bairro: enderecoDoFuncionario?.bairro || "Não informado",
-                  cidade: enderecoDoFuncionario?.cidade || "Não informado",
-                  estado: enderecoDoFuncionario?.estado || "Não informado",
-                  cep: enderecoDoFuncionario?.cep || "Não informado",
-                  numero: enderecoDoFuncionario?.numero || "Não informado",
-                  endereco_id: item.endereco_id,
-                });
+              style={{
+                borderBottomWidth: index < funcionario.length - 1 ? 1 : 0,
+                borderBottomColor: "#ccc",
+                paddingVertical: 8,
               }}
-            />
+            >
+              <Funcionario
+                nome={item.nome}
+                funcao={item.cargo || "Example"}
+                onPress={() => {
+                  navigation.navigate("PerfilFuncionario", {
+                    id: item.id,
+                    nome: item.nome,
+                    funcao: item.cargo,
+                    email: item.email,
+                    data_nascimento: item.data_nascimento,
+                    genero: item.genero,
+                    estado_civil: item.estado_civil,
+                    rg: item.rg,
+                    cpf: item.cpf,
+                    telefone: item.telefone,
+                    rua: enderecoDoFuncionario?.rua || "Não informado",
+                    bairro: enderecoDoFuncionario?.bairro || "Não informado",
+                    cidade: enderecoDoFuncionario?.cidade || "Não informado",
+                    estado: enderecoDoFuncionario?.estado || "Não informado",
+                    cep: enderecoDoFuncionario?.cep || "Não informado",
+                    numero: enderecoDoFuncionario?.numero || "Não informado",
+                    endereco_id: item.endereco_id,
+                  });
+                }}
+              />
+            </View>
           );
         })}
       </ScrollView>
+
+      <FloatingButton
+        onPress={() => navigation.navigate("CadastroFuncionarios")}
+      />
     </View>
   );
 };
@@ -175,21 +184,22 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
   },
   barraBuscaContainer: {
-    paddingHorizontal: 15,
+    paddingHorizontal: 10,
     paddingTop: 10,
+    paddingBottom : 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
   },
-  
   inputBusca: {
     backgroundColor: "#f2f2f2",
-    borderRadius: 8,
+    borderRadius: 10,
     paddingHorizontal: 12,
     paddingVertical: 10,
-    fontSize: 16,
+    fontSize: 20,
     borderWidth: 1,
     borderColor: "#ddd",
     color: "#333",
   },
-
 });
 
 export default Funcionarios;

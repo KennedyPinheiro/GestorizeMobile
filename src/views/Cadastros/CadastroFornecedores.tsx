@@ -19,7 +19,6 @@ const CadastroFornecedores = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
-  /* ---------- states ---------- */
   const [razaoSocial, setRazaoSocial] = useState("");
   const [cnpj, setCnpj] = useState("");
   const [ramoAtividade, setRamoAtividade] = useState("");
@@ -35,10 +34,7 @@ const CadastroFornecedores = () => {
   const [cep, setCep] = useState("");
   const [numero, setNumero] = useState("");
   const [estadoSelecionado, setEstadoSelecionado] = useState<string>("");
-
   const [isLoading, setIsLoading] = useState(false);
-
-  /* --- alertas --- */
   const [msgSucesso, setMsgSucesso] = useState("");
   const [sucessoVisivel, setSucessoVisivel] = useState(false);
   const [msgErro, setMsgErro] = useState("");
@@ -46,7 +42,6 @@ const CadastroFornecedores = () => {
 
   const isFormValid = razaoSocial.trim() !== "";
 
-  /* ---------- salvar ---------- */
   const salvarFornecedor = async () => {
     if (isLoading) return;
     setIsLoading(true);
@@ -58,7 +53,6 @@ const CadastroFornecedores = () => {
         throw new Error("Por favor, informe a Razão Social!");
       }
 
-      /* 1‑ Salva endereço (se o usuário preencheu) */
       if (showEnderecoForm) {
         const { data: enderecoInserido, error: erroEndereco } = await supabase
           .from("endereco")
@@ -73,13 +67,12 @@ const CadastroFornecedores = () => {
             },
           ])
           .select()
-          .single(); // ← devolve apenas uma linha
+          .single();
 
         if (erroEndereco) throw erroEndereco;
         idEnderecoCriado = enderecoInserido.id;
       }
 
-      /* 2‑ Salva fornecedor */
       const { error: erroFornecedor } = await supabase
         .from("fornecedor")
         .insert([
@@ -89,7 +82,7 @@ const CadastroFornecedores = () => {
             ramo_de_atividade: ramoAtividade,
             telefone,
             email: email || null,
-            endereco_id: idEnderecoCriado, // pode ser null
+            endereco_id: idEnderecoCriado,
             nome_responsavel: nomeResponsavel,
             chave_pix: chavePix,
             data_criacao: new Date().toISOString(),
@@ -99,12 +92,10 @@ const CadastroFornecedores = () => {
 
       if (erroFornecedor) throw erroFornecedor;
 
-      /* 3‑ Redireciona e mostra sucesso */
       setMsgSucesso("Fornecedor salvo com sucesso!");
       setSucessoVisivel(true);
       navigation.navigate("Fornecedores", { novoFornecedor: true });
     } catch (err: any) {
-      /* rollback do endereço, caso precise */
       if (idEnderecoCriado) {
         await supabase.from("endereco").delete().eq("id", idEnderecoCriado);
       }
@@ -117,7 +108,6 @@ const CadastroFornecedores = () => {
     }
   };
 
-  /* ---------- UI ---------- */
   return (
     <View style={styles.container}>
       <SidebarAlert
@@ -149,7 +139,6 @@ const CadastroFornecedores = () => {
             value={razaoSocial}
             onChangeText={setRazaoSocial}
           />
-
           <EditableTextCard
             label="CNPJ"
             placeholder="12.345.678/0001-95"
@@ -157,7 +146,6 @@ const CadastroFornecedores = () => {
             value={cnpj}
             onChangeText={(t) => setCnpj(formatCNPJ(t))}
           />
-
           <EditableTextCard
             label="RAMO DE ATIVIDADE"
             placeholder="Exemplo"
@@ -165,7 +153,6 @@ const CadastroFornecedores = () => {
             value={ramoAtividade}
             onChangeText={setRamoAtividade}
           />
-
           <EditableTextCard
             label="TELEFONE"
             placeholder="(00) 0 0000-0000"
@@ -173,7 +160,6 @@ const CadastroFornecedores = () => {
             value={telefone}
             onChangeText={(t) => setTelefone(formatTelefone(t))}
           />
-
           <EditableTextCard
             label="EMAIL"
             placeholder="example@email.com"
@@ -181,78 +167,61 @@ const CadastroFornecedores = () => {
             value={email}
             onChangeText={setEmail}
           />
-
-          {!showEnderecoForm ? (
-            <Button
-              title="Endereço"
-              variant="outlined"
-              type="dialog"
-              onPress={() => setShowEnderecoForm(true)}
+          <View style={{ width: "100%" }}>
+            <EditableTextCard
+              width={"100%"}
+              label="Logradouro"
+              value={rua}
+              placeholder="Logradouro"
+              onChangeText={setRua}
             />
-          ) : (
-            <View style={{ width: "100%" }}>
+            <EditableTextCard
+              width={"100%"}
+              label="Bairro"
+              placeholder="Bairro"
+              value={bairro}
+              onChangeText={setBairro}
+            />
+            <View style={styles.row}>
               <EditableTextCard
-                width={"100%"}
-                label="Logradouro"
-                value={rua}
-                placeholder="Logradouro"
-                onChangeText={setRua}
+                label="Número"
+                placeholder="000"
+                tipo="number"
+                value={numero}
+                width="48%"
+                onChangeText={setNumero}
               />
               <EditableTextCard
-                width={"100%"}
-                label="Bairro"
-                placeholder="Bairro"
-                value={bairro}
-                onChangeText={setBairro}
-              />
-              <View style={styles.row}>
-                <EditableTextCard
-                  label="Número"
-                  placeholder="000"
-                  tipo="number"
-                  value={numero}
-                  width="48%"
-                  onChangeText={setNumero}
-                />
-                <EditableTextCard
-                  label="CEP"
-                  value={cep}
-                  tipo="number"
-                  placeholder="00000-000"
-                  width="48%"
-                  onChangeText={setCep}
-                />
-              </View>
-              <EditableTextCard
-                width={"100%"}
-                label="Cidade"
-                placeholder="Cidade"
-                value={cidade}
-                onChangeText={setCidade}
-              />
-
-              <Select
-                width={"100%"}
-                label="Estado"
-                placeholder="Selecione um estado"
-                value={estadoSelecionado}
-                onChange={setEstadoSelecionado}
-              >
-                {estadosBrasileiros.map((uf) => (
-                  <MenuItem key={uf} value={uf}>
-                    {uf}
-                  </MenuItem>
-                ))}
-              </Select>
-              <Button
-                title="Fechar endereço"
-                variant="outlined"
-                type="dialog"
-                onPress={() => setShowEnderecoForm(false)}
+                label="CEP"
+                value={cep}
+                tipo="number"
+                placeholder="00000-000"
+                width="48%"
+                onChangeText={setCep}
               />
             </View>
-          )}
+            <EditableTextCard
+              width={"100%"}
+              label="Cidade"
+              placeholder="Cidade"
+              value={cidade}
+              onChangeText={setCidade}
+            />
 
+            <Select
+              width={"100%"}
+              label="Estado"
+              placeholder="Selecione um estado"
+              value={estadoSelecionado}
+              onChange={setEstadoSelecionado}
+            >
+              {estadosBrasileiros.map((uf) => (
+                <MenuItem key={uf} value={uf}>
+                  {uf}
+                </MenuItem>
+              ))}
+            </Select>
+          </View>
           <EditableTextCard
             label="NOME DO RESPONSÁVEL"
             placeholder="Nome Completo"
@@ -260,7 +229,6 @@ const CadastroFornecedores = () => {
             value={nomeResponsavel}
             onChangeText={setNomeResponsavel}
           />
-
           <EditableTextCard
             label="CHAVE PIX"
             placeholder="Exemplo"
@@ -268,13 +236,12 @@ const CadastroFornecedores = () => {
             value={chavePix}
             onChangeText={setChavePix}
           />
-
           <Button
             title={isLoading ? "SALVANDO..." : "SALVAR"}
             variant="contained"
             color="primary"
             disabled={!isFormValid || isLoading}
-            type="submit"
+            type="dialog"
             onPress={salvarFornecedor}
           />
         </View>

@@ -9,17 +9,17 @@ type Props = {
 const MoreButton = ({ onPress }: Props) => {
   return (
     <TouchableOpacity style={styles.botao} onPress={onPress}>
-      <MaterialIcons name="add" size={24} color="#fff" />
+      <MaterialIcons name="add" size={35} color="#000000" />
     </TouchableOpacity>
   )
 }
 
 const styles = StyleSheet.create({
   botao: {
-    width: 32,
-    height: 32,
+    width: 35,
+    height: 35,
     borderRadius: 16,
-    backgroundColor: "#0F2A5F",
+    backgroundColor: "#ffffff",
     justifyContent: "center",
     alignItems: "center",
   },

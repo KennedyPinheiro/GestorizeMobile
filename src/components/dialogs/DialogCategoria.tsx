@@ -12,7 +12,7 @@ import BarraAdd from "@components/utilities/BarraAdd";
 import DialogAdicionarCategoria from "@components/dialogs/DialogAdicionarCategoria";
 import { CategoriaType } from "@context/types";
 import Categoria from "@components/ui-lists/Categoria";
-import { supabase } from "@lib/supabase"; // ajuste conforme seu caminho real
+import { supabase } from "@lib/supabase";
 
 type props = {
   open?: boolean;
@@ -38,11 +38,10 @@ const DialogCategorias = ({ open, onClose, onSelect }: props) => {
       .select("*")
       .order("id", { ascending: true });
 
-    if (error) {
-     
-    } else if (data) {
+    if (!error && data) {
       setDadosCategoria(data as CategoriaType[]);
     }
+
     setLoading(false);
   };
 
@@ -64,7 +63,7 @@ const DialogCategorias = ({ open, onClose, onSelect }: props) => {
             <TouchableWithoutFeedback>
               <View style={styles.container}>
                 <View style={styles.header}>
-                  <Text style={styles.title}>Categorias</Text>
+                  <Text style={styles.title}>CATEGORIAS</Text>
                 </View>
 
                 <BarraAdd onPressAdd={() => setDialogVisible(true)} />
@@ -73,18 +72,24 @@ const DialogCategorias = ({ open, onClose, onSelect }: props) => {
                   {loading ? (
                     <ActivityIndicator size="large" color="#062046" />
                   ) : dadosCategoria.length === 0 ? (
-                    <Text style={styles.text}>Nenhuma categoria cadastrada.</Text>
+                    <Text style={styles.text}>
+                      Nenhuma categoria cadastrada.
+                    </Text>
                   ) : (
-                    dadosCategoria.map((cat) => (
-                      <Categoria
-                        key={cat.id}
-                        titulo={cat.titulo}
-                        descricao={cat.descricao}
-                        onPress={() => {
-                          onSelect(cat.id, cat.titulo);
-                          onClose();
-                        }}
-                      />
+                    dadosCategoria.map((cat, index) => (
+                      <View key={cat.id}>
+                        <Categoria
+                          titulo={cat.titulo}
+                          descricao={cat.descricao}
+                          onPress={() => {
+                            onSelect(cat.id, cat.titulo);
+                            onClose();
+                          }}
+                        />
+                        {index < dadosCategoria.length - 1 && (
+                          <View style={styles.separator} />
+                        )}
+                      </View>
                     ))
                   )}
                 </ScrollView>
@@ -115,19 +120,28 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     overflow: "hidden",
     borderColor: "#062046",
-    borderWidth: 3,
+    borderWidth: 1,
     maxHeight: "80%",
   },
   header: {
     backgroundColor: "#062046",
-    paddingVertical: 15,
-    paddingHorizontal: 20,
+    justifyContent: "center",
+    alignItems: "center",
   },
+  separator: {
+    height: 1,
+    backgroundColor: "#ccc",
+    marginVertical: 5,
+  },
+
   title: {
     fontSize: 25,
     fontWeight: "bold",
-    textAlign: "center",
     color: "#fff",
+    width: "100%",
+    height: 60,
+    lineHeight: 60,
+    textAlign: "center",
   },
   content: {
     paddingHorizontal: 10,

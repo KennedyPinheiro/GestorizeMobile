@@ -21,10 +21,12 @@ const supabaseAdmin = createClient(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh2cGRiYXBqYmFlbG54Z3NyZWNjIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0ODcyNDE4OCwiZXhwIjoyMDY0MzAwMTg4fQ.-wADobsulCJ8_QrLLB1dQ2T7RmpabwiF7MqjSJXsYDA"
 );
 
-app.listen(3000, () => {
-  console.log("Servidor rodando em http://localhost:3000");
-});
+const PORT = 3000;
+const HOST = "0.0.0.0";
 
+app.listen(PORT, HOST, () => {
+  console.log(`Servidor rodando em http://${HOST}:${PORT}`);
+});
 //Funcionarios
 
 app.delete("/delete-user/:id", async (req, res) => {
@@ -224,8 +226,7 @@ app.delete("/delete-cliente/:id", async (req, res) => {
   }
 });
 
-
-  //Produtos
+//Produtos
 app.delete("/delete-produto/:id", async (req, res) => {
   const produtoId = req.params.id;
 
@@ -235,7 +236,6 @@ app.delete("/delete-produto/:id", async (req, res) => {
       .select("id")
       .eq("id", produtoId)
       .maybeSingle();
-
 
     if (error) {
       console.error("Erro ao buscar produto:", error.message);
@@ -252,56 +252,145 @@ app.delete("/delete-produto/:id", async (req, res) => {
 });
 
 app.put("/update-produto/:id", async (req, res) => {
-    const produtoId = req.params.id;
-    const updates = req.body;
-  
-    if (!updates || Object.keys(updates).length === 0) {
-      return res.status(400).json({ error: "Nenhum dado fornecido para atualização." });
-    }
-  
-    const camposValidos = [
-      "nome",
-      "quantidade",
-      "medida_id",
-      "descricao",
-      "data_validade",
-      "data_de_entrada",
-      "preco_custo",
-      "margem_lucro",
-      "fornecedor_id",
-      "categoria_id",
-    ];
-  
-    const camposParaAtualizar = Object.entries(updates).reduce((acc, [campo, valor]) => {
+  const produtoId = req.params.id;
+  const updates = req.body;
+
+  if (!updates || Object.keys(updates).length === 0) {
+    return res
+      .status(400)
+      .json({ error: "Nenhum dado fornecido para atualização." });
+  }
+
+  const camposValidos = [
+    "nome",
+    "quantidade",
+    "medida_id",
+    "descricao",
+    "data_validade",
+    "data_de_entrada",
+    "preco_custo",
+    "margem_lucro",
+    "fornecedor_id",
+    "categoria_id",
+  ];
+
+  const camposParaAtualizar = Object.entries(updates).reduce(
+    (acc, [campo, valor]) => {
       if (camposValidos.includes(campo)) {
         acc[campo] = valor;
       }
       return acc;
-    }, {});
-  
-    if (Object.keys(camposParaAtualizar).length === 0) {
-      return res.status(400).json({ error: "Nenhum campo válido para atualizar." });
+    },
+    {}
+  );
+
+  if (Object.keys(camposParaAtualizar).length === 0) {
+    return res
+      .status(400)
+      .json({ error: "Nenhum campo válido para atualizar." });
+  }
+
+  camposParaAtualizar.ultima_atualizacao = new Date();
+
+  try {
+    const { error } = await supabaseAdmin
+      .from("produtos")
+      .update(camposParaAtualizar)
+      .eq("id", produtoId);
+
+    if (error) {
+      console.error("Erro ao atualizar produto:", error.message);
+      return res.status(500).json({ error: error.message });
     }
-  
-    camposParaAtualizar.ultima_atualizacao = new Date();
-  
-    try {
-      const { error } = await supabaseAdmin
-        .from("produtos")
-        .update(camposParaAtualizar)
-        .eq("id", produtoId);
-  
-      if (error) {
-        console.error("Erro ao atualizar produto:", error.message);
-        return res.status(500).json({ error: error.message });
+
+    return res.json({ message: "Produto atualizado com sucesso." });
+  } catch (err) {
+    console.error("Erro inesperado ao atualizar produto:", err.message);
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+//Perfil de Usuário
+
+app.get("/usuario/perfil-formatado/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    
+
+    if (!id) {
+      return res.status(400).json({ error: "ID do usuário não fornecido." });
+    }
+
+    // 1. Buscar dados do usuário
+    const { data: userData, error: userError } = await supabase
+      .from("users")
+      .select("id, nome, email, role_id")
+      .eq("id", id)
+      .single();
+
+    if (userError || !userData) {
+      return res
+        .status(404)
+        .json({ error: "Erro ao buscar dados do usuário." });
+    }
+
+    // 2. Buscar dados do funcionário
+    const { data: funcionarioData, error: funcionarioError } = await supabase
+      .from("funcionarios")
+      .select(
+        "cargo, data_nascimento, genero, estado_civil, telefone, endereco_id, rg, cpf"
+      )
+      .eq("id", id)
+      .single();
+
+    if (funcionarioError || !funcionarioData) {
+      return res
+        .status(404)
+        .json({ error: "Erro ao buscar dados do funcionário." });
+    }
+
+    // 3. Buscar dados do endereço (se houver)
+    let enderecoData = null;
+
+    if (funcionarioData.endereco_id) {
+      const { data, error } = await supabase
+        .from("endereco")
+        .select("rua, bairro, cidade, estado, numero, cep")
+        .eq("id", funcionarioData.endereco_id)
+        .single();
+
+      if (!error && data) {
+        enderecoData = data;
       }
-  
-      return res.json({ message: "Produto atualizado com sucesso." });
-    } catch (err) {
-      console.error("Erro inesperado ao atualizar produto:", err.message);
-      return res.status(500).json({ error: err.message });
     }
-  });
 
+    // 4. Retornar dados crus
+    return res.json({
+      id: userData.id,
+      nome: userData.nome,
+      email: userData.email,
 
+      funcao: funcionarioData.cargo,
+      data_nascimento: funcionarioData.data_nascimento,
+      genero: funcionarioData.genero,
+      estado_civil: funcionarioData.estado_civil,
+      telefone: funcionarioData.telefone,
+      rg: funcionarioData.rg,
+      cpf: funcionarioData.cpf,
+      endereco_id: funcionarioData.endereco_id,
 
+      ...(enderecoData && {
+        rua: enderecoData.rua,
+        bairro: enderecoData.bairro,
+        cidade: enderecoData.cidade,
+        estado: enderecoData.estado,
+        numero: enderecoData.numero,
+        cep: enderecoData.cep,
+      }),
+    });
+  } catch (err) {
+    console.error("Erro ao carregar perfil formatado:", err);
+    return res.status(500).json({ error: "Erro interno do servidor." });
+  }
+});

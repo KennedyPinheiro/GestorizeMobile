@@ -29,16 +29,12 @@ const FornecedorIcon = ({
         style,
       ]}
     >
-      <MaterialCommunityIcons
-        name="account-tie"
-        size={iconSize}
-        color={color}
-      />
+      <MaterialCommunityIcons name="truck" size={iconSize} color={color} />
     </View>
   );
 };
 
-export default FornecedorIcon;
+export default FornecedorIcon;  
 
 const styles = StyleSheet.create({
   container: {

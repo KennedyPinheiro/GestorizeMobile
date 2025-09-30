@@ -101,7 +101,7 @@ const Login = ({ navigation }: Props) => {
               title={"Login"}
               variant="contained"
               color="primary"
-              type="submit"
+              type="dialog"
               onPress={handleLogin}
               disabled={!isFormValid}
             />

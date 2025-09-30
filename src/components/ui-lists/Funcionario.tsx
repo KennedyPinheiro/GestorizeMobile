@@ -1,7 +1,6 @@
 import React from "react";
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { TouchableOpacity } from "react-native";
 
 type Props = {
   nome: string;
@@ -12,9 +11,11 @@ type Props = {
 const Funcionario = ({ nome, funcao, onPress }: Props) => {
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
-      <View style={styles.imageContainer}>
-        <MaterialCommunityIcons name="account-tie" size={70} color="#000" />
+
+      <View style={styles.iconContainer}>
+        <MaterialCommunityIcons name="account-tie" size={70} color="#555" />
       </View>
+
       <View style={styles.textContainer}>
         <Text style={styles.nome}>{nome}</Text>
         <Text style={styles.funcao}>{funcao}</Text>
@@ -25,35 +26,35 @@ const Funcionario = ({ nome, funcao, onPress }: Props) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#516EBC",
     flexDirection: "row",
     alignItems: "center",
-    padding: 10,
+    backgroundColor: "#fff",
+    paddingVertical: 12,
+    paddingHorizontal: 15,
     borderRadius: 10,
-    justifyContent: "space-between",
     marginBottom: 10,
-    marginTop: 10,
-    borderWidth: 1,
+    gap: 15,
   },
-  imageContainer: {
-    backgroundColor: "#D9D9D9",
-    borderRadius: 10,
-    marginRight: 10,
-    borderWidth: 1,
+  iconContainer: {
+    width: 70,
+    height: 70,
+    borderRadius: 25,
+    backgroundColor: "#eee",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 12,
   },
   textContainer: {
     flex: 1,
-    justifyContent: "center",
   },
   nome: {
-    color: "#fff",
-    fontWeight: 900,    
     fontSize: 25,
+    fontWeight: "bold",
+    color: "#222",
   },
   funcao: {
-    color: "#fff",
-    fontWeight: 600,
-    fontSize: 18,
+    fontSize: 20,
+    color: "#666",
   },
 });
 

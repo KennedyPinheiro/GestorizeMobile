@@ -32,7 +32,9 @@ const DialogFornecedores = ({ open, onClose, onSelect }: Props) => {
     setLoading(true);
     const { data, error } = await supabase
       .from("fornecedor")
-      .select("id, razao_social, email")
+      .select(
+        "id, razao_social, email, ramo_de_atividade, telefone, cnpj ,endereco_id, nome_responsavel,chave_pix"
+      )
       .order("id", { ascending: true });
 
     if (error) {
@@ -55,7 +57,7 @@ const DialogFornecedores = ({ open, onClose, onSelect }: Props) => {
           <TouchableWithoutFeedback>
             <View style={styles.container}>
               <View style={styles.header}>
-                <Text style={styles.title}>Fornecedores</Text>
+                <Text style={styles.title}>FORNECEDORES</Text>
               </View>
 
               <ScrollView style={styles.content}>
@@ -97,19 +99,23 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     overflow: "hidden",
     borderColor: "#062046",
-    borderWidth: 3,
+    borderWidth: 1,
     maxHeight: "80%",
   },
   header: {
     backgroundColor: "#062046",
-    paddingVertical: 15,
-    paddingHorizontal: 20,
+    maxWidth: "100%",
+    justifyContent: "center",
+    alignItems: "center",
   },
   title: {
     fontSize: 25,
     fontWeight: "bold",
     textAlign: "center",
     color: "#fff",
+    width: "100%",
+    height: 60,
+    lineHeight: 60, 
   },
   content: {
     paddingHorizontal: 10,

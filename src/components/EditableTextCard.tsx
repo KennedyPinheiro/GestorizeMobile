@@ -17,6 +17,7 @@ type Props = {
   onChangeText?: (text: string) => void;
   width?: DimensionValue;
   placeholder?: string;
+  fullWidth?: boolean;
 };
 
 const EditableTextCard = ({
@@ -42,14 +43,21 @@ const EditableTextCard = ({
     }
   };
 
-  const displayValue = isPassword && secureText
-    ? "\u2022".repeat(internalValue.length)
-    : internalValue;
+  const displayValue =
+    isPassword && secureText
+      ? "\u2022".repeat(internalValue.length)
+      : internalValue;
 
   return (
     <View style={[styles.container, { width }]}>
-      <Text style={styles.label}>{label}</Text>
-      <View style={styles.inputWrapper}>
+      {internalValue ? <Text style={styles.label}>{label}</Text> : null}
+
+      <View
+        style={[
+          styles.inputWrapper,
+          !internalValue && { alignItems: "center" }, 
+        ]}
+      >
         {isEditing ? (
           <TextInput
             style={[styles.input, isPassword && { flex: 1 }]}
@@ -58,8 +66,8 @@ const EditableTextCard = ({
             onBlur={handleBlur}
             autoFocus
             keyboardType={keyboardType}
-            placeholder={placeholder}
-            placeholderTextColor="#2c2b2b"
+            placeholder={!internalValue ? label : placeholder}
+            placeholderTextColor="#3f3f3f"
             secureTextEntry={isPassword && secureText}
           />
         ) : (
@@ -73,10 +81,11 @@ const EditableTextCard = ({
                 !internalValue && styles.placeholderText,
               ]}
             >
-              {internalValue ? displayValue : placeholder || " "}
+              {internalValue ? displayValue : label}
             </Text>
           </TouchableOpacity>
         )}
+
         {isPassword && (
           <TouchableOpacity
             onPress={() => setSecureText(!secureText)}
@@ -101,10 +110,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#000",
     borderRadius: 15,
-    paddingVertical: 10,
+    paddingVertical: 14,
     paddingHorizontal: 20,
     marginVertical: 10,
     backgroundColor: "#fff",
+    minHeight: 72,
   },
   label: {
     fontSize: 13,
@@ -120,6 +130,7 @@ const styles = StyleSheet.create({
   placeholderText: {
     color: "#999",
     fontWeight: "normal",
+    fontSize: 25,
   },
   input: {
     fontSize: 20,
@@ -130,6 +141,7 @@ const styles = StyleSheet.create({
   inputWrapper: {
     flexDirection: "row",
     alignItems: "center",
+    minHeight: 40,
   },
   iconWrapper: {
     paddingLeft: 10,

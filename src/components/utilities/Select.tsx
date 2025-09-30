@@ -15,6 +15,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 type SelectProps = {
   value: string;
   onChange: (value: string) => void;
+  onOpen?: () => void;
   label?: string;
   placeholder?: string;
   children: React.ReactNode;
@@ -32,6 +33,7 @@ const { height } = Dimensions.get("window");
 const Select = ({
   value,
   onChange,
+  onOpen,
   label = "Campo",
   placeholder = "Selecionar...",
   children,
@@ -62,14 +64,19 @@ const Select = ({
   const isEmpty = !value;
 
   return (
-    <TouchableOpacity onPress={() => setVisible(true)} activeOpacity={0.7}>
+    <TouchableOpacity
+      onPress={() => {
+        setVisible(true);
+        if (onOpen) onOpen(); // <-- Chama carregarRoles ao abrir
+      }}
+      activeOpacity={0.7}
+    >
       <View style={[styles.container, { width }]}>
         <View style={styles.textContainer}>
           <View>
             <Text style={styles.label}>{label}</Text>
             <Text style={[styles.valueText, isEmpty && styles.placeholderText]}>
               {value || placeholder}
-              
             </Text>
           </View>
           <MaterialIcons name="arrow-drop-down" size={28} color="#666" />
@@ -81,7 +88,6 @@ const Select = ({
           animationType="fade"
           onRequestClose={() => setVisible(false)}
         >
-          
           <TouchableWithoutFeedback onPress={() => setVisible(false)}>
             <View style={styles.overlay}>
               <TouchableWithoutFeedback>
@@ -149,12 +155,12 @@ const MenuItem = ({ value, children, onPress }: MenuItemProps) => (
 
 const menuStyles = StyleSheet.create({
   menuItem: {
-    padding: 15,
+    padding: 16,
     borderBottomWidth: 1,
     borderBottomColor: "#eee",
   },
   menuItemText: {
-    fontSize: 16,
+    fontSize: 20,
     color: "#333",
   },
 });

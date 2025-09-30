@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
   },
   leftIcon: {
     position: "absolute",
-    left: 5,
+    left: 15,
     flexDirection: "row",
     alignItems: "center",
   },

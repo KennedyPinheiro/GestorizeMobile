@@ -7,7 +7,7 @@ import {
   ViewStyle,
 } from "react-native";
 
-type ButtonProps = {
+type porps = {
   title?: string;
   variant?: "contained" | "outlined" | "delete";
   color?: "primary" | "secondary";
@@ -23,12 +23,12 @@ const Button = ({
   onPress,
   disabled = false,
   type = "submit",
-}: ButtonProps) => {
+}: porps) => {
   const isOutlined = variant === "outlined";
   const isDelete = variant === "delete";
 
   const backgroundColor = isDelete
-    ? "#FF4C4C" 
+    ? "#e96262"
     : !isOutlined
     ? color === "primary"
       ? "#26579E"
@@ -42,7 +42,7 @@ const Button = ({
     : "transparent";
 
   const textColor = isDelete
-    ? "#000" 
+    ? "#ffffff"
     : !isOutlined
     ? "#fff"
     : color === "primary"
@@ -52,9 +52,9 @@ const Button = ({
   const shadowStyle: ViewStyle = !isOutlined
     ? {
         elevation: 3,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.5,
+        boxShadow: "#000",
+        shadowOffset: { width: 0, height: 5 },
+        shadowOpacity: 1,
         shadowRadius: 4,
       }
     : {};
@@ -67,7 +67,7 @@ const Button = ({
       backgroundColor: disabled ? "#ccc" : backgroundColor,
       borderColor,
       borderWidth: isOutlined ? 2 : 0,
-      marginBottom: isOutlined ? 0 : 15,
+      marginBottom: type === "dialog" ? 0 : isOutlined ? 0 : 15,
     },
   ];
 
@@ -77,7 +77,7 @@ const Button = ({
       style={containerStyle}
       disabled={disabled}
     >
-      <Text style={[styles.text, { color: disabled ? "#888" : textColor }]}>
+      <Text style={[styles.text, { color: disabled ? "#5e5e5e" : textColor }]}>
         {title}
       </Text>
     </TouchableOpacity>
@@ -96,9 +96,9 @@ const styles = StyleSheet.create({
   },
   dialogButton: {
     width: "100%",
-    maxWidth: "110%",
-    height: 64,
-    borderRadius: 15,
+    maxWidth: "100%",
+    height: 65,
+    borderRadius: 10,
   },
   text: {
     fontSize: 18,
@@ -108,4 +108,3 @@ const styles = StyleSheet.create({
 });
 
 export default Button;
-

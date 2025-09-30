@@ -81,20 +81,20 @@ const CadastroProdutos = () => {
 
     try {
       if (!nomeProduto.trim()) {
-        setMessage("Por favor, insira o nome do produto.");
+        setErroMessage("Por favor, insira o nome do produto.");
         setAlertVisible(true);
         setIsLoading(false);
         return;
       }
 
       if (!categoriaSelecionada) {
-        setMessage("Selecione uma categoria.");
+        setErroMessage("Selecione uma categoria.");
         setAlertVisible(true);
         setIsLoading(false);
         return;
       }
       if (!medidaSelecionada) {
-        setMessage("Selecione uma medida.");
+        setErroMessage("Selecione uma medida.");
         setAlertVisible(true);
         setIsLoading(false);
         return;
@@ -164,26 +164,23 @@ const CadastroProdutos = () => {
         contentContainerStyle={styles.contentContainer}
       >
         <View style={styles.formContainer}>
-          <View style={styles.inputItem}>
-            <EditableTextCard
-              label="Nome do Produto"
-              placeholder="Produto Name"
-              tipo="string"
-              value={nomeProduto}
-              onChangeText={setNomeProduto}
-            />
-          </View>
+          <EditableTextCard
+            label="Nome do Produto"
+            placeholder="Produto Name"
+            tipo="string"
+            value={nomeProduto}
+            onChangeText={setNomeProduto}
+          />
 
-          <View style={styles.inputItem}>
-            <EditableTextCard
-              label="Descrição"
-              placeholder="Descrição"
-              tipo="string"
-              value={descricao}
-              onChangeText={setDescricao}
-            />
-          </View>
-          <View style={styles.inputItem}>
+          <EditableTextCard
+            label="Descrição"
+            placeholder="Descrição"
+            tipo="string"
+            value={descricao}
+            onChangeText={setDescricao}
+          />
+
+          <View style={{ width: "100%" }}>
             <ClickableTextCard
               label=" Categoria"
               placeholder="Selecionar Categoria"
@@ -191,38 +188,32 @@ const CadastroProdutos = () => {
               onPress={handleOpenCategoria}
             />
           </View>
-          <View style={styles.inputItem}>
-            <EditableTextCard
-              label="Data de Entrada"
-              placeholder="0000 / 00 / 00"
-              tipo="number"
-              value={dataEntrada}
-              onChangeText={(text) => {
-                setDataEntrada(formatDate(text));
-              }}
-            />
-          </View>
 
-          <View style={styles.inputItem}>
-            <EditableTextCard
-              label="Quantidade em Estoque"
-              placeholder="000"
-              tipo="number"
-              value={quantidade}
-              onChangeText={setQuantidade}
-            />
-          </View>
+          <EditableTextCard
+            label="Data de Entrada"
+            placeholder="0000 / 00 / 00"
+            tipo="number"
+            value={dataEntrada}
+            onChangeText={(text) => {
+              setDataEntrada(formatDate(text));
+            }}
+          />
 
-          <View style={styles.inputItem}>
+          <EditableTextCard
+            label="Quantidade em Estoque"
+            placeholder="000"
+            tipo="number"
+            value={quantidade}
+            onChangeText={setQuantidade}
+          />
+          <View style={{ width: "100%" }}>
             <ClickableTextCard
               label=" Uidade de Medida"
               placeholder="Selecionar Unidade de Medida"
               value={medidaSelecionada}
               onPress={handleOpenMedida}
             />
-          </View>
 
-          <View style={styles.inputItem}>
             <ClickableTextCard
               label="Fornecedor"
               placeholder="Selecionar Fornecedor"
@@ -230,55 +221,48 @@ const CadastroProdutos = () => {
               onPress={handleOpenFornecedor}
             />
           </View>
+          <EditableTextCard
+            label="Data de Validade"
+            placeholder="0000 / 00 / 00"
+            tipo="number"
+            value={dataValidade}
+            onChangeText={(text) => {
+              setDataValidade(formatDate(text));
+            }}
+          />
 
-          <View style={styles.inputItem}>
-            <EditableTextCard
-              label="Data de Validade"
-              placeholder="0000 / 00 / 00"
-              tipo="number"
-              value={dataValidade}
-              onChangeText={(text) => {
-                setDataValidade(formatDate(text));
-              }}
-            />
-          </View>
+          <EditableTextCard
+            label="Preço de Custo"
+            placeholder="R$ 0,00"
+            tipo="number"
+            value={precoCustoTexto}
+            onChangeText={(text) => {
+              setPrecoCustoTexto(text);
+              const parsed = parseReal(text);
+              if (!isNaN(parsed)) setPrecoCusto(parsed);
+            }}
+          />
 
-          <View style={styles.inputItem}>
-            <EditableTextCard
-              label="Preço de Custo"
-              placeholder="R$ 0,00"
-              tipo="number"
-              value={precoCustoTexto}
-              onChangeText={(text) => {
-                setPrecoCustoTexto(text);
-                const parsed = parseReal(text);
-                if (!isNaN(parsed)) setPrecoCusto(parsed);
-              }}
-            />
-          </View>
-
-          <View style={styles.inputItem}>
-            <EditableTextCard
-              label="Margem de Lucro"
-              placeholder="0,00%"
-              tipo="number"
-              value={margemLucroTexto}
-              onChangeText={(text) => {
-                setMargemLucroTexto(text);
-                const parsed = parsePercent(text);
-                if (!isNaN(parsed)) {
-                  setMargemLucro(parsed.toString());
-                }
-              }}
-            />
-          </View>
+          <EditableTextCard
+            label="Margem de Lucro"
+            placeholder="0,00%"
+            tipo="number"
+            value={margemLucroTexto}
+            onChangeText={(text) => {
+              setMargemLucroTexto(text);
+              const parsed = parsePercent(text);
+              if (!isNaN(parsed)) {
+                setMargemLucro(parsed.toString());
+              }
+            }}
+          />
 
           <Button
-            title={isLoading ? "SALVANDO..." : "ADICIONAR"}
+            title={isLoading ? "SALVANDO..." : "SALVAR"}
             variant="contained"
             color="primary"
             disabled={!isFormValid || isLoading}
-            type="submit"
+            type="dialog"
             onPress={salvarProduto}
           />
         </View>
@@ -309,26 +293,27 @@ const CadastroProdutos = () => {
 };
 
 const styles = StyleSheet.create({
-  scrollContainer: {
-    backgroundColor: "#ffffff",
+  container: {
+    flex: 1,
     width: "100%",
+    alignItems: "center",
+    backgroundColor: "#fff",
+  },
+  scrollContainer: {
     flexGrow: 1,
+    width: "100%",
+    backgroundColor: "#fff",
   },
   contentContainer: {
     alignItems: "center",
     paddingBottom: 32,
   },
-  container: {
-    width: "100%",
-    alignItems: "center",
-    backgroundColor: "#ffffff",
-    flex: 1,
-  },
   formContainer: {
     marginTop: 24,
     width: "100%",
+    paddingHorizontal: 20,
     alignItems: "center",
-    gap: 2,
+    gap: 4,
   },
   inputItem: {
     width: "90%",

@@ -1,4 +1,6 @@
+import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 type Props = {
   titulo: string;
@@ -6,18 +8,18 @@ type Props = {
   selected?: boolean;
 };
 
-const Medida = ({ titulo,  onPress, selected = false }: Props) => {
-  const formatDescricao = (descricao?: string) => {
-    if (!descricao) return "";
-    return descricao.length > 30
-      ? descricao.substring(0, 27) + "..."
-      : descricao;
-  };
-
+const Medida = ({ titulo, onPress, selected = false }: Props) => {
   return (
-    <TouchableOpacity onPress={onPress}>
-      <View style={[styles.container, selected && styles.containerSelecionado]}>
-        <View style={styles.textContainer}>
+    <TouchableOpacity
+      style={[styles.container, selected && styles.containerSelecionado]}
+      onPress={onPress}
+    >
+      <View style={styles.iconContainer}>
+        <MaterialCommunityIcons name="ruler" size={50} color="#555" />
+      </View>
+
+      <View style={styles.textContainer}>
+        <View style={styles.leftContent}>
           <Text style={styles.titulo}>{titulo}</Text>
         </View>
       </View>
@@ -29,31 +31,40 @@ export default Medida;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#516EBC",
     flexDirection: "row",
     alignItems: "center",
-    padding: 10,
-    borderRadius: 5,
-    justifyContent: "space-between",
-    marginVertical: 10,
-    borderWidth: 1,
-    borderColor: "#062046",
+    backgroundColor: "#fff",
+    paddingVertical: 12,
+    paddingHorizontal: 15,
+    borderRadius: 10,
+    marginBottom: 10,
+    gap: 15,
   },
   containerSelecionado: {
-    borderColor: "lime",
-    backgroundColor: "#3b5aa1",
+    backgroundColor: "#d0e3ff",
+    borderColor: "#26579E",
+    borderWidth: 2,
+  },
+  iconContainer: {
+    width: 60,
+    height: 60,
+    borderRadius: 20,
+    backgroundColor: "#eee",
+    justifyContent: "center",
+    alignItems: "center",
   },
   textContainer: {
     flex: 1,
-    justifyContent: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  leftContent: {
+    flex: 1,
   },
   titulo: {
-    color: "#fff",
-    fontWeight: "bold",
     fontSize: 25,
-  },
-  descricao: {
-    color: "#fff",
-    fontSize: 18,
+    fontWeight: "bold",
+    color: "#222",
   },
 });

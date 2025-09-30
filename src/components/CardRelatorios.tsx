@@ -2,27 +2,25 @@ import { StyleSheet, Text, View } from "react-native";
 
 type props = {
   titulo: string;
-  icon?: React.ReactNode;
 };
 
-const CardRelatorios = ({ titulo, icon }: props) => {
+const CardRelatorios = ({ titulo }: props) => {
   return (
     <View style={styles.container}>
       <View style={styles.titulo}>
-        <View style={styles.title}>
-          <Text style={styles.titleText}>{titulo}</Text>
-          <View style={styles.icon}>{icon}</View>
-        </View>
+        <Text style={styles.titleText}>{titulo}</Text>
       </View>
 
-      <View style={styles.items}>
-        <View style={styles.row}>
-          <Text style={styles.label}>Novos</Text>
-          <Text style={styles.value}>0</Text>
-        </View>
-        <View style={styles.row}>
-          <Text style={styles.label}>Verificados</Text>
-          <Text style={styles.value}>0</Text>
+      <View style={styles.grid}>
+        <View style={styles.column}>
+          <View style={styles.row}>
+            <Text style={styles.label}>NOVOS</Text>
+            <Text style={styles.value}>0</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.label}>VERIFICADOS</Text>
+            <Text style={styles.value}>0</Text>
+          </View>
         </View>
       </View>
     </View>
@@ -32,54 +30,43 @@ const CardRelatorios = ({ titulo, icon }: props) => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#062046",
-    borderRadius: 20,
+    borderRadius: 10,
     padding: 25,
+    gap: 30,
     width: "100%",
-    paddingHorizontal: 20,
   },
-  titulo: {
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  title: {
-    backgroundColor: "#193A69",
-    borderRadius: 20,
-    width: 242,
-    height: 41,
+  grid: {
     flexDirection: "row",
-    alignItems: "center",
     justifyContent: "center",
-  },
-  titleText: {
-    color: "#FFF",
-    fontWeight: "bold",
-    fontSize: 20,
-  },
-  
-  icon: {
-    marginLeft: 10,
-  },
-  items: {
-    flexDirection: "row",
-    justifyContent: "space-evenly",
     flexWrap: "wrap",
+  },
+  column: {
+    flexDirection: "column",
+    gap: 10,
   },
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
-    width: 140,
-    marginBottom: 10,
+    width: "95%",
   },
   label: {
     color: "#FFF",
-    fontSize: 16,
-    marginRight:-10
+    fontSize: 25,
   },
   value: {
     color: "#FFF",
-    fontSize: 16,
     fontWeight: "bold",
-    
+    fontSize: 20,
+    marginLeft: 10,
+  },
+  titulo: {
+    display: "flex",
+    alignItems: "center",
+  },
+  titleText: {
+    color: "#FFF",
+    fontWeight: "bold",
+    fontSize: 25,
   },
 });
 

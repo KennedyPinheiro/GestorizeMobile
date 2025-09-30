@@ -17,7 +17,7 @@ const BarraAdd = ({ onPressAdd }: Props) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#1E56C1",
+    backgroundColor: "#062046",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
   texto: {
     color: "#fff",
     fontWeight: "bold",
-    fontSize: 16,
+    fontSize: 20,
   },
 });
 

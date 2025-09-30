@@ -251,7 +251,7 @@ const PerfilFornecedor = () => {
         />
 
         {!showEndereco ? (
-          <View style={{ marginBottom: 70 }}>
+          <View style={{ marginBottom: 30 }}>
             <Button
               title="Endereço"
               variant="outlined"
@@ -260,7 +260,7 @@ const PerfilFornecedor = () => {
             />
           </View>
         ) : (
-          <View style={{ marginBottom: 70 }}>
+          <View style={{ marginBottom: 30 }}>
             <EditableTextCard
               label="Logradouro"
               value={formData.rua}
@@ -303,41 +303,49 @@ const PerfilFornecedor = () => {
             />
           </View>
         )}
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            gap: 10,
+            paddingHorizontal: 30,
+          }}
+        >
+          <View style={{ flex: 1, padding: 1 }}>
+            <Button
+              title="Salvar"
+              type="dialog"
+              disabled={!botaoHabilitado}
+              onPress={async () => {
+                const promises = [];
 
-        <View>
-          <Button
-            title="Salvar"
-            type="dialog"
-            disabled={!botaoHabilitado}
-            onPress={async () => {
-              const promises = [];
-
-              for (const [campo, valor] of Object.entries(formData)) {
-                if (String(valor).trim() !== "Não informado") {
-                  promises.push(
-                    updateCampoFornecedor(
-                      campo,
-                      String(valor),
-                      String(id),
-                      endereco_id
-                    )
-                  );
+                for (const [campo, valor] of Object.entries(formData)) {
+                  if (String(valor).trim() !== "Não informado") {
+                    promises.push(
+                      updateCampoFornecedor(
+                        campo,
+                        String(valor),
+                        String(id),
+                        endereco_id
+                      )
+                    );
+                  }
                 }
-              }
 
-              await Promise.all(promises);
-              setBotaoHabilitado(false);
-              setAlertVisible(true);
-            }}
-          />
-        </View>
-        <View style={{ marginBottom: 40 }}>
-          <Button
-            title="Deletar"
-            type="dialog"
-            variant="delete"
-            onPress={() => setShowDialog(true)}
-          />
+                await Promise.all(promises);
+                setBotaoHabilitado(false);
+                setAlertVisible(true);
+              }}
+            />
+          </View>
+          <View style={{ marginBottom: 40, flex: 1, paddingHorizontal: 10 }}>
+            <Button
+              title="Deletar"
+              type="dialog"
+              variant="delete"
+              onPress={() => setShowDialog(true)}
+            />
+          </View>
         </View>
       </ScrollView>
       <DialogConfirmarAcao
@@ -347,7 +355,7 @@ const PerfilFornecedor = () => {
         onSuccess={async () => {
           try {
             const response = await fetch(
-              `http://192.168.1.12:3001/delete-fornecedor/${id}`,
+              `http://192.168.1.12:3000/delete-fornecedor/${id}`,
               {
                 method: "DELETE",
               }

@@ -1,7 +1,6 @@
 import Card from "@components/CardOrcamentos";
 import HomeButton from "@components/botoes/HomeButton";
 import NavBar from "@components/utilities/NavBar";
-import { StatusBar } from "expo-status-bar";
 import { StyleSheet, View } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import CardRelatorios from "@components/CardRelatorios";
@@ -9,106 +8,78 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useAuth } from "@context/AuthContext";
 import { RootStackParamList } from "@context/types";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const Homepage = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { roleId } = useAuth();
+
+  type ButtonConfig = {
+    title: string;
+    icon: keyof typeof MaterialCommunityIcons.glyphMap;
+    onPress?: () => void;
+    disabled?: boolean;
+    visible?: boolean;
+  };
+
+  const buttons: ButtonConfig[] = [
+    {
+      title: "FUNCIONARIOS",
+      icon: "account-plus",
+      onPress: () => navigation.navigate("Funcionarios"),
+      visible: roleId === 1,
+    },
+    {
+      title: "CLIENTES",
+      icon: "account-plus",
+      onPress: () => navigation.navigate("Clientes"),
+    },
+    {
+      title: "PRODUTOS",
+      icon: "cube-outline",
+      onPress: () => navigation.navigate("Produtos"),
+    },
+    {
+      title: "FORNECEDORES",
+      icon: "account-tie",
+      onPress: () => navigation.navigate("Fornecedores"),
+    },
+    {
+      title: "ORÇAMENTOS",
+      icon: "file-document-outline",
+      disabled: true,
+    },
+  ];
+
   return (
     <View style={styles.container}>
-      <NavBar title="Tela Inicial" backButton={true} />
-
-      <View style={styles.contentWrapper}>
-        <View style={styles.topCardWrapper}>
-          <Card
-            titulo="Orçamentos"
-            icon={
-              <MaterialCommunityIcons
-                name="file-document-edit-outline"
-                size={20}
-                color="#fff"
-              />
-            }
-          />
-        </View>
-
+      <NavBar title="TELA INICIAL" backButton={true} />
+      <SafeAreaView style={styles.contentWrapper}>
         <View style={styles.buttonGroup}>
-          {roleId === 1 && (
-            <HomeButton
-              title="FUNCIONARIOS"
-              icon={
-                <MaterialCommunityIcons
-                  name="account-plus"
-                  size={24}
-                  color="#fff"
-                />
-              }
-              variant="contained"
-              onPress={() => navigation.navigate("Funcionarios")}
-            />
-          )}
-
-          <HomeButton
-            title="CLIENTES"
-            icon={
-              <MaterialCommunityIcons
-                name="account-plus"
-                size={24}
-                color="#fff"
+          <Card titulo="ORÇAMENTOS" />
+          {buttons
+            .filter((button) => button.visible === undefined || button.visible)
+            .map((button) => (
+              <HomeButton
+                key={button.title}
+                title={button.title}
+                icon={
+                  <MaterialCommunityIcons
+                    name={button.icon}
+                    size={24}
+                    color="#fff"
+                  />
+                }
+                type="dialog"
+                color="primary"
+                onPress={button.onPress}
+                disabled={button.disabled}
               />
-            }
-            variant="contained"
-            onPress={() => navigation.navigate("Clientes")}
-          />
-          <HomeButton
-            title="PRODUTOS"
-            icon={
-              <MaterialCommunityIcons
-                name="cube-outline"
-                size={24}
-                color="#fff"
-              />
-            }
-            variant="contained"
-            onPress={() => navigation.navigate("Produtos")}
-          />
-          <HomeButton
-            title="FORNECEDORES"
-            icon={
-              <MaterialCommunityIcons
-                name="account-tie"
-                size={24}
-                color="#fff"
-              />
-            }
-            variant="contained"
-            onPress={() => navigation.navigate("Fornecedores")}
-          />
-          <HomeButton
-            title="ORÇAMENTOS"
-            icon={
-              <MaterialCommunityIcons
-                name="file-document-outline"
-                size={24}
-                color="#433d3d"
-              />
-            }
-            variant="contained"
-            disabled={true}
-          />
+            ))}
+          <CardRelatorios titulo="RELATORIOS" />
         </View>
-
-        <View style={styles.cardsWrapper}>
-          <CardRelatorios
-            titulo="Relatórios"
-            icon={
-              <MaterialCommunityIcons name="chart-bar" size={20} color="#fff" />
-            }
-          />
-        </View>
-      </View>
-
-      <StatusBar style="auto" />
+      </SafeAreaView>
     </View>
   );
 };
@@ -121,17 +92,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
   },
   contentWrapper: {
-    paddingHorizontal: 20,
-    paddingBottom: 40,
     alignItems: "center",
-    gap: 25,
+    gap: 12,
   },
   topCardWrapper: {
-    marginTop: 70,
     width: "100%",
   },
   buttonGroup: {
-    width: "100%",
+    width: "95%",
     alignItems: "center",
     gap: 12,
   },

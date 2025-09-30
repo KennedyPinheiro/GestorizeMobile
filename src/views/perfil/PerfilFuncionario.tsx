@@ -11,6 +11,8 @@ import { useEffect, useState } from "react";
 import SidebarAlert from "@components/sidebars/Sidebaralert";
 import { supabase } from "@lib/supabase";
 import DialogConfirmarAcao from "@components/dialogs/DialogConfirmarAcao";
+import { MenuItem, Select } from "@components/utilities/Select";
+import { estadosCivis, generos } from "@views/Cadastros/CadastroFuncionarios";
 
 const PerfilFuncionario = () => {
   const navigation =
@@ -48,6 +50,7 @@ const PerfilFuncionario = () => {
     email,
     telefone,
     genero,
+    funcao,
     estado_civil,
     data_nascimento,
     rg,
@@ -65,6 +68,7 @@ const PerfilFuncionario = () => {
     email,
     telefone,
     genero,
+    funcao,
     estado_civil,
     data_nascimento,
     rg,
@@ -153,7 +157,7 @@ const PerfilFuncionario = () => {
   ) => {
     try {
       const response = await fetch(
-        `http://192.168.1.12:3001/update-user/${funcionarioId}`,
+        `http://192.168.1.12:3000/update-user/${funcionarioId}`,
         {
           method: "PUT",
           headers: {
@@ -184,7 +188,6 @@ const PerfilFuncionario = () => {
     };
     getUsuarioLogado();
   }, []);
-  
 
   const handleChange = (campo: string, valor: string) => {
     setFormData((prev) => ({ ...prev, [campo]: valor }));
@@ -221,7 +224,7 @@ const PerfilFuncionario = () => {
         <View style={styles.divider} />
         <EditableTextCard
           label="Nome Completo"
-          value={formData.nome || "Não informado"}
+          value={formData.nome}
           onChangeText={(text) => handleChange("nome", text)}
         />
         <EditableTextCard
@@ -229,38 +232,59 @@ const PerfilFuncionario = () => {
           value={formData.email}
           onChangeText={(text) => handleChange("email", text)}
         />
+        <EditableTextCard
+          label="Função"
+          value={funcao}
+          onChangeText={(text) => handleChange("cargo", text)}
+        />
         <View style={styles.row}>
-          <EditableTextCard
-            label="Gênero"
-            value={formData.genero || "Não informado" }
-            width="48%"
-            onChangeText={(text) => handleChange("genero", text)}
-          />
-          <EditableTextCard
-            label="Estado Civil"
-            value={formData.estado_civil || "Não informado"}
-            width="48%"
-            onChangeText={(text) => handleChange("estado_civil", text)}
-          />
+          <View style={{ width: "48%" }}>
+            <Select
+              width="100%"
+              label="GÊNERO"
+              value={formData.genero}
+              onChange={(text) => handleChange("genero", text)}
+            >
+              {generos.map((g) => (
+                <MenuItem key={g} value={g}>
+                  {g}
+                </MenuItem>
+              ))}
+            </Select>
+          </View>
+          <View style={{ width: "48%" }}>
+            <Select
+              width="100%"
+              label="ESTADO CIVIL"
+              value={formData.estado_civil}
+              onChange={(text) => handleChange("estado_civil", text)}
+            >
+              {estadosCivis.map((e) => (
+                <MenuItem key={e} value={e}>
+                  {e}
+                </MenuItem>
+              ))}
+            </Select>
+          </View>
         </View>
         <EditableTextCard
           label="Telefone"
-          value={formData.telefone || "Não informado"}
+          value={formData.telefone}
           onChangeText={(text) => handleChange("telefone", text)}
         />
         <EditableTextCard
           label="Data Nascimento"
-          value={formData.data_nascimento || "Não informado" }
+          value={formData.data_nascimento}
           onChangeText={(text) => handleChange("data_nascimento", text)}
         />
         <EditableTextCard
           label="Registro Geral (RG)"
-          value={formData.rg || "Não informado" }
+          value={formData.rg}
           onChangeText={(text) => handleChange("rg", text)}
         />
         <EditableTextCard
           label="Cadastro Pessoa Fisica (CPF)"
-          value={formData.cpf || "Não informado" }
+          value={formData.cpf}
           onChangeText={(text) => handleChange("cpf", text)}
         />
         {!showEndereco ? (
@@ -276,46 +300,38 @@ const PerfilFuncionario = () => {
           <View style={{ marginBottom: 30 }}>
             <EditableTextCard
               label="Logradouro"
-              value={formData.rua || "Não informado" }
+              value={formData.rua}
               onChangeText={(text) => handleChange("rua", text)}
             />
             <EditableTextCard
               label="Bairro"
-              value={formData.bairro || "Não informado" }
+              value={formData.bairro}
               onChangeText={(text) => handleChange("bairro", text)}
             />
             <View style={styles.row}>
               <EditableTextCard
                 label="Número"
-                value={formData.numero || "Não informado" }
+                value={formData.numero}
                 width="48%"
                 onChangeText={(text) => handleChange("numero", text)}
               />
               <EditableTextCard
                 label="CEP"
-                value={formData.cep || "Não informado" }
+                value={formData.cep}
                 width="48%"
                 onChangeText={(text) => handleChange("cep", text)}
               />
             </View>
             <EditableTextCard
               label="Cidade"
-              value={formData.cidade || "Não informado" }
+              value={formData.cidade}
               onChangeText={(text) => handleChange("cidade", text)}
             />
             <EditableTextCard
               label="Estado"
-              value={formData.estado || "Não informado" }
+              value={formData.estado}
               onChangeText={(text) => handleChange("estado", text)}
             />
-            <View style={{ marginBottom: 30 }}>
-              <Button
-                variant="outlined"
-                type="dialog"
-                title="Fechar"
-                onPress={() => setShowEndereco(false)}
-              />
-            </View>
           </View>
         )}
         <View
@@ -368,7 +384,7 @@ const PerfilFuncionario = () => {
         onSuccess={async () => {
           try {
             const response = await fetch(
-              `http://192.168.1.12:3001/delete-user/${id}`,
+              `http://192.168.1.12:3000/delete-user/${id}`,
               {
                 method: "DELETE",
               }

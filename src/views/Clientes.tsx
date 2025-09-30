@@ -17,6 +17,7 @@ import {
 } from "@context/types";
 import ErrorSidebarAlert from "@components/sidebars/ErrorSidebarAlert";
 import Nav from "@components/utilities/Nav";
+import FloatingButton from "@components/botoes/FloatingButton";
 
 const Clientes = () => {
   const navigation =
@@ -157,11 +158,11 @@ const Clientes = () => {
         titulo="Clientes"
         onBackPress={() => navigation.navigate("Homepage")}
       />
-      <BarraAdd onPressAdd={() => setShowDialog(true)} />
+
       <View style={styles.barraBuscaContainer}>
         <TextInput
           placeholder="Buscar cliente por nome ou razão social"
-          placeholderTextColor="#999"
+          placeholderTextColor="#444141"
           value={termoBusca}
           onChangeText={setTermoBusca}
           style={styles.inputBusca}
@@ -169,87 +170,102 @@ const Clientes = () => {
       </View>
 
       <ScrollView contentContainerStyle={{ padding: 10 }}>
-        {ordenarClientes(clientesPF, clientesPJ).map((cliente) => {
-          const enderecoCliente = endereco.find((end) =>
-            cliente.tipo === "PF"
-              ? end.id === cliente.pessoa_fisica.endereco_id
-              : end.id === cliente.pessoa_juridica.endereco_id
-          );
+        {ordenarClientes(clientesPF, clientesPJ).map(
+          (cliente, index, lista) => {
+            const enderecoCliente = endereco.find((end) =>
+              cliente.tipo === "PF"
+                ? end.id === cliente.pessoa_fisica.endereco_id
+                : end.id === cliente.pessoa_juridica.endereco_id
+            );
 
-          return (
-            <Cliente
-              key={`${cliente.tipo}-${
-                cliente.tipo === "PF"
-                  ? cliente.pessoa_fisica.id
-                  : cliente.pessoa_juridica.id
-              }`}
-              tipo={cliente.tipo}
-              nome={
-                cliente.tipo === "PF"
-                  ? cliente.pessoa_fisica.nome
-                  : cliente.pessoa_juridica.razao_social
-              }
-              email={
-                cliente.tipo === "PF"
-                  ? cliente.pessoa_fisica.email || "Email não informado"
-                  : cliente.pessoa_juridica.email || "Email não informado"
-              }
-              onPress={() => {
-                if (cliente.tipo === "PF") {
-                  navigation.navigate("PerfilPessoaFisica", {
-                    id: cliente.pessoa_fisica.id,
-                    nome: cliente.pessoa_fisica.nome,
-                    email: cliente.pessoa_fisica.email,
-                    telefone: cliente.pessoa_fisica.telefone || "Não informado",
-                    genero: cliente.pessoa_fisica.telefone || "Não informado",
-                    estado_civil:
-                      cliente.pessoa_fisica.estado_civil || "Não informado",
-                    data_nascimento:
-                      cliente.pessoa_fisica.data_nascimento || "Não informado",
-                    rg: cliente.pessoa_fisica.rg || "Não informado",
-                    cpf: cliente.pessoa_fisica.cpf || "Não informado",
-                    endereco_id: cliente.pessoa_fisica.endereco_id,
-                    rua: enderecoCliente?.rua || "Não informado",
-                    bairro: enderecoCliente?.bairro || "Não informado",
-                    cidade: enderecoCliente?.cidade || "Não informado",
-                    estado: enderecoCliente?.estado || "Não informado",
-                    numero: enderecoCliente?.numero || "Não informado",
-                    cep: enderecoCliente?.cep || "Não informado",
-                  });
-                } else {
-                  navigation.navigate("PerfilPessoaJuridica", {
-                    id: cliente.pessoa_juridica.id,
-                    razao_social: cliente.pessoa_juridica.razao_social,
-                    nome_fantasia:
-                      cliente.pessoa_juridica.nome_fantasia || "Não informado",
-                    email: cliente.pessoa_juridica.email || "Não informado",
-                    cnpj: cliente.pessoa_juridica.cnpj || "Não informado",
-                    nome_do_responsavel:
-                      cliente.pessoa_juridica.nome_do_responsavel ||
-                      "Não informado",
-                    cpf_responsavel:
-                      cliente.pessoa_juridica.cpf_responsavel ||
-                      "Não informado",
-                    cargo_do_respresentante:
-                      cliente.pessoa_juridica.cargo_do_representante ||
-                      "Não informado",
-                    telefone:
-                      cliente.pessoa_juridica.telefone || "Não informado",
-                    endereco_id: cliente.pessoa_juridica?.endereco_id ?? null,
-                    rua: enderecoCliente?.rua || "Não informado",
-                    bairro: enderecoCliente?.bairro || "Não informado",
-                    cidade: enderecoCliente?.cidade || "Não informado",
-                    estado: enderecoCliente?.estado || "Não informado",
-                    numero: enderecoCliente?.numero || "Não informado",
-                    cep: enderecoCliente?.cep || "Não informado",
-                  });
-                }
-              }}
-            />
-          );
-        })}
+            return (
+              <View
+                key={`${cliente.tipo}-${
+                  cliente.tipo === "PF"
+                    ? cliente.pessoa_fisica.id
+                    : cliente.pessoa_juridica.id
+                }`}
+                style={{
+                  borderBottomWidth: index < lista.length - 1 ? 1 : 0,
+                  borderBottomColor: "#ccc",
+                  paddingVertical: 8,
+                }}
+              >
+                <Cliente
+                  tipo={cliente.tipo}
+                  nome={
+                    cliente.tipo === "PF"
+                      ? cliente.pessoa_fisica.nome
+                      : cliente.pessoa_juridica.razao_social
+                  }
+                  email={
+                    cliente.tipo === "PF"
+                      ? cliente.pessoa_fisica.email || "Email não informado"
+                      : cliente.pessoa_juridica.email || "Email não informado"
+                  }
+                  onPress={() => {
+                    if (cliente.tipo === "PF") {
+                      navigation.navigate("PerfilPessoaFisica", {
+                        id: cliente.pessoa_fisica.id,
+                        nome: cliente.pessoa_fisica.nome,
+                        email: cliente.pessoa_fisica.email,
+                        telefone:
+                          cliente.pessoa_fisica.telefone || "Não informado",
+                        genero:
+                          cliente.pessoa_fisica.telefone || "Não informado",
+                        estado_civil:
+                          cliente.pessoa_fisica.estado_civil || "Não informado",
+                        data_nascimento:
+                          cliente.pessoa_fisica.data_nascimento ||
+                          "Não informado",
+                        rg: cliente.pessoa_fisica.rg || "Não informado",
+                        cpf: cliente.pessoa_fisica.cpf || "Não informado",
+                        endereco_id: cliente.pessoa_fisica.endereco_id,
+                        rua: enderecoCliente?.rua || "Não informado",
+                        bairro: enderecoCliente?.bairro || "Não informado",
+                        cidade: enderecoCliente?.cidade || "Não informado",
+                        estado: enderecoCliente?.estado || "Não informado",
+                        numero: enderecoCliente?.numero || "Não informado",
+                        cep: enderecoCliente?.cep || "Não informado",
+                      });
+                    } else {
+                      navigation.navigate("PerfilPessoaJuridica", {
+                        id: cliente.pessoa_juridica.id,
+                        razao_social: cliente.pessoa_juridica.razao_social,
+                        nome_fantasia:
+                          cliente.pessoa_juridica.nome_fantasia ||
+                          "Não informado",
+                        email: cliente.pessoa_juridica.email || "Não informado",
+                        cnpj: cliente.pessoa_juridica.cnpj || "Não informado",
+                        nome_do_responsavel:
+                          cliente.pessoa_juridica.nome_do_responsavel ||
+                          "Não informado",
+                        cpf_responsavel:
+                          cliente.pessoa_juridica.cpf_responsavel ||
+                          "Não informado",
+                        cargo_do_respresentante:
+                          cliente.pessoa_juridica.cargo_do_representante ||
+                          "Não informado",
+                        telefone:
+                          cliente.pessoa_juridica.telefone || "Não informado",
+                        endereco_id:
+                          cliente.pessoa_juridica?.endereco_id ?? null,
+                        rua: enderecoCliente?.rua || "Não informado",
+                        bairro: enderecoCliente?.bairro || "Não informado",
+                        cidade: enderecoCliente?.cidade || "Não informado",
+                        estado: enderecoCliente?.estado || "Não informado",
+                        numero: enderecoCliente?.numero || "Não informado",
+                        cep: enderecoCliente?.cep || "Não informado",
+                      });
+                    }
+                  }}
+                />
+              </View>
+            );
+          }
+        )}
       </ScrollView>
-
+      <FloatingButton onPress={() => setShowDialog(true)} />
       <DialogSelecione
         show={showDialog}
         onClose={() => setShowDialog(false)}
@@ -274,16 +290,18 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
   },
   barraBuscaContainer: {
-    paddingHorizontal: 15,
+    paddingHorizontal: 10,
     paddingTop: 10,
+    paddingBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
   },
-  
   inputBusca: {
     backgroundColor: "#f2f2f2",
-    borderRadius: 8,
+    borderRadius: 10,
     paddingHorizontal: 12,
     paddingVertical: 10,
-    fontSize: 16,
+    fontSize: 20,
     borderWidth: 1,
     borderColor: "#ddd",
     color: "#333",
