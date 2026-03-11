@@ -8,7 +8,7 @@ class OrcamentoService
 {
     public function listar()
     {
-        return Orcamento::with(['cliente', 'funcionario', 'itens'])->get();
+        return Orcamento::with(['cliente', 'itens'])->get();
     }
 
     public function criar(array $dados): Orcamento

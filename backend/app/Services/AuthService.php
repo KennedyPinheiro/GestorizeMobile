@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
-class AuthService
+class AuthService implements IAuthService
 {
     /**
      * Autentica e gera token simples.

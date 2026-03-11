@@ -5,48 +5,48 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Services\ProdutoService;
 use App\Http\Requests\ProdutoRequest;
+use App\Services\ResponseService;
+use Illuminate\Http\JsonResponse;
 
 class ProdutoController extends Controller
 {
-    private $produtoService;
-
-    public function __construct(ProdutoService $produtoService)
+    public function __construct(private ProdutoService $produtoService)
     {
-        $this->produtoService = $produtoService;
     }
 
-    public function index()
+    public function index(): JsonResponse
     {
-        return response()->json(
+        return ResponseService::success(
             $this->produtoService->listar()
         );
     }
 
-    public function store(ProdutoRequest $request)
+    public function store(ProdutoRequest $request): JsonResponse
     {
-        return response()->json(
-            $this->produtoService->criar($request->validated())
+        return ResponseService::success(
+            $this->produtoService->criar($request->validated()),
+            code: 201
         );
     }
 
-    public function show($id)
+    public function show(int $id): JsonResponse
     {
-        return response()->json(
+        return ResponseService::success(
             $this->produtoService->buscar($id)
         );
     }
 
-    public function update(ProdutoRequest $request, $id)
+    public function update(ProdutoRequest $request, int $id): JsonResponse
     {
-        return response()->json(
+        return ResponseService::success(
             $this->produtoService->atualizar($id, $request->validated())
         );
     }
 
-    public function destroy($id)
+    public function destroy(int $id): JsonResponse
     {
-        return response()->json(
-            $this->produtoService->deletar($id)
-        );
+        $result = $this->produtoService->deletar($id);
+
+        return ResponseService::success([], $result['message'] ?? null);
     }
 }

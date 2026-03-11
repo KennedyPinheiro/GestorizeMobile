@@ -24,14 +24,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => AdminMiddleware::class,
         ]);
     })
-    ->withExceptions(function (Exceptions $exceptions): void {
-        $exceptions->render(function (Throwable $e, $request) {
-
-            if ($request->expectsJson()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => $e->getMessage(),
-                ], 500);
-            }
-        });
-    })->create();
+   ->withExceptions(function (Exceptions $exceptions): void {
+        //
+    })
+    ->withSingletons([Illuminate\Contracts\Debug\ExceptionHandler::class => App\Exceptions\Handler::class])
+    ->create();

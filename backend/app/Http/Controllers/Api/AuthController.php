@@ -5,12 +5,13 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AuthLoginRequest;
 use App\Http\Requests\AuthLogoutRequest;
-use App\Services\AuthService;
+use App\Services\IAuthService;
+use App\Services\ResponseService;
 use Illuminate\Http\JsonResponse;
 
 class AuthController extends Controller
 {
-    public function __construct(private AuthService $service)
+    public function __construct(private IAuthService $service)
     {
     }
 
@@ -19,7 +20,7 @@ class AuthController extends Controller
      */
     public function login(AuthLoginRequest $request): JsonResponse
     {
-        return response()->json(
+        return ResponseService::success(
             $this->service->login($request->validated())
         );
     }
@@ -31,8 +32,6 @@ class AuthController extends Controller
     {
         $this->service->logout($request->validated('token'));
 
-        return response()->json([
-            'message' => 'Logout realizado com sucesso.',
-        ]);
+        return ResponseService::success([], 'Logout realizado com sucesso.');
     }
 }
