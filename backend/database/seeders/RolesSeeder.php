@@ -9,16 +9,10 @@ class RolesSeeder extends Seeder
 {
     public function run()
     {
-        DB::table('roles')->insert([
-    [
-        'nome' => 'Administrador',
-        'descricao' => 'Acesso total ao sistema'
-    ],
-    [
-        'nome' => 'Funcionario',
-        'descricao' => 'Acesso limitado ao sistema'
-    ]
-]);
+        DB::table('roles')->upsert([
+            ['id' => 1, 'nome' => 'Administrador', 'descricao' => 'Acesso total ao sistema'],
+            ['id' => 2, 'nome' => 'Funcionario', 'descricao' => 'Acesso limitado ao sistema'],
+        ], ['id'], ['nome', 'descricao']);
     }
 
 }

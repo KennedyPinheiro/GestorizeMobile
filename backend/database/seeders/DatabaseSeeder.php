@@ -19,10 +19,8 @@ class DatabaseSeeder extends Seeder
             RolesSeeder::class,
             UnidadesMedidaSeeder::class,
             CategoriasSeeder::class,
+            TestUsersSeeder::class,
         ]);
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // Factory user opcional removido, pois agora temos seeds explícitos.
     }
 }
