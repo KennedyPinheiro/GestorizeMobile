@@ -41,7 +41,7 @@ class Handler extends ExceptionHandler
         });
     }
 
-      public function render($request, Throwable $e): Response|JsonResponse
+    public function render($request, Throwable $e): Response|JsonResponse
     {
         if ($e->getPrevious() instanceof AuthorizationException || $e instanceof AuthorizationException) {
             return ResponseService::exception($e, Response::HTTP_FORBIDDEN, 'Ação não autorizada.');

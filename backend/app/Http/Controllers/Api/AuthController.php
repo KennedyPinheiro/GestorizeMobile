@@ -11,13 +11,8 @@ use Illuminate\Http\JsonResponse;
 
 class AuthController extends Controller
 {
-    public function __construct(private IAuthService $service)
-    {
-    }
+    public function __construct(private IAuthService $service) {}
 
-    /**
-     * Autentica o usuário e retorna um token de acesso.
-     */
     public function login(AuthLoginRequest $request): JsonResponse
     {
         return ResponseService::success(
@@ -25,9 +20,6 @@ class AuthController extends Controller
         );
     }
 
-    /**
-     * Invalida o token de acesso do usuário autenticado.
-     */
     public function logout(AuthLogoutRequest $request): JsonResponse
     {
         $this->service->logout($request->validated('token'));

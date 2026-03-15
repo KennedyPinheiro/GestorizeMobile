@@ -50,7 +50,7 @@ class UploadBuilder
         $disk = $this->disk ?? config('filesystems.default');
         $directory = $this->directory ?? '';
         $filename = $this->filename ?? $this->file->hashName();
-        
+
         return $this->file->storeAs($directory, $filename, $disk);
     }
 }

@@ -10,9 +10,7 @@ use Illuminate\Http\JsonResponse;
 
 class ProdutoController extends Controller
 {
-    public function __construct(private ProdutoService $produtoService)
-    {
-    }
+    public function __construct(private ProdutoService $produtoService) {}
 
     public function index(): JsonResponse
     {

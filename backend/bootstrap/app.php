@@ -5,6 +5,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\LoginMiddleware;
+use App\Providers\ServiceServiceProvider;
 use Illuminate\Http\Middleware\HandleCors;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -24,6 +25,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => AdminMiddleware::class,
         ]);
     })
+    ->withProviders([
+        ServiceServiceProvider::class,
+    ])
    ->withExceptions(function (Exceptions $exceptions): void {
         //
     })

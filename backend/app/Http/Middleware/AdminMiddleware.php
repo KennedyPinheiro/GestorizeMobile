@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -31,6 +32,9 @@ class AdminMiddleware
 
     /**
      * Determine whether the given user meets our admin criteria.
+     */
+    /**
+     * @param  Authenticatable&Model  $user
      */
     protected function isAdmin(Authenticatable $user): bool
     {

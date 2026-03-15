@@ -10,9 +10,7 @@ use Illuminate\Http\JsonResponse;
 
 class OrcamentoController extends Controller
 {
-    public function __construct(private OrcamentoService $service)
-    {
-    }
+    public function __construct(private OrcamentoService $service) {}
 
     public function index(): JsonResponse
     {

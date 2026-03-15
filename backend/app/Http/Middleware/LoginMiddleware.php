@@ -28,7 +28,7 @@ class LoginMiddleware
 
                 if ($user) {
                     Auth::setUser($user);
-                    $request->setUserResolver(fn () => $user);
+                    $request->setUserResolver(fn() => $user);
                 }
             }
         }
