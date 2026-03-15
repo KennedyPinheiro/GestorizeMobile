@@ -29,7 +29,6 @@ return Application::configure(basePath: dirname(__DIR__))
         ServiceServiceProvider::class,
     ])
    ->withExceptions(function (Exceptions $exceptions): void {
-        //
     })
     ->withSingletons([Illuminate\Contracts\Debug\ExceptionHandler::class => App\Exceptions\Handler::class])
     ->create();
