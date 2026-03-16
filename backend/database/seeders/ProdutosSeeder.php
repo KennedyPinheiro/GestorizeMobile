@@ -68,6 +68,13 @@ class ProdutosSeeder extends Seeder
                 'updated_at' => $agora,
             ],
             [
+                'produto_id' => 1,
+                'categoria_id' => 3,
+                'is_principal' => false,
+                'created_at' => $agora,
+                'updated_at' => $agora,
+            ],
+            [
                 'produto_id' => 2,
                 'categoria_id' => 3,
                 'is_principal' => true,
@@ -75,9 +82,23 @@ class ProdutosSeeder extends Seeder
                 'updated_at' => $agora,
             ],
             [
+                'produto_id' => 2,
+                'categoria_id' => 4,
+                'is_principal' => false,
+                'created_at' => $agora,
+                'updated_at' => $agora,
+            ],
+            [
                 'produto_id' => 3,
                 'categoria_id' => 2,
                 'is_principal' => true,
+                'created_at' => $agora,
+                'updated_at' => $agora,
+            ],
+            [
+                'produto_id' => 3,
+                'categoria_id' => 1,
+                'is_principal' => false,
                 'created_at' => $agora,
                 'updated_at' => $agora,
             ],
