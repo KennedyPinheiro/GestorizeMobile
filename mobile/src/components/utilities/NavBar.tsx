@@ -1,46 +1,36 @@
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
+import BackButton from "@components/botoes/BackButton";
 import NavTitle from "@components/NavTitle";
 import UserIcon from "@components/UserIcon";
 import LogoIcon from "@components/LogoIcon";
-import BackButton from "@components/botoes/BackButton";
-
+import DialogUserMenu from "@components/dialogs/DialogUserMenu";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import DialogUserMenu from "@components/dialogs/DialogUserMenu";
 import { RootStackParamList } from "@context/types";
+import { useTheme } from "@context/ThemeContext";
 
-
-type props = {
+type Props = {
   backButton?: boolean;
-  actionMenu?: () => void;
-  onBack?: () => void;
   title: string;
+  onBack?: () => void;
 };
 
-const NavBar = ({ backButton, title, onBack }: props) => {
-  const navigation =
-    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-
+const NavBar = ({ backButton, title, onBack }: Props) => {
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [show, setShow] = useState(false);
+  const { colors } = useTheme();
 
-  const handleClose = () => {
-    setShow(false);
-  };
+  const handleClose = () => setShow(false);
+  const handleShowDialog = () => setShow(true);
 
-  const handleShowDialog = () => {
-    setShow(true);
-  
-  };
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.primary }]}>
       <View style={styles.nav}>
-        {backButton?(
-          <View style={styles.logoIcon}>
-            <LogoIcon />
-          </View>
-        ):(
-          <BackButton  onPress={() => onBack ? onBack() : navigation.goBack()} />
+        {backButton ? (
+          <BackButton onPress={() => (onBack ? onBack() : navigation.goBack())} />
+        ) : (
+          <LogoIcon />
         )}
         <NavTitle title={title} />
         <UserIcon onPress={handleShowDialog} />
@@ -51,26 +41,21 @@ const NavBar = ({ backButton, title, onBack }: props) => {
 };
 
 export default NavBar;
+
 const styles = StyleSheet.create({
   container: {
-    display: "flex",
-    backgroundColor: "#062046",
-    height: "13%",
+    height: 90,
     width: "100%",
+    justifyContent: "center",
+    paddingHorizontal: 12,
+    elevation: 6,
+    shadowColor: "#000",
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
   },
   nav: {
     flexDirection: "row",
-    flex: 1,
-    justifyContent: "center",
     alignItems: "center",
-    marginBottom: -35,
-    paddingHorizontal: 12,
-  },
-  logoIcon: {
-    marginTop: -10,
-    height: 60,
-    width: 50,
-    marginRight: 40,
-    marginLeft: -60,
+    justifyContent: "space-between",
   },
 });

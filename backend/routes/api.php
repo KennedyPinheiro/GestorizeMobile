@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\OrcamentoController;
 
 Route::post('login', [AuthController::class, 'login']);
 Route::post('logout', [AuthController::class, 'logout'])->middleware('login');
+Route::post('refresh', [AuthController::class, 'refresh'])->middleware('login');
 
 Route::middleware('login')->group(function () {
     Route::apiResource('produtos', ProdutoController::class);

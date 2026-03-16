@@ -1,13 +1,9 @@
 import "react-native-url-polyfill/auto";
-import React, { useEffect, useState } from "react";
-import {
-  NavigationContainer,
-} from "@react-navigation/native";
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Login from "@views/Login";
-import { supabase } from "@lib/supabase";
-import { Session } from "@supabase/supabase-js";
-import { AuthProvider } from "@context/AuthContext";
+import { AuthProvider, useAuth } from "@context/AuthContext";
 import Homepage from "@views/Homepage";
 import Clientes from "@views/Clientes";
 import CadastroClientePF from "@views/Cadastros/CadastroClientePF";
@@ -27,104 +23,68 @@ import PerfilFuncionario from "@views/perfil/PerfilFuncionario";
 import ForgoutPassword from "@views/ForgoutPassword";
 import ResetPassword from "@views/ResetPasswor";
 import UserPerfil from "@views/perfil/UserPerfil";
+import { Provider as PaperProvider } from "react-native-paper";
+import { ThemeProvider, useThemeToggle } from "@context/ThemeContext";
+import lightTheme from "./src/theme/paperTheme";
+import darkTheme from "./src/theme/paperThemeDark";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
+const AppNavigator = () => {
+  const { token, loading } = useAuth();
 
-
-const App = () => {
-  const [session, setSession] = useState<Session | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const loadSession = async () => {
-      const { data, error } = await supabase.auth.getSession();
-      if (error) {
-        console.error("Erro ao buscar sessão:", error);
-      } else {
-        setSession(data.session);
-      }
-      setLoading(false);
-    };
-
-    loadSession();
-
-    const { data: listener } = supabase.auth.onAuthStateChange(
-      (_event, newSession) => {
-        setSession(newSession);
-      }
-    );
-
-    return () => {
-      listener.subscription.unsubscribe();
-    };
-  }, []);
- 
   if (loading) return null;
   return (
-    <AuthProvider>
-      <NavigationContainer>
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
-          {!session ? (
-            <>
-              <Stack.Screen name="Login" component={Login} />
-              <Stack.Screen
-                name="ForgoutPassword"
-                component={ForgoutPassword}
-              />
-              <Stack.Screen name="ResetPassword" component={ResetPassword} />
-            </>
-          ) : (
-            <>
-              <Stack.Screen name="Homepage" component={Homepage} />
-              <Stack.Screen name="Clientes" component={Clientes} />
-              <Stack.Screen name="Funcionarios" component={Funcionarios} />
-              <Stack.Screen name="PessoaFisica" component={CadastroClientePF} />
-              <Stack.Screen name="PerfilProduto" component={PerfilProduto} />
-              <Stack.Screen name="Fornecedores" component={Fornecedores} />
-              <Stack.Screen name="Produtos" component={Produtos} />
-              <Stack.Screen
-                name="PerfilFornecedor"
-                component={PerfilFornecedor}
-              />
-              <Stack.Screen
-                name="PerfilPessoaFisica"
-                component={PerfilPessoaFisica}
-              />
-              <Stack.Screen
-                name="PerfilPessoaJuridica"
-                component={PerfilPessoaJuridica}
-              />
-              <Stack.Screen
-                name="PerfilFuncionario"
-                component={PerfilFuncionario}
-              />
-              <Stack.Screen
-                name="UserPerfil"
-                component={UserPerfil}
-              />
-              <Stack.Screen
-                name="PessoaJuridica"
-                component={CadastroClientePJ}
-              />
-              <Stack.Screen
-                name="CadastroProdutos"
-                component={CadastroProdutos}
-              />
-              <Stack.Screen
-                name="CadastroFornecedores"
-                component={CadastroFornecedores}
-              />
-              <Stack.Screen
-                name="CadastroFuncionarios"
-                component={CadastroFuncionarios}
-              />
-            </>
-          )}
-        </Stack.Navigator>
-      </NavigationContainer>
-    </AuthProvider>
+    <NavigationContainer>
+      <Stack.Navigator
+        key={token ? "app-stack" : "auth-stack"}
+        screenOptions={{ headerShown: false }}
+      >
+        {!token ? (
+          <>
+            <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="ForgoutPassword" component={ForgoutPassword} />
+            <Stack.Screen name="ResetPassword" component={ResetPassword} />
+          </>
+        ) : (
+          <>
+            <Stack.Screen name="Homepage" component={Homepage} />
+            <Stack.Screen name="Clientes" component={Clientes} />
+            <Stack.Screen name="Funcionarios" component={Funcionarios} />
+            <Stack.Screen name="PessoaFisica" component={CadastroClientePF} />
+            <Stack.Screen name="PerfilProduto" component={PerfilProduto} />
+            <Stack.Screen name="Fornecedores" component={Fornecedores} />
+            <Stack.Screen name="Produtos" component={Produtos} />
+            <Stack.Screen name="PerfilFornecedor" component={PerfilFornecedor} />
+            <Stack.Screen name="PerfilPessoaFisica" component={PerfilPessoaFisica} />
+            <Stack.Screen name="PerfilPessoaJuridica" component={PerfilPessoaJuridica} />
+            <Stack.Screen name="PerfilFuncionario" component={PerfilFuncionario} />
+            <Stack.Screen name="UserPerfil" component={UserPerfil} />
+            <Stack.Screen name="PessoaJuridica" component={CadastroClientePJ} />
+            <Stack.Screen name="CadastroProdutos" component={CadastroProdutos} />
+            <Stack.Screen name="CadastroFornecedores" component={CadastroFornecedores} />
+            <Stack.Screen name="CadastroFuncionarios" component={CadastroFuncionarios} />
+          </>
+        )}
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 };
+
+const PaperThemedProvider = ({ children }: { children: React.ReactNode }) => {
+  const { mode } = useThemeToggle();
+  const paper = mode === "light" ? lightTheme : darkTheme;
+  return <PaperProvider theme={paper}>{children}</PaperProvider>;
+};
+
+const App = () => (
+  <AuthProvider>
+    <ThemeProvider>
+      <PaperThemedProvider>
+        <AppNavigator />
+      </PaperThemedProvider>
+    </ThemeProvider>
+  </AuthProvider>
+);
 
 export default App;

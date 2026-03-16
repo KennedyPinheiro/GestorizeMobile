@@ -1,22 +1,26 @@
-import { Image, StyleSheet } from "react-native";
-const LoginLogo = () => {
-  return (
+import React from "react";
+import { Image, StyleSheet, View } from "react-native";
+
+const LoginLogo = () => (
+  <View style={styles.wrapper}>
     <Image
       source={require("@images/LogoLogin.png")}
-      style={styles.container}
+      style={styles.logo}
+      resizeMode="contain"
     />
-  );
-}
+  </View>
+);
 
 const styles = StyleSheet.create({
-  container: {
-    display: "flex",
-    justifyContent: "center",
+  wrapper: {
+    width: "100%",
     alignItems: "center",
-    height: "100%",
-    maxHeight:280,
-    maxWidth: 280,
-  }
+    marginBottom: 12,
+  },
+  logo: {
+    width: 180,
+    height: 180,
+  },
+});
 
-})
 export default LoginLogo;

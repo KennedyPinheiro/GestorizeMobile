@@ -1,91 +1,67 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { supabase } from "@lib/supabase";
-import { Session, User } from "@supabase/supabase-js";
+import { postLogin, postLogout, postRefreshToken } from "../api/apiAuth";
+import authConfig from "../configs/auth";
+import { secureStore } from "../utils/secureStore";
 
 type AuthContextType = {
-  session: Session | null;
-  user: User | null;
-  roleId: number | null;
+  token: string | null;
+  user: any | null;
   loading: boolean;
+  signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType>({
-  session: null,
+  token: null,
   user: null,
-  roleId: null,
   loading: true,
+  signIn: async () => {},
   signOut: async () => {},
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [session, setSession] = useState<Session | null>(null);
-  const [user, setUser] = useState<User | null>(null);
-  const [roleId, setRoleId] = useState<number | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+  const [user, setUser] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
- 
-  
-
-  const fetchRole = async (userId: string, retries = 5, delay = 500) => {
-    for (let attempt = 0; attempt < retries; attempt++) {
-      const { data, error } = await supabase
-        .from("users")
-        .select("role_id")
-        .eq("id", userId)
-        .maybeSingle();
-
-      if (data?.role_id !== undefined && data?.role_id !== null) {
-        setRoleId(data.role_id);
-        return;
-      }
-
-      await new Promise((resolve) => setTimeout(resolve, delay));
-    }
-
-    setRoleId(null); 
-  };
 
   useEffect(() => {
-    const loadSession = async () => {
-      const { data, error } = await supabase.auth.getSession();
-      const currentSession = data?.session || null;
-      setSession(currentSession);
-      setUser(currentSession?.user || null);
-      if (currentSession?.user) {
-        await fetchRole(currentSession.user.id);
-      }
+    const loadStoredAuth = async () => {
+      const storedToken = await secureStore.get(authConfig.storageTokenKeyName);
+      const storedUser = await secureStore.get(authConfig.userDataKeyName);
+      if (storedToken) setToken(storedToken);
+      if (storedUser) setUser(JSON.parse(storedUser));
       setLoading(false);
     };
-
-    loadSession();
-
-    const { data: listener } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
-        setSession(session);
-        setUser(session?.user || null);
-        if (session?.user) {
-          await fetchRole(session.user.id);
-        } else {
-          setRoleId(null);
-        }
-      }
-    );
-
-    return () => {
-      listener.subscription.unsubscribe();
-    };
-    
+    loadStoredAuth();
   }, []);
 
   const signOut = async () => {
-    await supabase.auth.signOut();
-    setSession(null);
+    await postLogout();
+    setToken(null);
     setUser(null);
-    setRoleId(null);
+    await secureStore.remove(authConfig.storageTokenKeyName);
+    await secureStore.remove(authConfig.userDataKeyName);
+  };
+
+  const signIn = async (email: string, password: string) => {
+    setLoading(true);
+    try {
+      const data = await postLogin(email, password);
+      const newToken = data?.token ?? null;
+      const newUser = data?.user ?? null;
+      setToken(newToken);
+      setUser(newUser);
+      await secureStore.set(authConfig.storageTokenKeyName, newToken);
+      if (newUser) {
+        await secureStore.set(authConfig.userDataKeyName, JSON.stringify(newUser));
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <AuthContext.Provider value={{ session, user, roleId, loading, signOut }}>
+    <AuthContext.Provider value={{ token, user, loading, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   );

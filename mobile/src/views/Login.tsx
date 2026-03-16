@@ -9,10 +9,10 @@ import {
 import Button from "@components/botoes/Button";
 import Link from "@components/utilities/Link";
 import LoginLogo from "@components/LoginLogo";
-import { supabase } from "@lib/supabase";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "@context/types";
 import EditableTextCard from "@components/EditableTextCard";
+import { useAuth } from "@context/AuthContext";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Login">;
 
@@ -53,20 +53,19 @@ const styles = StyleSheet.create({
   erro: { color: "red", textAlign: "center", marginBottom: 10 },
 });
 const Login = ({ navigation }: Props) => {
-  const [email, setemail] = useState("");
-  const [senha, setSenha] = useState("");
+  const [email, setemail] = useState("teste@email.com");
+  const [senha, setSenha] = useState("123456");
   const [erro, setErro] = useState<string | null>(null);
+  const { signIn, loading } = useAuth();
 
   const isFormValid = email.trim() !== "" && senha.trim() !== "";
 
   const handleLogin = async () => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password: senha,
-    });
-
-    if (error) {
-      setErro(error.message);
+    try {
+      await signIn(email, senha);
+      setErro(null);
+    } catch (e: any) {
+      setErro(e?.response?.data?.message ?? "Erro ao fazer login");
     }
   };
   return (
@@ -91,8 +90,8 @@ const Login = ({ navigation }: Props) => {
               onChangeText={setSenha}
             />
           </View>
-          <View style={[styles.linkSection, ]}>
-            <Link title="Esqueceu a Senha?" onPress={() => {}} />
+          <View style={[styles.linkSection,]}>
+            <Link title="Esqueceu a Senha?" onPress={() => { }} />
           </View>
 
           <View style={styles.section}>
@@ -103,7 +102,7 @@ const Login = ({ navigation }: Props) => {
               color="primary"
               type="submit"
               onPress={handleLogin}
-              disabled={!isFormValid}
+              disabled={!isFormValid || loading}
             />
           </View>
         </View>

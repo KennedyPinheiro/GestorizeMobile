@@ -9,8 +9,12 @@
       "@views/*": ["./src/views/*"],
       "@routes/*": ["./routes/*"],
       "@lib/*": ["./lib/*"],
+      "@core/*": ["./src/@core/*"],
       "@App": ["App.tsx"],
       "@context/*": ["./src/context/*"],
+      "@api/*": ["./src/api/*"],
+      "@configs/*": ["./src/configs/*"],
+      "@utils/*": ["./src/utils/*"],
       "@@core/*": ["./src/@core/*"]
     }
   }

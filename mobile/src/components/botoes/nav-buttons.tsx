@@ -1,0 +1,103 @@
+import React from "react";
+import { Card } from "@components/ui/card";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { View, Text, StyleSheet, Pressable, Animated, ViewStyle } from "react-native";
+import { useTheme } from "@context/ThemeContext";
+
+interface NavButtonProps {
+  icon: keyof typeof MaterialCommunityIcons.glyphMap;
+  label: string;
+  description?: string;
+  onClick?: () => void;
+  disabled?: boolean;
+  containerStyle?: ViewStyle;
+}
+
+export function NavButton({ icon, label, description, onClick, disabled, containerStyle }: NavButtonProps) {
+  const scale = React.useRef(new Animated.Value(1)).current;
+  const { colors } = useTheme();
+  const isDark = colors.background === "#062046";
+  const iconColor = disabled ? colors.muted : isDark ? "#062046" : "#ffffff";
+  const iconBg = disabled ? `${colors.border}` : isDark ? "#ffffff" : colors.primary;
+  const borderColor = disabled ? colors.border : isDark ? "#ffffff" : colors.primary;
+  const textColor = disabled ? colors.muted : colors.text;
+  const subtitleColor = disabled ? colors.muted : colors.muted;
+
+  const handlePressIn = () => {
+    if (disabled) return;
+    Animated.spring(scale, {
+      toValue: 0.98,
+      useNativeDriver: true,
+      speed: 40,
+      bounciness: 8,
+    }).start();
+  };
+
+  const handlePressOut = () => {
+    if (disabled) return;
+    Animated.spring(scale, {
+      toValue: 1,
+      useNativeDriver: true,
+      speed: 40,
+      bounciness: 8,
+    }).start();
+  };
+
+  return (
+    <Animated.View style={[styles.shadowWrapper, containerStyle, { transform: [{ scale }] }]}>
+      <Card
+        onClick={disabled ? undefined : onClick}
+        style={[
+          styles.card,
+          {
+            borderLeftColor: borderColor,
+            opacity: disabled ? 0.6 : 1,
+          },
+        ]}
+      >
+        <Pressable
+          style={styles.inner}
+          onPress={disabled ? undefined : onClick}
+          onPressIn={handlePressIn}
+          onPressOut={handlePressOut}
+          disabled={disabled}
+        >
+          <View style={[styles.iconWrapper, { backgroundColor: iconBg }]}>
+            <MaterialCommunityIcons name={icon} size={30} color={iconColor} />
+          </View>
+          <Text style={[styles.title, { color: textColor }]}>{label}</Text>
+          {description ? (
+            <Text style={[styles.subtitle, { color: subtitleColor }]}>{description}</Text>
+          ) : null}
+        </Pressable>
+      </Card>
+    </Animated.View>
+  );
+}
+
+const styles = StyleSheet.create({
+  shadowWrapper: {
+    width: "100%",
+  },
+  card: {
+    borderLeftWidth: 4,
+    backgroundColor: "#ffffff",
+    paddingVertical: 18,
+    paddingHorizontal: 12,
+    borderRadius: 14,
+  },
+  inner: {
+    alignItems: "center",
+    gap: 10,
+  },
+  iconWrapper: {
+    width: 64,
+    height: 64,
+    borderRadius: 14,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  textWrapper: { flex: 1 },
+  title: { fontWeight: "700", fontSize: 16, textAlign: "center" },
+  subtitle: { marginTop: 4, fontSize: 13, lineHeight: 18, textAlign: "center" },
+});

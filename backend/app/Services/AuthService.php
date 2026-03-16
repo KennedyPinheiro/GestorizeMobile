@@ -47,4 +47,26 @@ class AuthService implements IAuthService
 
         $user->forceFill(['api_token' => null])->save();
     }
+
+    /**
+     * Troca o token atual por um novo.
+     *
+     * @return array{token:string,user:array{id:int,name:string,email:string}}
+     */
+    public function refresh(string $token): array
+    {
+        $user = User::where('api_token', $token)->first();
+
+        if (! $user) {
+            throw new AuthenticationException('Token inválido.');
+        }
+
+        $newToken = Str::random(80);
+        $user->forceFill(['api_token' => $newToken])->save();
+
+        return [
+            'token' => $newToken,
+            'user' => $user->only(['id', 'name', 'email']),
+        ];
+    }
 }

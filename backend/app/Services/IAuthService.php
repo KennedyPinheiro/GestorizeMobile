@@ -11,4 +11,9 @@ interface IAuthService
     public function login(array $credentials): array;
 
     public function logout(string $token): void;
+
+    /**
+     * @return array{token:string,user:array{id:int,name:string,email:string}}
+     */
+    public function refresh(string $token): array;
 }

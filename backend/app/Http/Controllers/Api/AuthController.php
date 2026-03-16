@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AuthLoginRequest;
 use App\Http\Requests\AuthLogoutRequest;
+use App\Http\Requests\AuthRefreshRequest;
 use App\Services\IAuthService;
 use App\Services\ResponseService;
 use Illuminate\Http\JsonResponse;
@@ -25,5 +26,13 @@ class AuthController extends Controller
         $this->service->logout($request->validated('token'));
 
         return ResponseService::success([], 'Logout realizado com sucesso.');
+    }
+
+    public function refresh(AuthRefreshRequest $request): JsonResponse
+    {
+        return ResponseService::success(
+            $this->service->refresh($request->validated('token')),
+            'Token atualizado.'
+        );
     }
 }

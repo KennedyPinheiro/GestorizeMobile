@@ -1,22 +1,26 @@
-import { Image, StyleSheet } from "react-native";
+import { Image, StyleSheet, View } from "react-native";
+
 const LogoIcon = () => {
   return (
-    <Image
-      source={require("@images/LogoIcon.png")}
-      style={styles.container}
-    />
+    <View style={styles.wrapper}>
+      <Image
+        source={require("@images/Logo.png")}
+        style={styles.logo}
+        resizeMode="contain"
+      />
+    </View>
   );
-}
+};
 export default LogoIcon;
 
-
 const styles = StyleSheet.create({
-  container: {
-    display: "flex",
-    justifyContent: "center",
+  wrapper: {
     alignItems: "center",
-    height: "100%",
-    maxHeight:90,
-    maxWidth: 80,
-  }
-})
+    justifyContent: "center",
+    height: 64,
+  },
+  logo: {
+    height: 50,
+    width: 100,
+  },
+});
