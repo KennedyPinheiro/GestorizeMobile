@@ -56,5 +56,31 @@ class ProdutosSeeder extends Seeder
                 'unidade_medida_id' => 4,
             ],
         ], ['id'], ['nome', 'descricao', 'preco_custo', 'porcentagem_lucro', 'preco_venda', 'estoque', 'data_entrada', 'validade', 'fornecedor_id', 'categoria_id', 'unidade_medida_id']);
+
+        $agora = Carbon::now();
+
+        DB::table('categoria_produto')->upsert([
+            [
+                'produto_id' => 1,
+                'categoria_id' => 4,
+                'is_principal' => true,
+                'created_at' => $agora,
+                'updated_at' => $agora,
+            ],
+            [
+                'produto_id' => 2,
+                'categoria_id' => 3,
+                'is_principal' => true,
+                'created_at' => $agora,
+                'updated_at' => $agora,
+            ],
+            [
+                'produto_id' => 3,
+                'categoria_id' => 2,
+                'is_principal' => true,
+                'created_at' => $agora,
+                'updated_at' => $agora,
+            ],
+        ], ['produto_id', 'categoria_id'], ['is_principal', 'updated_at']);
     }
 }

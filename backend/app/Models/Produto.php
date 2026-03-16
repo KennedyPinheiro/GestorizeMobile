@@ -25,6 +25,13 @@ class Produto extends Model
         return $this->belongsTo(Categoria::class);
     }
 
+    public function categorias()
+    {
+        return $this->belongsToMany(Categoria::class, 'categoria_produto')
+            ->withPivot('is_principal')
+            ->orderByPivot('is_principal', 'desc');
+    }
+
     public function fornecedor()
     {
         return $this->belongsTo(Fornecedor::class);

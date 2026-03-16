@@ -22,7 +22,9 @@ class ProdutoRequest extends FormRequest
             'preco_venda' => 'required|numeric|min:0',
             'data_entrada' => 'required|date',
 
-            'categoria_id' => 'required|exists:categorias,id',
+            'categorias' => 'required_without:categoria_id|array|min:1',
+            'categorias.*' => 'integer|distinct|exists:categorias,id',
+            'categoria_id' => 'required_without:categorias|exists:categorias,id',
             'fornecedor_id' => 'required|exists:fornecedores,id',
             'unidade_medida_id' => 'required|exists:unidades_medida,id',
 
