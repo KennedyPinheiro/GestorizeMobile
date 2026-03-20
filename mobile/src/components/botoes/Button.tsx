@@ -31,7 +31,7 @@ const Button = ({
     ? "#FF4C4C" 
     : !isOutlined
     ? color === "primary"
-      ? "#26579E"
+      ? "#005CE4"
       : "#888"
     : "transparent";
 

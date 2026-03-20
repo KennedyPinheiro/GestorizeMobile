@@ -1,60 +1,49 @@
 import React, { useState } from "react";
-import {
-  View,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  Keyboard,
-  Text,
-} from "react-native";
-import Button from "@components/botoes/Button";
-import Link from "@components/utilities/Link";
-import LoginLogo from "@components/LoginLogo";
+import { View, StyleSheet, Image, Text } from "react-native";
+
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "@context/types";
-import EditableTextCard from "@components/EditableTextCard";
 import { useAuth } from "@context/AuthContext";
+import LoginCard from "@components/cards/login-card";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Login">;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ffffff",
-    paddingHorizontal: 16,
+    backgroundColor: "#0D2B52",
   },
-  innerContainer: {
+
+  header: {
     flex: 1,
+    alignItems: "center",
     justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 20,
+    paddingTop: 40,
   },
-  spacerTop: {
-    marginBottom: -60,
+
+  logo: {
+    width: 140,
+    height: 140,
+    marginBottom: 10,
   },
-  section: {
-    width: "100%",
-    alignItems: "center",
+
+  subtitle: {
+    color: "#FFF",
+    fontSize: 14,
+    opacity: 0.8,
   },
-  linkSection: {
-    width: "100%",
-    alignItems: "flex-end",
-    paddingRight: 20,
-    marginBottom: 30,
+
+  cardContainer: {
+    flex: 1,
+    backgroundColor: "#EDEDED",
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    padding: 20,
+    marginTop: -40,
   },
-  footer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  footerTexto: {
-    marginRight: 5,
-  },
-  erro: { color: "red", textAlign: "center", marginBottom: 10 },
 });
 const Login = ({ navigation }: Props) => {
   const [email, setemail] = useState("teste@email.com");
-  const [senha, setSenha] = useState("123456");
+  const [senha, setSenha] = useState("");
   const [erro, setErro] = useState<string | null>(null);
   const { signIn, loading } = useAuth();
 
@@ -69,45 +58,17 @@ const Login = ({ navigation }: Props) => {
     }
   };
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={styles.container}>
-        <View style={styles.innerContainer}>
-          <View style={styles.spacerTop} />
-          <LoginLogo />
-          <View style={styles.section}>
-            <EditableTextCard
-              label="Email"
-              tipo="string"
-              placeholder="Example@mail.com"
-              value={email}
-              onChangeText={setemail}
-            />
-            <EditableTextCard
-              label="Senha"
-              tipo="password"
-              placeholder="Senha"
-              value={senha}
-              onChangeText={setSenha}
-            />
-          </View>
-          <View style={[styles.linkSection,]}>
-            <Link title="Esqueceu a Senha?" onPress={() => { }} />
-          </View>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Image source={require("@assets/images/LogoLight.png")} style={styles.logo} />
 
-          <View style={styles.section}>
-            {erro && <Text style={styles.erro}>{erro}</Text>}
-            <Button
-              title={"Login"}
-              variant="contained"
-              color="primary"
-              type="submit"
-              onPress={handleLogin}
-              disabled={!isFormValid || loading}
-            />
-          </View>
-        </View>
+        <Text style={styles.subtitle}>O seu sistema de gestão empresarial</Text>
       </View>
-    </TouchableWithoutFeedback>
+
+      <View style={styles.cardContainer}>
+        <LoginCard />
+      </View>
+    </View>
   );
 };
 

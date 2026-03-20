@@ -15,7 +15,8 @@
       "@api/*": ["./src/api/*"],
       "@configs/*": ["./src/configs/*"],
       "@utils/*": ["./src/utils/*"],
-      "@@core/*": ["./src/@core/*"]
+      "@@core/*": ["./src/@core/*"],
+      "@assets/*": ["assets/*"]
     }
   }
 }
