@@ -4,15 +4,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const unwrap = (responseData: any) => responseData?.data ?? responseData
 
+
 export const postLogin = async (email: string, password: string) => {
-  const { data } = await getAxios().post(auth.loginEndpoint, { email, password })
-  const payload = unwrap(data)
-  await authStorage.set(payload?.token ?? null)
-  if (payload?.user) {
-    await AsyncStorage.setItem(auth.userDataKeyName, JSON.stringify(payload.user))
-  }
-  return payload
-}
+  const { data } = await getAxios().post("/login", { email, password });
+  return data?.data ?? data;
+};
+
 
 export const postRefreshToken = async () => {
   const { data } = await getAxios().post(auth.refreshEndpoint)
@@ -29,3 +26,4 @@ export const postLogout = async () => {
   await authStorage.set(null)
   await AsyncStorage.removeItem(auth.userDataKeyName)
 }
+

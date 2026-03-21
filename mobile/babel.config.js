@@ -20,8 +20,7 @@ module.exports = function (api) {
             '@@core': './src/@core'
           }
         }
-      ],
-      'react-native-reanimated/plugin'
+      ]
     ]
   }
 }

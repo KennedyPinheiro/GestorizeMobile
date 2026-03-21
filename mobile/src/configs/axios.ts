@@ -25,10 +25,14 @@ export const getAxios = ({ contentType, timeoutMs }: AxiosOpts = {}): AxiosInsta
   }
 
   const instance = axios.create({
-    baseURL: API_BASE_URL,
-    timeout: typeof timeoutMs === 'number' ? timeoutMs : 10000,
-    headers
+    baseURL: "http://192.168.15.8:8000/api",
+    timeout: 15000,
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
   })
+
 
   instance.interceptors.request.use(async config => {
     const token = await authStorage.get()

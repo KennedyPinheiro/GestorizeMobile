@@ -1,9 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import {
   View,
   TextInput,
   StyleSheet,
-  TouchableOpacity
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  Keyboard
 } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 
@@ -23,34 +25,54 @@ export default function InputLogin({
   icon = 'mail-outline'
 }: InputLoginProps) {
   const [isSecure, setIsSecure] = useState(secureTextEntry)
+  const [isFocused, setIsFocused] = useState(false)
+
+  const inputRef = useRef<TextInput>(null)
 
   return (
-    <View style={styles.container}>
-      
-      <Ionicons name={icon} size={24} color="#1E1E1E" />
+    <TouchableWithoutFeedback
+      onPress={() => {
+        Keyboard.dismiss()
+        inputRef.current?.blur()
+        setIsFocused(false)
+      }}
+    >
+      <View
+        style={[
+          styles.container,
+          isFocused && styles.containerFocused
+        ]}
+      >
+        <Ionicons
+          name={icon}
+          size={24}
+          color={isFocused ? '#6C63FF' : '#1E1E1E'}
+        />
 
-      <TextInput
-        style={styles.input}
-        placeholder={placeholder}
-        placeholderTextColor="#1E1E1E"
-        value={value}
-        onChangeText={onChangeText}
-        secureTextEntry={isSecure}
-      />
+        <TextInput
+          ref={inputRef}
+          style={styles.input}
+          placeholder={placeholder}
+          placeholderTextColor="#888"
+          value={value}
+          onChangeText={onChangeText}
+          secureTextEntry={isSecure}
+          underlineColorAndroid="transparent"
+        />
 
-      {secureTextEntry && (
-        <TouchableOpacity onPress={() => setIsSecure(!isSecure)}>
-          <Ionicons
-            name={isSecure ? 'eye-off-outline' : 'eye-outline'}
-            size={24}
-            color="#1E1E1E"
-          />
-        </TouchableOpacity>
-      )}
-    </View>
+        {secureTextEntry && (
+          <TouchableOpacity onPress={() => setIsSecure(!isSecure)}>
+            <Ionicons
+              name={isSecure ? 'eye-off-outline' : 'eye-outline'}
+              size={24}
+              color={isFocused ? '#6C63FF' : '#1E1E1E'}
+            />
+          </TouchableOpacity>
+        )}
+      </View>
+    </TouchableWithoutFeedback>
   )
 }
-
 
 const styles = StyleSheet.create({
   container: {
@@ -60,7 +82,15 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingHorizontal: 12,
     height: 64,
+    borderWidth: 2,
+    borderColor: 'transparent',
   },
+
+  containerFocused: {
+    borderColor: '#6C63FF',
+    backgroundColor: '#F5F4FF',
+  },
+
   input: {
     flex: 1,
     marginHorizontal: 10,

@@ -1,7 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { postLogin, postLogout, postRefreshToken } from "../api/apiAuth";
+import { postLogin, postLogout } from "../api/apiAuth";
 import authConfig from "../configs/auth";
 import { secureStore } from "../utils/secureStore";
+import { setAuthToken } from "src/services/api";
 
 type AuthContextType = {
   token: string | null;
@@ -15,8 +16,8 @@ const AuthContext = createContext<AuthContextType>({
   token: null,
   user: null,
   loading: true,
-  signIn: async () => {},
-  signOut: async () => {},
+  signIn: async () => { },
+  signOut: async () => { },
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
@@ -28,32 +29,46 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const loadStoredAuth = async () => {
       const storedToken = await secureStore.get(authConfig.storageTokenKeyName);
       const storedUser = await secureStore.get(authConfig.userDataKeyName);
+
       if (storedToken) setToken(storedToken);
       if (storedUser) setUser(JSON.parse(storedUser));
+
       setLoading(false);
     };
+
     loadStoredAuth();
   }, []);
 
   const signOut = async () => {
-    await postLogout();
-    setToken(null);
-    setUser(null);
-    await secureStore.remove(authConfig.storageTokenKeyName);
-    await secureStore.remove(authConfig.userDataKeyName);
+    try {
+      await postLogout();
+    } catch (e) {
+      console.log("Backend não respondeu, mas o usuário já vazou 😎");
+    } finally {
+      setToken(null);
+      setUser(null);
+      setAuthToken(null);
+      await secureStore.remove(authConfig.storageTokenKeyName);
+      await secureStore.remove(authConfig.userDataKeyName);
+    }
   };
 
   const signIn = async (email: string, password: string) => {
     setLoading(true);
+
     try {
-      const data = await postLogin(email, password);
-      const newToken = data?.token ?? null;
-      const newUser = data?.user ?? null;
+      const response = await postLogin(email, password);
+      const newToken = response?.token ?? null;
+      const newUser = response?.user ?? null;
+      console.log("TOKEN:", newToken);
       setToken(newToken);
       setUser(newUser);
       await secureStore.set(authConfig.storageTokenKeyName, newToken);
       if (newUser) {
-        await secureStore.set(authConfig.userDataKeyName, JSON.stringify(newUser));
+        await secureStore.set(
+          authConfig.userDataKeyName,
+          JSON.stringify(newUser)
+        );
       }
     } finally {
       setLoading(false);
