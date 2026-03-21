@@ -9,8 +9,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->boolean('is_admin')->default(false)->after('api_token');
-            $table->foreignId('role_id')->nullable()->after('is_admin')->constrained('roles')->nullOnDelete();
+            $table->foreignId('role_id')
+                ->constrained('roles')
+                ->cascadeOnDelete();
         });
     }
 

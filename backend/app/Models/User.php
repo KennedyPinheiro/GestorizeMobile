@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Enums\RoleEnum;
 use App\Models\Role;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -48,12 +50,40 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'is_admin' => 'boolean',
         ];
     }
 
     public function role()
     {
         return $this->belongsTo(Role::class);
+    }
+    public function getRoleEnumAttribute(): ?RoleEnum
+    {
+        if (! $this->role) {
+            return null;
+        }
+
+        return match ($this->role->nome) {
+            'Administrador' => RoleEnum::ADMIN,
+            'Gestor' => RoleEnum::GESTOR,
+            'Funcionario' => RoleEnum::FUNCIONARIO,
+            default => null,
+        };
+    }
+
+
+    public function isAdmin(): bool
+    {
+        return $this->role_enum === RoleEnum::ADMIN;
+    }
+
+    public function isGestor(): bool
+    {
+        return $this->role_enum === RoleEnum::GESTOR;
+    }
+
+    public function isFuncionario(): bool
+    {
+        return $this->role_enum === RoleEnum::FUNCIONARIO;
     }
 }

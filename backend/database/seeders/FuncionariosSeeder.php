@@ -10,6 +10,14 @@ class FuncionariosSeeder extends Seeder
 {
     public function run(): void
     {
+        $roleFuncionarioId = DB::table('roles')
+            ->where('nome', 'Funcionario')
+            ->value('id');
+
+        if (! $roleFuncionarioId) {
+            throw new \Exception('Role "Funcionario" não encontrada. Rode o RolesSeeder primeiro.');
+        }
+
         DB::table('funcionarios')->upsert([
             [
                 'id' => 1,
@@ -20,9 +28,19 @@ class FuncionariosSeeder extends Seeder
                 'data_nascimento' => '1990-05-10',
                 'cpf' => '123.456.789-00',
                 'rg' => '12.345.678-9',
-                'role_id' => 2,
+                'role_id' => $roleFuncionarioId, 
                 'endereco_id' => 2,
             ],
-        ], ['id'], ['nome', 'email', 'telefone', 'password', 'data_nascimento', 'cpf', 'rg', 'role_id', 'endereco_id']);
+        ], ['id'], [
+            'nome',
+            'email',
+            'telefone',
+            'password',
+            'data_nascimento',
+            'cpf',
+            'rg',
+            'role_id',
+            'endereco_id'
+        ]);
     }
 }
