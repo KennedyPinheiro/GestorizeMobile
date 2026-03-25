@@ -5,28 +5,38 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use App\Enums\RoleEnum;
-use App\Models\Role;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
+use App\Traits\HasSnowflakeId;
 
+/**
+ * @method \Laravel\Sanctum\NewAccessToken createToken(string $name, array $abilities = ['*'])
+ * @method \Laravel\Sanctum\PersonalAccessToken|null currentAccessToken()
+ * @method \Illuminate\Support\Collection getRoleNames()
+ */
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasRoles, HasFactory, Notifiable, HasSnowflakeId;
 
+    protected $keyType = 'string';
+    public $incrementing = false;
+
+    protected $guard_name = 'api';
     /**
      * The attributes that are mass assignable.
      *
      * @var list<string>
      */
     protected $fillable = [
+        'id',
         'name',
         'email',
         'password',
         'api_token',
-        'is_admin',
-        'role_id',
     ];
 
     /**
@@ -53,37 +63,35 @@ class User extends Authenticatable
         ];
     }
 
-    public function role()
+    public function funcionario()
     {
-        return $this->belongsTo(Role::class);
+        return $this->hasOne(Funcionario::class);
     }
+
     public function getRoleEnumAttribute(): ?RoleEnum
     {
-        if (! $this->role) {
-            return null;
-        }
+        $roleName = $this->getRoleNames()->first();
 
-        return match ($this->role->nome) {
-            'Administrador' => RoleEnum::ADMIN,
-            'Gestor' => RoleEnum::GESTOR,
-            'Funcionario' => RoleEnum::FUNCIONARIO,
+        return match ($roleName) {
+            'admin' => RoleEnum::ADMIN,
+            'gestor' => RoleEnum::GESTOR,
+            'funcionario' => RoleEnum::FUNCIONARIO,
             default => null,
         };
     }
 
-
     public function isAdmin(): bool
     {
-        return $this->role_enum === RoleEnum::ADMIN;
+        return $this->hasRole('admin');
     }
 
     public function isGestor(): bool
     {
-        return $this->role_enum === RoleEnum::GESTOR;
+        return $this->hasRole('gestor');
     }
 
     public function isFuncionario(): bool
     {
-        return $this->role_enum === RoleEnum::FUNCIONARIO;
+        return $this->hasRole('funcionario');
     }
 }

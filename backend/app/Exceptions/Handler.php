@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use App\Services\ResponseService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
@@ -43,14 +44,25 @@ class Handler extends ExceptionHandler
 
     public function render($request, Throwable $e): Response|JsonResponse
     {
-        if ($e->getPrevious() instanceof AuthorizationException || $e instanceof AuthorizationException) {
-            return ResponseService::exception($e, Response::HTTP_FORBIDDEN, 'Ação não autorizada.');
+        if ($e instanceof AuthenticationException) {
+            return ResponseService::exception(
+                $e,
+                Response::HTTP_UNAUTHORIZED,
+                'Não autenticado.'
+            );
+        }
+
+        if ($e instanceof AuthorizationException || $e->getPrevious() instanceof AuthorizationException) {
+            return ResponseService::exception(
+                $e,
+                Response::HTTP_FORBIDDEN,
+                'Ação não autorizada.'
+            );
         }
 
         if ($e instanceof ModelNotFoundException) {
             $modelClass = $e->getModel();
-            $modelNameParts = Str::of($modelClass)->explode('\\');
-            $modelName = $modelNameParts->last();
+            $modelName = class_basename($modelClass);
 
             return response()->json(
                 [
@@ -62,10 +74,15 @@ class Handler extends ExceptionHandler
             );
         }
 
-        if ($e instanceof CamposInvalidosException) {
-            return ResponseService::exception($e, $e->getStatusCode(), $e->getMessage());
-        }
-
         return parent::render($request, $e);
+    }
+
+    protected function unauthenticated($request, AuthenticationException $exception)
+    {
+        return ResponseService::exception(
+            $exception,
+            Response::HTTP_UNAUTHORIZED,
+            'Não autenticado.'
+        );
     }
 }

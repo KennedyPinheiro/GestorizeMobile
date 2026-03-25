@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\User;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -12,15 +13,14 @@ use Illuminate\Validation\ValidationException;
 class AuthService implements IAuthService
 {
     /**
-     * Autentica e gera token simples.
+     *
      *
      * @param array{email:string,password:string} $credentials
      */
+
     public function login(array $credentials): array
     {
-        $user = User::with('role')
-            ->where('email', $credentials['email'])
-            ->first();
+        $user = User::where('email', $credentials['email'])->first();
 
         if (! $user || ! Hash::check($credentials['password'], $user->password)) {
             throw ValidationException::withMessages([
@@ -28,8 +28,7 @@ class AuthService implements IAuthService
             ]);
         }
 
-        $token = Str::random(80);
-        $user->forceFill(['api_token' => $token])->save();
+        $token = $user->createToken('api-token')->plainTextToken;
 
         return [
             'token' => $token,
@@ -37,40 +36,37 @@ class AuthService implements IAuthService
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
-                'role_id' => $user->role_id,
+                'roles' => $user->getRoleNames(),
             ],
         ];
     }
 
-    /**
-     * Invalida o token informado.
-     */
-    public function logout(string $token): void
+    public function logout(): void
     {
-        $user = User::where('api_token', $token)->first();
-
-        if (! $user) {
-            throw new AuthenticationException('Token inválido.');
+        $user = request()->user();
+        if (!$user) {
+            throw new AuthenticationException('Não autenticado');
         }
 
-        $user->forceFill(['api_token' => null])->save();
+        $user->currentAccessToken()->delete();
     }
 
     /**
-     * Troca o token atual por um novo.
+     * 
      *
      * @return array{token:string,user:array{id:int,name:string,email:string}}
      */
-    public function refresh(string $token): array
+    public function refresh(): array
     {
-        $user = User::where('api_token', $token)->first();
+        $user = request()->user();
 
-        if (! $user) {
-            throw new AuthenticationException('Token inválido.');
+        if (!$user) {
+            throw new AuthenticationException('Não autenticado');
         }
 
-        $newToken = Str::random(80);
-        $user->forceFill(['api_token' => $newToken])->save();
+        $user->currentAccessToken()->delete();
+
+        $newToken = $user->createToken('api-token')->plainTextToken;
 
         return [
             'token' => $newToken,

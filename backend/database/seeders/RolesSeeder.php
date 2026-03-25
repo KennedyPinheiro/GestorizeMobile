@@ -2,35 +2,38 @@
 
 namespace Database\Seeders;
 
+use App\Models\Role;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
-use Godruoyi\Snowflake\Snowflake;
+use Kra8\Snowflake\Snowflake;
 
 class RolesSeeder extends Seeder
 {
-
-
-    public function run()
+    public function run(): void
     {
-        $snowflake = new Snowflake();
+        $snowflake = app(Snowflake::class);
 
-        DB::table('roles')->insert([
+        Role::updateOrCreate(
+            ['name' => 'admin'],
             [
-                'id' => $snowflake->id(),
-                'nome' => 'Administrador',
-                'descricao' => 'Acesso total ao sistema'
-            ],
-            [
-                'id' => $snowflake->id(),
-                'nome' => 'Gestor',
-                'descricao' => 'Acesso quase total ao sistema'
+                'id' => $snowflake->next(),
+                'guard_name' => 'api'
+            ]
+        );
 
-            ],
+        Role::updateOrCreate(
+            ['name' => 'gestor'],
             [
-                'id' => $snowflake->id(),
-                'nome' => 'Funcionario',
-                'descricao' => 'Acesso limitado ao sistema'
-            ],
-        ]);
+                'id' => $snowflake->next(),
+                'guard_name' => 'api'
+            ]
+        );
+
+        Role::updateOrCreate(
+            ['name' => 'funcionario'],
+            [
+                'id' => $snowflake->next(),
+                'guard_name' => 'api'
+            ]
+        );
     }
 }

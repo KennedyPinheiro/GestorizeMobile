@@ -2,25 +2,23 @@
 
 namespace App\Policies;
 
-use App\Enums\RoleEnum;
 use App\Models\User;
+use App\Enums\RoleEnum;
 
 class RolePolicy
 {
-    /**
-     * Create a new policy instance.
-     */
-    public function __construct()
+    public function isAdmin(User $user): bool
     {
-        //
+        return $user->hasRole(RoleEnum::ADMIN->value);
     }
 
-     public function isValid(User $user): bool
+    public function isGestor(User $user): bool
     {
-        return in_array($user->role_id, [
-        RoleEnum::ADMIN,
-        RoleEnum::GESTOR,
-        RoleEnum::FUNCIONARIO,
-    ]);
+        return $user->hasRole(RoleEnum::GESTOR->value);
+    }
+
+    public function isFuncionario(User $user): bool
+    {
+        return $user->hasRole(RoleEnum::FUNCIONARIO->value);
     }
 }

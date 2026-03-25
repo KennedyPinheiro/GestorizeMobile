@@ -8,10 +8,11 @@ use App\Http\Controllers\Api\FornecedorController;
 use App\Http\Controllers\Api\OrcamentoController;
 
 Route::post('login', [AuthController::class, 'login']);
-Route::post('logout', [AuthController::class, 'logout'])->middleware('login');
-Route::post('refresh', [AuthController::class, 'refresh'])->middleware('login');
 
-Route::middleware('login')->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('logout', [AuthController::class, 'logout']);
+    Route::post('refresh', [AuthController::class, 'refresh']);
+
     Route::apiResource('produtos', ProdutoController::class);
     Route::apiResource('clientes', ClienteController::class);
     Route::apiResource('fornecedores', FornecedorController::class);

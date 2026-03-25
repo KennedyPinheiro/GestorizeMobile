@@ -2,45 +2,32 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
+use App\Models\Funcionario;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Kra8\Snowflake\Snowflake;
 
 class FuncionariosSeeder extends Seeder
 {
     public function run(): void
     {
-        $roleFuncionarioId = DB::table('roles')
-            ->where('nome', 'Funcionario')
-            ->value('id');
+        $snowflake = app(Snowflake::class);
 
-        if (! $roleFuncionarioId) {
-            throw new \Exception('Role "Funcionario" não encontrada. Rode o RolesSeeder primeiro.');
-        }
 
-        DB::table('funcionarios')->upsert([
-            [
-                'id' => 1,
-                'nome' => 'Funcionário Padrão',
-                'email' => 'func1@example.com',
-                'telefone' => '(11) 95555-0001',
-                'password' => Hash::make('123456'),
-                'data_nascimento' => '1990-05-10',
-                'cpf' => '123.456.789-00',
-                'rg' => '12.345.678-9',
-                'role_id' => $roleFuncionarioId, 
-                'endereco_id' => 2,
-            ],
-        ], ['id'], [
-            'nome',
-            'email',
-            'telefone',
-            'password',
-            'data_nascimento',
-            'cpf',
-            'rg',
-            'role_id',
-            'endereco_id'
+        $user = User::create([
+            'id' => $snowflake->next(),
+            'name' => 'Funcionário Padrão',
+            'email' => 'func1@email.com',
+            'password' => Hash::make('123456'),
+        ]);
+
+        Funcionario::create([
+            'id' => $snowflake->next(),
+            'user_id' => $user->id,
+            'telefone' => '(11) 95555-0001',
+            'cpf' => '123.456.789-00',
+            'data_nascimento' => '1990-05-10',
         ]);
     }
 }

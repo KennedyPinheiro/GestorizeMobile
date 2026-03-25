@@ -4,42 +4,47 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Kra8\Snowflake\Snowflake;
+use App\Enums\RoleEnum;
 
 class TestUsersSeeder extends Seeder
 {
     public function run(): void
     {
-        $adminRoleId = DB::table('roles')->where('nome', 'Administrador')->value('id');
-        $gestorRoleId = DB::table('roles')->where('nome', 'Gestor')->value('id');
-        $funcRoleId = DB::table('roles')->where('nome', 'Funcionario')->value('id');
+        $snowflake = app(Snowflake::class);
 
-        User::updateOrCreate(
+        $admin = User::updateOrCreate(
             ['email' => 'teste@email.com'],
             [
+                'id' => $snowflake->next(),
                 'name' => 'Administrador Teste',
                 'password' => Hash::make('123456'),
-                'role_id' => $adminRoleId,
             ]
         );
 
-        User::updateOrCreate(
+        $admin->syncRoles([RoleEnum::ADMIN->value]);
+
+        $gestor = User::updateOrCreate(
             ['email' => 'gestor@example.com'],
             [
+                'id' => $snowflake->next(),
                 'name' => 'Gestor Teste',
                 'password' => Hash::make('123456'),
-                'role_id' => $gestorRoleId,
             ]
         );
 
-        User::updateOrCreate(
+        $gestor->syncRoles([RoleEnum::GESTOR->value]);
+
+        $funcionario = User::updateOrCreate(
             ['email' => 'funcionario@example.com'],
             [
+                'id' => $snowflake->next(),
                 'name' => 'Funcionário Teste',
                 'password' => Hash::make('123456'),
-                'role_id' => $funcRoleId,
             ]
         );
+
+        $funcionario->syncRoles([RoleEnum::FUNCIONARIO->value]);
     }
 }

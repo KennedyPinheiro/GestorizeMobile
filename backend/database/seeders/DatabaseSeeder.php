@@ -23,7 +23,6 @@ class DatabaseSeeder extends Seeder
             ClientesSeeder::class,
             FuncionariosSeeder::class,
             ProdutosSeeder::class,
-            OrcamentosSeeder::class,
             TestUsersSeeder::class,
         ]);
         // Factory user opcional removido, pois agora temos seeds explícitos.
