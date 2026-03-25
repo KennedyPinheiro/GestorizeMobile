@@ -5,7 +5,7 @@ import Button from "@components/botoes/Button";
 import { useEffect, useState } from "react";
 
 import DialogCategorias from "@components/dialogs/DialogCategoria";
-import { formatDate, parsePercent, parseReal } from "@@core/format";
+import { formatDate, parsePercent, parseReal } from "@core/utils/format";
 import Selecionado from "@components/Selecionado";
 import SidebarAlert from "@components/sidebars/Sidebaralert";
 import { supabase } from "@lib/supabase";

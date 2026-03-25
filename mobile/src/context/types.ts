@@ -1,3 +1,50 @@
+export type UserType = {
+  id: string;
+  nome: string;
+  email: string;
+  roles: string[];
+};
+
+export type ErrorResponseType =
+  | string
+  | {
+    success: boolean
+    message: string
+    code: number
+  }
+
+export type MessageConversionObject = {
+  defaultMessage: string
+  [key: string]: string
+}
+
+export type ResponseType<T> = {
+  success: boolean
+  message: string
+  data: T
+}
+
+export type ArrayResponseType<T> = {
+  success: boolean
+  message: string
+  data: T[]
+  meta?: ResponseMetaType
+  total?: number
+}
+
+export type MetaType = {
+  perPage: number
+  currentPage: number
+  lastPage: number
+  total: number
+}
+
+export type ResponseMetaType = {
+  current_page: number
+  per_page: number
+  total: number
+  last_page: number
+}
 export type StringfiedDate = string;
 
 export type ClienteType = {
@@ -165,7 +212,7 @@ export type RootStackParamList = {
     fornecedor_id: number;
     medida_id: number;
     medida_titulo: string;
-   
+
   };
   PerfilFornecedor: {
     id: number;

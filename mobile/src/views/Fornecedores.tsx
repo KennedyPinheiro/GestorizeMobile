@@ -15,7 +15,7 @@ import {
   RootStackParamList,
 } from "@context/types";
 import ErrorSidebarAlert from "@components/sidebars/ErrorSidebarAlert";
-import { formatCnpj } from "@@core/format";
+import { formatCnpj } from "@core/utils/format";
 import Nav from "@components/utilities/Nav";
 
 const Fornecedores = () => {

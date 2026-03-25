@@ -17,7 +17,7 @@ import {
   formatDate,
   formatRg,
   formatTelefone,
-} from "src/@core/format";
+} from "@core/utils/format";
 import { RootStackParamList } from "@context/types";
 
 const generos = ["Masculino", "Feminino", "Prefiro não dizer"];

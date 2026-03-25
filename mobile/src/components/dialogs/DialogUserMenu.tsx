@@ -15,7 +15,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
 import { useAuth } from "@context/AuthContext";
 import { EnderecoTipo, RootStackParamList } from "@context/types";
-import { formatarCampo } from "@@core/format";
+import { formatarCampo } from "@core/utils/format";
 
 type Props = {
   show: boolean;

@@ -9,7 +9,7 @@ import {
 import InputCard from "@components/InputCard";
 import { Select, MenuItem } from "@components/utilities/Select";
 import Button from "@components/botoes/Button";
-import { formatCep } from "@@core/format";
+import { formatCep } from "@core/utils/format";
 import ErrorSidebarAlert from "@components/sidebars/ErrorSidebarAlert";
 import { EnderecoType } from "@context/types";
 

@@ -1,8 +1,6 @@
-import axios, { AxiosInstance } from 'axios'
+import axios from 'axios'
 import auth from './auth'
 import { secureStore } from '@utils/secureStore'
-
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://10.0.2.2:8000/api'
 
 export const authStorage = {
   async get(): Promise<string | null> {
@@ -13,49 +11,32 @@ export const authStorage = {
   }
 }
 
-type AxiosOpts = {
-  contentType?: 'application/json' | 'multipart/form-data' | 'formData' | string
-  timeoutMs?: number
-}
+export const api = axios.create({
+  baseURL: "http://192.168.15.4:8000/api", 
+  timeout: 15000,
+  headers: {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+  },
+})
 
-export const getAxios = ({ contentType, timeoutMs }: AxiosOpts = {}): AxiosInstance => {
-  const headers: Record<string, string> = { 'Content-Type': 'application/json' }
-  if (contentType) {
-    headers['Content-Type'] = contentType === 'formData' ? 'multipart/form-data' : contentType
+api.interceptors.request.use(async config => {
+  const token = await authStorage.get()
+  if (token) {
+    config.headers = config.headers ?? {}
+    config.headers.Authorization = `Bearer ${token}`
   }
+  return config
+})
 
-  const instance = axios.create({
-    baseURL: "http://192.168.15.8:8000/api",
-    timeout: 15000,
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    },
-  })
-
-
-  instance.interceptors.request.use(async config => {
-    const token = await authStorage.get()
-    if (token) {
-      config.headers = config.headers ?? {}
-      config.headers.Authorization = `Bearer ${token}`
+api.interceptors.response.use(
+  response => response,
+  async error => {
+    if (error.response?.status === 401) {
+      await authStorage.set(null)
     }
-    return config
-  })
+    return Promise.reject(error)
+  }
+)
 
-  instance.interceptors.response.use(
-    response => response,
-    async error => {
-      if (error.response?.status === 401) {
-        await authStorage.set(null)
-      }
-      return Promise.reject(error)
-    }
-  )
-
-  return instance
-}
-
-// Export default para compatibilidade anterior
-const api = getAxios()
 export default api

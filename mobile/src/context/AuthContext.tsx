@@ -1,8 +1,10 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { postLogin, postLogout } from "../api/apiAuth";
+import Toast from 'react-native-toast-message';
 import authConfig from "../configs/auth";
 import { secureStore } from "../utils/secureStore";
 import { setAuthToken } from "src/services/api";
+import { formatErrorMessage } from "@core/utils/format";
 
 type AuthContextType = {
   token: string | null;
@@ -39,11 +41,35 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     loadStoredAuth();
   }, []);
 
+  const signIn = async (email: string, password: string) => {
+    setLoading(true);
+
+    try {
+      const { token, user } = await postLogin(email, password);
+
+      setToken(token);
+      setUser(user);
+
+      await secureStore.set(authConfig.storageTokenKeyName, token);
+      await secureStore.set(
+        authConfig.userDataKeyName,
+        JSON.stringify(user)
+      );
+    } catch (error) {
+      Toast.error(formatErrorMessage(error, "Erro no login:"));
+
+      setToken(null);
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const signOut = async () => {
     try {
       await postLogout();
     } catch (e) {
-      console.log("Backend não respondeu, mas o usuário já vazou 😎");
+      Toast.error(formatErrorMessage(e, "Erro ao sair:"));
     } finally {
       setToken(null);
       setUser(null);
@@ -53,27 +79,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const signIn = async (email: string, password: string) => {
-    setLoading(true);
 
-    try {
-      const response = await postLogin(email, password);
-      const newToken = response?.token ?? null;
-      const newUser = response?.user ?? null;
-      console.log("TOKEN:", newToken);
-      setToken(newToken);
-      setUser(newUser);
-      await secureStore.set(authConfig.storageTokenKeyName, newToken);
-      if (newUser) {
-        await secureStore.set(
-          authConfig.userDataKeyName,
-          JSON.stringify(newUser)
-        );
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <AuthContext.Provider value={{ token, user, loading, signIn, signOut }}>
