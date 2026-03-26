@@ -5,12 +5,12 @@ import {
   Text,
   StyleSheet,
   TouchableWithoutFeedback,
-} from "react-native";
-import InputCard from "@components/InputCard";
-import { Select, MenuItem } from "@components/utilities/Select";
-import Button from "@components/botoes/Button";
-import ErrorSidebarAlert from "@components/sidebars/ErrorSidebarAlert";
-import { EnderecoType } from "@context/types";
+} from 'react-native';
+import InputCard from '@components/InputCard';
+import { Select, MenuItem } from '@components/utilities/Select';
+import Button from '@components/botoes/Button';
+import ErrorSidebarAlert from '@components/sidebars/ErrorSidebarAlert';
+import { EnderecoType } from '@context/types';
 import { formatCep } from '@core/utils/format';
 
 export const estadosBrasileiros = [
@@ -151,11 +151,7 @@ const DialogEndereco = ({
                   value={numero}
                   onChangeText={setNumero}
                 />
-                <Select
-                  value={estado}
-                  onChange={setEstado}
-                  label="Estado"
-                >
+                <Select value={estado} onChange={setEstado} label="Estado">
                   {estadosBrasileiros.map((uf) => (
                     <MenuItem key={uf} value={uf}>
                       {uf}

@@ -17,10 +17,10 @@ module.exports = function (api) {
             '@lib': './lib',
             '@utils': './src/utils',
             '@core': './src/@core',
-            '@@core': './src/@core'
-          }
-        }
-      ]
-    ]
-  }
-}
+            '@@core': './src/@core',
+          },
+        },
+      ],
+    ],
+  };
+};

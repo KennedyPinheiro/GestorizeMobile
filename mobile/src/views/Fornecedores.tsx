@@ -13,9 +13,9 @@ import {
   EnderecoTipo,
   FornecedorTipo,
   RootStackParamList,
-} from "@context/types";
-import ErrorSidebarAlert from "@components/sidebars/ErrorSidebarAlert";
-import Nav from "@components/utilities/Nav";
+} from '@context/types';
+import ErrorSidebarAlert from '@components/sidebars/ErrorSidebarAlert';
+import Nav from '@components/utilities/Nav';
 import { formatCNPJ } from '@core/utils/format';
 
 const Fornecedores = () => {

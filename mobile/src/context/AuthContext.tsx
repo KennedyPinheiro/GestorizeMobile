@@ -1,10 +1,10 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { postLogin, postLogout } from "../api/apiAuth";
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { postLogin, postLogout } from '../api/apiAuth';
 import Toast from 'react-native-toast-message';
-import authConfig from "../configs/auth";
-import { secureStore } from "../utils/secureStore";
-import { setAuthToken } from "src/services/api";
-import { formatErrorMessage } from "@core/utils/format";
+import authConfig from '../configs/auth';
+import { secureStore } from '../utils/secureStore';
+import { setAuthToken } from 'src/services/api';
+import { formatErrorMessage } from '@core/utils/format';
 
 type AuthContextType = {
   token: string | null;
@@ -18,8 +18,8 @@ const AuthContext = createContext<AuthContextType>({
   token: null,
   user: null,
   loading: true,
-  signIn: async () => { },
-  signOut: async () => { },
+  signIn: async () => {},
+  signOut: async () => {},
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
@@ -51,24 +51,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(user);
 
       await secureStore.set(authConfig.storageTokenKeyName, token);
-      await secureStore.set(
-        authConfig.userDataKeyName,
-        JSON.stringify(user)
-      );
+      await secureStore.set(authConfig.userDataKeyName, JSON.stringify(user));
     } catch (error) {
       Toast.show({
-        type: "error",
-        text1: "Erro no login",
-        text2: formatErrorMessage(error, "Erro no login"),
+        type: 'error',
+        text1: 'Erro no login',
+        text2: formatErrorMessage(error, 'Erro no login'),
         visibilityTime: 1000,
         topOffset: 50,
-        props: { rightOffset: 40 }
+        props: { rightOffset: 40 },
       });
 
       setToken(null);
       setUser(null);
-    }
-    finally {
+    } finally {
       setLoading(false);
     }
   };
@@ -77,7 +73,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       await postLogout();
     } catch (e) {
-      Toast.error(formatErrorMessage(e, "Erro ao sair:"));
+      Toast.error(formatErrorMessage(e, 'Erro ao sair:'));
     } finally {
       setToken(null);
       setUser(null);
@@ -86,8 +82,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       await secureStore.remove(authConfig.userDataKeyName);
     }
   };
-
-
 
   return (
     <AuthContext.Provider value={{ token, user, loading, signIn, signOut }}>
