@@ -1,4 +1,4 @@
-import api from "../src/configs/axios";
+import api from '../src/configs/axios';
 
 type OrderOpts = { ascending?: boolean };
 
@@ -15,7 +15,7 @@ class TableQuery {
   }
 
   ilike(column: string, value: string) {
-    this.search = { column, value: value.replace(/%/g, "").toLowerCase() };
+    this.search = { column, value: value.replace(/%/g, '').toLowerCase() };
     return this;
   }
 
@@ -31,12 +31,12 @@ class TableQuery {
 
       // filtros simples
       rows = rows.filter((row) =>
-        Object.entries(this.filters).every(([col, val]) => row[col] === val)
+        Object.entries(this.filters).every(([col, val]) => row[col] === val),
       );
 
       if (this.search) {
         rows = rows.filter((row) => {
-          const v = (row[this.search!.column] ?? "").toString().toLowerCase();
+          const v = (row[this.search!.column] ?? '').toString().toLowerCase();
           return v.includes(this.search!.value);
         });
       }
@@ -79,10 +79,10 @@ class TableQuery {
 
   async update(values: any) {
     try {
-      const id = this.filters["id"];
+      const id = this.filters['id'];
       const { data } = await api.put(
         id ? `/${this.table}/${id}` : `/${this.table}`,
-        values
+        values,
       );
       return { data, error: null };
     } catch (error: any) {
@@ -92,9 +92,9 @@ class TableQuery {
 
   async delete() {
     try {
-      const id = this.filters["id"];
+      const id = this.filters['id'];
       const { data } = await api.delete(
-        id ? `/${this.table}/${id}` : `/${this.table}`
+        id ? `/${this.table}/${id}` : `/${this.table}`,
       );
       return { data, error: null };
     } catch (error: any) {
@@ -108,9 +108,15 @@ const supabase = {
     return new TableQuery(table);
   },
   auth: {
-    async signInWithPassword({ email, password }: { email: string; password: string }) {
+    async signInWithPassword({
+      email,
+      password,
+    }: {
+      email: string;
+      password: string;
+    }) {
       try {
-        const { data } = await api.post("/login", { email, password });
+        const { data } = await api.post('/login', { email, password });
         return { data, error: null };
       } catch (error: any) {
         return { data: null, error };
@@ -118,7 +124,7 @@ const supabase = {
     },
     async signOut() {
       try {
-        await api.post("/logout");
+        await api.post('/logout');
         return { error: null };
       } catch (error: any) {
         return { error };

@@ -3,7 +3,7 @@ export type StringfiedDate = string;
 export type ClienteType = {
   pessoa_fisica: PessoaFisicaType;
   pessoa_juridica: PessoaJuridicatype;
-  tipo: "PF" | "PJ";
+  tipo: 'PF' | 'PJ';
 };
 
 export type PessoaFisicaType = {
@@ -165,7 +165,6 @@ export type RootStackParamList = {
     fornecedor_id: number;
     medida_id: number;
     medida_titulo: string;
-   
   };
   PerfilFornecedor: {
     id: number;

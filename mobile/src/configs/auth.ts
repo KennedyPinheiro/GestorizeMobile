@@ -3,5 +3,5 @@ export default {
   refreshEndpoint: '/refresh',
   logoutEndpoint: '/logout',
   storageTokenKeyName: 'authToken',
-  userDataKeyName: 'userData'
-}
+  userDataKeyName: 'userData',
+};

@@ -1,13 +1,13 @@
-import React from "react";
+import React from 'react';
 import {
   StyleSheet,
   Text,
   View,
   TouchableOpacity,
   GestureResponderEvent,
-} from "react-native";
-import type { DimensionValue } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
+} from 'react-native';
+import type { DimensionValue } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 
 type Props = {
   label?: string;
@@ -18,11 +18,11 @@ type Props = {
 };
 
 const ClickableTextCard = ({
-  label = "Campo",
-  value = "",
-  width = "100%",
+  label = 'Campo',
+  value = '',
+  width = '100%',
   onPress,
-  placeholder = "Selecionar...", 
+  placeholder = 'Selecionar...',
 }: Props) => {
   const isEmpty = !value;
 
@@ -32,12 +32,7 @@ const ClickableTextCard = ({
         <View style={styles.textContainer}>
           <View>
             <Text style={styles.label}>{label}</Text>
-            <Text
-              style={[
-                styles.valueText,
-                isEmpty && styles.placeholderText,
-              ]}
-            >
+            <Text style={[styles.valueText, isEmpty && styles.placeholderText]}>
               {value || placeholder}
             </Text>
           </View>
@@ -53,31 +48,31 @@ export default ClickableTextCard;
 const styles = StyleSheet.create({
   container: {
     borderWidth: 1,
-    borderColor: "#000",
+    borderColor: '#000',
     borderRadius: 15,
     paddingVertical: 10,
     paddingHorizontal: 20,
     marginVertical: 10,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
   },
   label: {
     fontSize: 13,
-    color: "#6e6e6e",
-    fontWeight: "bold",
+    color: '#6e6e6e',
+    fontWeight: 'bold',
     marginBottom: 5,
   },
   textContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   valueText: {
     fontSize: 20,
-    fontWeight: "bold",
-    color: "#111",
+    fontWeight: 'bold',
+    color: '#111',
   },
   placeholderText: {
-    color: "#999",
-    fontWeight: "normal",
+    color: '#999',
+    fontWeight: 'normal',
   },
 });

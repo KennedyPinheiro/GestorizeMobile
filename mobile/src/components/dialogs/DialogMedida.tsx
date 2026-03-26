@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   Modal,
   View,
@@ -7,12 +7,12 @@ import {
   TouchableWithoutFeedback,
   ScrollView,
   ActivityIndicator,
-} from "react-native";
-import BarraAdd from "@components/utilities/BarraAdd";
-import { CategoriaType, MedidaType } from "@context/types";
-import { supabase } from "@lib/supabase";
-import Medida from "@components/ui-lists/Medida";
-import DialogAdicionarMedida from "./DialogAdicionarMedida";
+} from 'react-native';
+import BarraAdd from '@components/utilities/BarraAdd';
+import { CategoriaType, MedidaType } from '@context/types';
+import { supabase } from '@lib/supabase';
+import Medida from '@components/ui-lists/Medida';
+import DialogAdicionarMedida from './DialogAdicionarMedida';
 
 type props = {
   open?: boolean;
@@ -34,9 +34,9 @@ const DialogMedida = ({ open, onClose, onSelect }: props) => {
   const carregarCategorias = async () => {
     setLoading(true);
     const { data, error } = await supabase
-      .from("medidas")
-      .select("*")
-      .order("id", { ascending: true });
+      .from('medidas')
+      .select('*')
+      .order('id', { ascending: true });
 
     if (error) {
     } else if (data) {
@@ -72,9 +72,7 @@ const DialogMedida = ({ open, onClose, onSelect }: props) => {
                   {loading ? (
                     <ActivityIndicator size="large" color="#062046" />
                   ) : dadosMedida.length === 0 ? (
-                    <Text style={styles.text}>
-                      Nenhuma medida cadastrada.
-                    </Text>
+                    <Text style={styles.text}>Nenhuma medida cadastrada.</Text>
                   ) : (
                     dadosMedida.map((cat) => (
                       <Medida
@@ -106,28 +104,28 @@ const DialogMedida = ({ open, onClose, onSelect }: props) => {
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
-    justifyContent: "center",
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
     paddingHorizontal: 20,
   },
   container: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderRadius: 10,
-    overflow: "hidden",
-    borderColor: "#062046",
+    overflow: 'hidden',
+    borderColor: '#062046',
     borderWidth: 3,
-    maxHeight: "80%",
+    maxHeight: '80%',
   },
   header: {
-    backgroundColor: "#062046",
+    backgroundColor: '#062046',
     paddingVertical: 15,
     paddingHorizontal: 20,
   },
   title: {
     fontSize: 25,
-    fontWeight: "bold",
-    textAlign: "center",
-    color: "#fff",
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#fff',
   },
   content: {
     paddingHorizontal: 10,
@@ -135,8 +133,8 @@ const styles = StyleSheet.create({
   },
   text: {
     padding: 16,
-    textAlign: "center",
-    color: "#555",
+    textAlign: 'center',
+    color: '#555',
   },
 });
 

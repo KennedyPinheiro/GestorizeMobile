@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   Modal,
   StyleSheet,
   Text,
   TouchableWithoutFeedback,
   View,
-} from "react-native";
-import EditableTextCard from "@components/EditableTextCard";
-import Button from "@components/botoes/Button";
-import ErrorSidebarAlert from "@components/sidebars/ErrorSidebarAlert";
-import { CategoriaType } from "@context/types";
-import { supabase } from "@lib/supabase";
+} from 'react-native';
+import EditableTextCard from '@components/EditableTextCard';
+import Button from '@components/botoes/Button';
+import ErrorSidebarAlert from '@components/sidebars/ErrorSidebarAlert';
+import { CategoriaType } from '@context/types';
+import { supabase } from '@lib/supabase';
 
 type Props = {
   open: boolean;
@@ -25,30 +25,30 @@ const DialogAdicionarCategoria = ({
   onSave,
   disabled,
 }: Props) => {
-  const [titulo, setTitulo] = useState("");
-  const [descricao, setDescricao] = useState("");
+  const [titulo, setTitulo] = useState('');
+  const [descricao, setDescricao] = useState('');
   const [erroVisible, setErroVisible] = useState(false);
-  const [erroMessage, setErroMessage] = useState("");
+  const [erroMessage, setErroMessage] = useState('');
 
   useEffect(() => {
     if (!open) {
-      setTitulo("");
-      setDescricao("");
+      setTitulo('');
+      setDescricao('');
       setErroVisible(false);
-      setErroMessage("");
+      setErroMessage('');
     }
   }, [open]);
 
   const salvarCategoria = async () => {
     try {
       if (!titulo.trim()) {
-        setErroMessage("Por favor, informe o nome da categoria");
+        setErroMessage('Por favor, informe o nome da categoria');
         setErroVisible(true);
         return;
       }
 
       const { data, error } = await supabase
-        .from("categorias")
+        .from('categorias')
         .insert({ titulo, descricao })
         .select()
         .single();
@@ -59,7 +59,7 @@ const DialogAdicionarCategoria = ({
       onClose();
     } catch (error: any) {
       setErroMessage(
-        "Erro ao salvar categoria: " + (error?.message || "Erro desconhecido")
+        'Erro ao salvar categoria: ' + (error?.message || 'Erro desconhecido'),
       );
       setErroVisible(true);
     }
@@ -123,28 +123,28 @@ export default DialogAdicionarCategoria;
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.4)",
-    justifyContent: "center",
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'center',
     paddingHorizontal: 24,
   },
   modal: {
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     borderRadius: 12,
-    overflow: "hidden",
-    borderColor: "#062046",
+    overflow: 'hidden',
+    borderColor: '#062046',
     borderWidth: 3,
     paddingBottom: 20,
   },
   header: {
-    backgroundColor: "#062046",
+    backgroundColor: '#062046',
     paddingVertical: 16,
     paddingHorizontal: 20,
-    alignItems: "center",
+    alignItems: 'center',
   },
   title: {
     fontSize: 22,
-    fontWeight: "bold",
-    color: "#FFF",
+    fontWeight: 'bold',
+    color: '#FFF',
   },
   body: {
     paddingHorizontal: 20,
@@ -153,6 +153,6 @@ const styles = StyleSheet.create({
   },
   footer: {
     marginTop: 20,
-    alignItems: "center",
+    alignItems: 'center',
   },
 });

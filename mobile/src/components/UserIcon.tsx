@@ -1,5 +1,5 @@
-import React, { useState, useRef } from "react";
-import { View, TouchableOpacity, Animated, StyleSheet } from "react-native";
+import React, { useState, useRef } from 'react';
+import { View, TouchableOpacity, Animated, StyleSheet } from 'react-native';
 
 type Props = {
   children?: React.ReactNode;
@@ -32,7 +32,7 @@ const UserIcon = ({ children, onPress }: Props) => {
       {
         rotate: animation.interpolate({
           inputRange: [0, 1],
-          outputRange: ["0deg", "45deg"],
+          outputRange: ['0deg', '45deg'],
         }),
       },
     ],
@@ -53,7 +53,7 @@ const UserIcon = ({ children, onPress }: Props) => {
       {
         rotate: animation.interpolate({
           inputRange: [0, 1],
-          outputRange: ["0deg", "-45deg"],
+          outputRange: ['0deg', '-45deg'],
         }),
       },
     ],
@@ -78,13 +78,13 @@ const styles = StyleSheet.create({
   container: {
     width: 30,
     height: 24,
-    justifyContent: "space-between",
+    justifyContent: 'space-between',
     paddingVertical: 4,
     marginRight: -150,
   },
   bar: {
     height: 4,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     borderRadius: 2,
   },
 });

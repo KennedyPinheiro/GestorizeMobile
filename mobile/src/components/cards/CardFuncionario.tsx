@@ -1,10 +1,10 @@
-import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 type Props = {
   nome?: string;
-  funcao?:string
+  funcao?: string;
   email?: string;
   genero?: string;
   data_nascimento?: string;
@@ -44,11 +44,15 @@ const CardFuncionario = ({
             <Text style={styles.value}>{nome}</Text>
           </View>
           <View style={styles.info}>
-        <Text style={styles.label}>FUNÇÂO:</Text>
-        <Text style={styles.value}>{funcao}</Text>
-      </View>
+            <Text style={styles.label}>FUNÇÂO:</Text>
+            <Text style={styles.value}>{funcao}</Text>
+          </View>
         </View>
-        <TouchableOpacity style={styles.editIcon} onPress={onEdit} disabled={true}>
+        <TouchableOpacity
+          style={styles.editIcon}
+          onPress={onEdit}
+          disabled={true}
+        >
           <MaterialCommunityIcons name="pencil" size={25} color="#2f3442" />
         </TouchableOpacity>
       </View>
@@ -90,18 +94,18 @@ const CardFuncionario = ({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "#4b69bb",
+    backgroundColor: '#4b69bb',
     borderRadius: 10,
     padding: 15,
   },
   header: {
-    flexDirection: "row",
-    alignItems: "flex-start",
+    flexDirection: 'row',
+    alignItems: 'flex-start',
   },
   cardIcon: {
-    backgroundColor: "#2f3442",
+    backgroundColor: '#2f3442',
     padding: 8,
-    display: "flex",
+    display: 'flex',
     borderRadius: 15,
   },
   headerText: {
@@ -110,21 +114,21 @@ const styles = StyleSheet.create({
   },
   label: {
     fontWeight: 900,
-    color: "#000",
+    color: '#000',
     fontSize: 20,
   },
   value: {
-    fontFamily: "SpaceMono-Regular",
-    color: "#ffffff",
+    fontFamily: 'SpaceMono-Regular',
+    color: '#ffffff',
     fontSize: 18,
   },
   editIcon: {
-    position: "absolute",
+    position: 'absolute',
     top: 0,
     right: 0,
   },
   divider: {
-    borderBottomColor: "#000",
+    borderBottomColor: '#000',
     borderBottomWidth: 1,
     marginVertical: 10,
   },

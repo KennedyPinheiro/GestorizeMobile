@@ -1,42 +1,42 @@
-import React, { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, TextInput, View } from "react-native";
-import NavBar from "@components/utilities/NavBar";
-import BarraAdd from "@components/utilities/BarraAdd";
+import React, { useEffect, useState } from 'react';
+import { ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import NavBar from '@components/utilities/NavBar';
+import BarraAdd from '@components/utilities/BarraAdd';
 import {
   useIsFocused,
   useNavigation,
   useRoute,
-} from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import SidebarAlert from "@components/sidebars/Sidebaralert";
-import ErrorSidebarAlert from "@components/sidebars/ErrorSidebarAlert";
-import { supabase } from "@lib/supabase";
+} from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import SidebarAlert from '@components/sidebars/Sidebaralert';
+import ErrorSidebarAlert from '@components/sidebars/ErrorSidebarAlert';
+import { supabase } from '@lib/supabase';
 import {
   EnderecoTipo,
   FuncionarioTipo,
   RootStackParamList,
-} from "@context/types";
-import Funcionario from "@components/ui-lists/Funcionario";
-import Nav from "@components/utilities/Nav";
+} from '@context/types';
+import Funcionario from '@components/ui-lists/Funcionario';
+import Nav from '@components/utilities/Nav';
 
 const Funcionarios = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [alertVisible, setAlertVisible] = useState(false);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState('');
   const [erroAlertVisible, setErroAlertVisible] = useState(false);
-  const [erroMessage, setErroMessage] = useState("");
+  const [erroMessage, setErroMessage] = useState('');
   const route = useRoute();
   const isFocused = useIsFocused();
   const [funcionario, setFuncionario] = useState<FuncionarioTipo[]>([]);
   const [endereco, setEndereco] = useState<EnderecoTipo[]>([]);
-  const [termoBusca, setTermoBusca] = useState("");
+  const [termoBusca, setTermoBusca] = useState('');
 
   const buscarEndereco = async () => {
     const { data, error } = await supabase
-      .from("endereco")
-      .select("id, rua, bairro ,cidade , estado, numero, cep")
-      .order("id", { ascending: false });
+      .from('endereco')
+      .select('id, rua, bairro ,cidade , estado, numero, cep')
+      .order('id', { ascending: false });
     if (error) {
       setErroAlertVisible(true);
       setErroMessage(`Erro ao buscar endereço: ${error.message}`);
@@ -46,11 +46,11 @@ const Funcionarios = () => {
   };
   const buscarFuncionario = async () => {
     const { data, error } = await supabase
-      .from("funcionarios")
+      .from('funcionarios')
       .select(
-        "id, nome, cargo, email, data_nascimento, genero, estado_civil, telefone ,endereco_id,rg, cpf"
+        'id, nome, cargo, email, data_nascimento, genero, estado_civil, telefone ,endereco_id,rg, cpf',
       )
-      .order("nome", { ascending: true });
+      .order('nome', { ascending: true });
 
     if (error) {
       setErroMessage(`Erro ao buscar funcionario: ${error.message}`);
@@ -61,12 +61,12 @@ const Funcionarios = () => {
   };
   const buscarFuncionarioFiltrado = async (termo: string) => {
     const { data, error } = await supabase
-      .from("funcionarios")
+      .from('funcionarios')
       .select(
-        "id, nome, cargo, email, data_nascimento, genero, estado_civil, telefone ,endereco_id,rg, cpf"
+        'id, nome, cargo, email, data_nascimento, genero, estado_civil, telefone ,endereco_id,rg, cpf',
       )
-      .ilike("nome", `%${termo}%`)
-      .order("nome", { ascending: true });
+      .ilike('nome', `%${termo}%`)
+      .order('nome', { ascending: true });
 
     if (error) {
       setErroMessage(`Erro ao buscar funcionario: ${error.message}`);
@@ -82,7 +82,7 @@ const Funcionarios = () => {
 
       const params = route?.params as { novoFuncionario?: boolean };
       if (params?.novoFuncionario) {
-        setMessage("Funcionario cadastrado com sucesso!");
+        setMessage('Funcionario cadastrado com sucesso!');
         setAlertVisible(true);
         navigation.setParams({ novoFuncionario: undefined });
       }
@@ -90,7 +90,7 @@ const Funcionarios = () => {
   }, [isFocused]);
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
-      if (termoBusca.trim() === "") {
+      if (termoBusca.trim() === '') {
         buscarFuncionario();
       } else {
         buscarFuncionarioFiltrado(termoBusca);
@@ -114,34 +114,34 @@ const Funcionarios = () => {
       />
       <Nav
         titulo="Funcioarios"
-        onBackPress={() => navigation.navigate("Homepage")}
+        onBackPress={() => navigation.navigate('Homepage')}
       />
 
       <BarraAdd
-        onPressAdd={() => navigation.navigate("CadastroFuncionarios")}
+        onPressAdd={() => navigation.navigate('CadastroFuncionarios')}
       />
       <View style={styles.barraBuscaContainer}>
-       <TextInput
-                placeholder="Buscar funcionario por nome"
-                placeholderTextColor="#999"
-                value={termoBusca}
-                onChangeText={setTermoBusca}
-                style={styles.inputBusca}
-              />
+        <TextInput
+          placeholder="Buscar funcionario por nome"
+          placeholderTextColor="#999"
+          value={termoBusca}
+          onChangeText={setTermoBusca}
+          style={styles.inputBusca}
+        />
       </View>
       <ScrollView contentContainerStyle={{ padding: 10 }}>
         {funcionario.map((item) => {
           const enderecoDoFuncionario = endereco.find(
-            (end) => end.id === item.endereco_id
+            (end) => end.id === item.endereco_id,
           );
 
           return (
             <Funcionario
               key={item.id}
               nome={item.nome}
-              funcao={item.cargo || "Example"}
+              funcao={item.cargo || 'Example'}
               onPress={() => {
-                navigation.navigate("PerfilFuncionario", {
+                navigation.navigate('PerfilFuncionario', {
                   id: item.id,
                   nome: item.nome,
                   funcao: item.cargo,
@@ -152,12 +152,12 @@ const Funcionarios = () => {
                   rg: item.rg,
                   cpf: item.cpf,
                   telefone: item.telefone,
-                  rua: enderecoDoFuncionario?.rua || "Não informado",
-                  bairro: enderecoDoFuncionario?.bairro || "Não informado",
-                  cidade: enderecoDoFuncionario?.cidade || "Não informado",
-                  estado: enderecoDoFuncionario?.estado || "Não informado",
-                  cep: enderecoDoFuncionario?.cep || "Não informado",
-                  numero: enderecoDoFuncionario?.numero || "Não informado",
+                  rua: enderecoDoFuncionario?.rua || 'Não informado',
+                  bairro: enderecoDoFuncionario?.bairro || 'Não informado',
+                  cidade: enderecoDoFuncionario?.cidade || 'Não informado',
+                  estado: enderecoDoFuncionario?.estado || 'Não informado',
+                  cep: enderecoDoFuncionario?.cep || 'Não informado',
+                  numero: enderecoDoFuncionario?.numero || 'Não informado',
                   endereco_id: item.endereco_id,
                 });
               }}
@@ -172,24 +172,23 @@ const Funcionarios = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ffffff",
+    backgroundColor: '#ffffff',
   },
   barraBuscaContainer: {
     paddingHorizontal: 15,
     paddingTop: 10,
   },
-  
+
   inputBusca: {
-    backgroundColor: "#f2f2f2",
+    backgroundColor: '#f2f2f2',
     borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 10,
     fontSize: 16,
     borderWidth: 1,
-    borderColor: "#ddd",
-    color: "#333",
+    borderColor: '#ddd',
+    color: '#333',
   },
-
 });
 
 export default Funcionarios;

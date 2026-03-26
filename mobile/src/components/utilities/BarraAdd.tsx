@@ -1,6 +1,6 @@
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
-import BotaoMais from "@components/botoes/MoreButton"; 
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import BotaoMais from '@components/botoes/MoreButton';
 
 type Props = {
   onPressAdd: () => void;
@@ -17,16 +17,16 @@ const BarraAdd = ({ onPressAdd }: Props) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#1E56C1",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    backgroundColor: '#1E56C1',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingVertical: 10,
   },
   texto: {
-    color: "#fff",
-    fontWeight: "bold",
+    color: '#fff',
+    fontWeight: 'bold',
     fontSize: 16,
   },
 });

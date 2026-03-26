@@ -1,50 +1,50 @@
-import { ScrollView, View, StyleSheet } from "react-native";
-import EditableTextCard from "@components/EditableTextCard";
-import Button from "@components/botoes/Button";
-import Nav from "@components/utilities/Nav";
-import ErrorSidebarAlert from "@components/sidebars/ErrorSidebarAlert";
-import { MenuItem, Select } from "@components/utilities/Select";
-import { estadosBrasileiros } from "@components/dialogs/DialogEndereco"; // ✅ apenas um import, sem acento
+import { ScrollView, View, StyleSheet } from 'react-native';
+import EditableTextCard from '@components/EditableTextCard';
+import Button from '@components/botoes/Button';
+import Nav from '@components/utilities/Nav';
+import ErrorSidebarAlert from '@components/sidebars/ErrorSidebarAlert';
+import { MenuItem, Select } from '@components/utilities/Select';
+import { estadosBrasileiros } from '@components/dialogs/DialogEndereco'; // ✅ apenas um import, sem acento
 
-import { useState } from "react";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useNavigation } from "@react-navigation/native";
+import { useState } from 'react';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useNavigation } from '@react-navigation/native';
 
-import { supabase } from "@lib/supabase";
-import { EnderecoType, RootStackParamList } from "@context/types";
-import { formatCNPJ, formatTelefone } from "@@core/format";
-import SidebarAlert from "@components/sidebars/Sidebaralert";
+import { supabase } from '@lib/supabase';
+import { EnderecoType, RootStackParamList } from '@context/types';
+import { formatCNPJ, formatTelefone } from '@@core/format';
+import SidebarAlert from '@components/sidebars/Sidebaralert';
 
 const CadastroFornecedores = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   /* ---------- states ---------- */
-  const [razaoSocial, setRazaoSocial] = useState("");
-  const [cnpj, setCnpj] = useState("");
-  const [ramoAtividade, setRamoAtividade] = useState("");
-  const [telefone, setTelefone] = useState("");
-  const [email, setEmail] = useState("");
-  const [nomeResponsavel, setNomeResponsavel] = useState("");
-  const [chavePix, setChavePix] = useState("");
+  const [razaoSocial, setRazaoSocial] = useState('');
+  const [cnpj, setCnpj] = useState('');
+  const [ramoAtividade, setRamoAtividade] = useState('');
+  const [telefone, setTelefone] = useState('');
+  const [email, setEmail] = useState('');
+  const [nomeResponsavel, setNomeResponsavel] = useState('');
+  const [chavePix, setChavePix] = useState('');
 
   const [showEnderecoForm, setShowEnderecoForm] = useState(false);
-  const [rua, setRua] = useState("");
-  const [bairro, setBairro] = useState("");
-  const [cidade, setCidade] = useState("");
-  const [cep, setCep] = useState("");
-  const [numero, setNumero] = useState("");
-  const [estadoSelecionado, setEstadoSelecionado] = useState<string>("");
+  const [rua, setRua] = useState('');
+  const [bairro, setBairro] = useState('');
+  const [cidade, setCidade] = useState('');
+  const [cep, setCep] = useState('');
+  const [numero, setNumero] = useState('');
+  const [estadoSelecionado, setEstadoSelecionado] = useState<string>('');
 
   const [isLoading, setIsLoading] = useState(false);
 
   /* --- alertas --- */
-  const [msgSucesso, setMsgSucesso] = useState("");
+  const [msgSucesso, setMsgSucesso] = useState('');
   const [sucessoVisivel, setSucessoVisivel] = useState(false);
-  const [msgErro, setMsgErro] = useState("");
+  const [msgErro, setMsgErro] = useState('');
   const [erroVisivel, setErroVisivel] = useState(false);
 
-  const isFormValid = razaoSocial.trim() !== "";
+  const isFormValid = razaoSocial.trim() !== '';
 
   /* ---------- salvar ---------- */
   const salvarFornecedor = async () => {
@@ -55,13 +55,13 @@ const CadastroFornecedores = () => {
 
     try {
       if (!razaoSocial.trim()) {
-        throw new Error("Por favor, informe a Razão Social!");
+        throw new Error('Por favor, informe a Razão Social!');
       }
 
       /* 1‑ Salva endereço (se o usuário preencheu) */
       if (showEnderecoForm) {
         const { data: enderecoInserido, error: erroEndereco } = await supabase
-          .from("endereco")
+          .from('endereco')
           .insert([
             {
               rua,
@@ -81,7 +81,7 @@ const CadastroFornecedores = () => {
 
       /* 2‑ Salva fornecedor */
       const { error: erroFornecedor } = await supabase
-        .from("fornecedor")
+        .from('fornecedor')
         .insert([
           {
             razao_social: razaoSocial,
@@ -100,16 +100,16 @@ const CadastroFornecedores = () => {
       if (erroFornecedor) throw erroFornecedor;
 
       /* 3‑ Redireciona e mostra sucesso */
-      setMsgSucesso("Fornecedor salvo com sucesso!");
+      setMsgSucesso('Fornecedor salvo com sucesso!');
       setSucessoVisivel(true);
-      navigation.navigate("Fornecedores", { novoFornecedor: true });
+      navigation.navigate('Fornecedores', { novoFornecedor: true });
     } catch (err: any) {
       /* rollback do endereço, caso precise */
       if (idEnderecoCriado) {
-        await supabase.from("endereco").delete().eq("id", idEnderecoCriado);
+        await supabase.from('endereco').delete().eq('id', idEnderecoCriado);
       }
       setMsgErro(
-        `Erro ao salvar fornecedor: ${err?.message ?? "Desconhecido"}`
+        `Erro ao salvar fornecedor: ${err?.message ?? 'Desconhecido'}`,
       );
       setErroVisivel(true);
     } finally {
@@ -134,7 +134,7 @@ const CadastroFornecedores = () => {
 
       <Nav
         titulo="Fornecedor"
-        onBackPress={() => navigation.navigate("Fornecedores")}
+        onBackPress={() => navigation.navigate('Fornecedores')}
       />
 
       <ScrollView
@@ -190,16 +190,16 @@ const CadastroFornecedores = () => {
               onPress={() => setShowEnderecoForm(true)}
             />
           ) : (
-            <View style={{ width: "100%" }}>
+            <View style={{ width: '100%' }}>
               <EditableTextCard
-                width={"100%"}
+                width={'100%'}
                 label="Logradouro"
                 value={rua}
                 placeholder="Logradouro"
                 onChangeText={setRua}
               />
               <EditableTextCard
-                width={"100%"}
+                width={'100%'}
                 label="Bairro"
                 placeholder="Bairro"
                 value={bairro}
@@ -224,7 +224,7 @@ const CadastroFornecedores = () => {
                 />
               </View>
               <EditableTextCard
-                width={"100%"}
+                width={'100%'}
                 label="Cidade"
                 placeholder="Cidade"
                 value={cidade}
@@ -232,7 +232,7 @@ const CadastroFornecedores = () => {
               />
 
               <Select
-                width={"100%"}
+                width={'100%'}
                 label="Estado"
                 placeholder="Selecione um estado"
                 value={estadoSelecionado}
@@ -270,7 +270,7 @@ const CadastroFornecedores = () => {
           />
 
           <Button
-            title={isLoading ? "SALVANDO..." : "SALVAR"}
+            title={isLoading ? 'SALVANDO...' : 'SALVAR'}
             variant="contained"
             color="primary"
             disabled={!isFormValid || isLoading}
@@ -285,34 +285,34 @@ const CadastroFornecedores = () => {
 
 const styles = StyleSheet.create({
   scrollContainer: {
-    backgroundColor: "#fff",
-    width: "100%",
+    backgroundColor: '#fff',
+    width: '100%',
     flexGrow: 1,
   },
   contentContainer: {
-    alignItems: "center",
+    alignItems: 'center',
     paddingBottom: 32,
   },
   container: {
-    width: "100%",
-    alignItems: "center",
-    backgroundColor: "#fff",
+    width: '100%',
+    alignItems: 'center',
+    backgroundColor: '#fff',
     flex: 1,
   },
   row: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     gap: 10,
   },
   formContainer: {
     marginTop: 24,
     paddingHorizontal: 20,
-    width: "100%",
-    alignItems: "center",
+    width: '100%',
+    alignItems: 'center',
     gap: 4,
   },
   inputItem: {
-    width: "90%",
+    width: '90%',
     maxWidth: 400,
   },
 });

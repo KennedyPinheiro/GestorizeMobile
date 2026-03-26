@@ -1,22 +1,22 @@
-import Button from "@components/botoes/Button";
-import Nav from "@components/utilities/Nav";
-import PessoaJuridicaIcon from "@components/Icons/PessoaJuridicaIcon";
-import EditableTextCard from "@components/EditableTextCard";
-import SidebarAlert from "@components/sidebars/Sidebaralert";
+import Button from '@components/botoes/Button';
+import Nav from '@components/utilities/Nav';
+import PessoaJuridicaIcon from '@components/Icons/PessoaJuridicaIcon';
+import EditableTextCard from '@components/EditableTextCard';
+import SidebarAlert from '@components/sidebars/Sidebaralert';
 
-import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
-import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "@context/types";
-import { useEffect, useState } from "react";
-import { supabase } from "@lib/supabase";
-import DialogConfirmarAcao from "@components/dialogs/DialogConfirmarAcao";
+import { SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '@context/types';
+import { useEffect, useState } from 'react';
+import { supabase } from '@lib/supabase';
+import DialogConfirmarAcao from '@components/dialogs/DialogConfirmarAcao';
 
 const PerfilPessoaJuridica = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const route =
-    useRoute<RouteProp<RootStackParamList, "PerfilPessoaJuridica">>();
+    useRoute<RouteProp<RootStackParamList, 'PerfilPessoaJuridica'>>();
 
   const {
     id,
@@ -60,27 +60,27 @@ const PerfilPessoaJuridica = () => {
   const [alertVisible, setAlertVisible] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
 
-  const titulo = formData.razao_social || "Empresa";
+  const titulo = formData.razao_social || 'Empresa';
 
   useEffect(() => {
     const houveMudanca = Object.entries(formData).some(
       ([campo, valor]) =>
-        valor !== originalData[campo as keyof typeof originalData]
+        valor !== originalData[campo as keyof typeof originalData],
     );
     setBotaoHabilitado(houveMudanca);
   }, [formData, originalData]);
 
   useEffect(() => {
-    const canal = supabase.channel("pessoa-juridica-listener");
+    const canal = supabase.channel('pessoa-juridica-listener');
 
     if (id) {
       canal
         .on(
-          "postgres_changes",
+          'postgres_changes',
           {
-            event: "UPDATE",
-            schema: "public",
-            table: "pessoa_juridica",
+            event: 'UPDATE',
+            schema: 'public',
+            table: 'pessoa_juridica',
             filter: `id=eq.${id}`,
           },
           (payload) => {
@@ -99,14 +99,14 @@ const PerfilPessoaJuridica = () => {
               cargo_do_responsavel:
                 dados.cargo_do_responsavel ?? prev.cargo_do_respresentante,
             }));
-          }
+          },
         )
         .on(
-          "postgres_changes",
+          'postgres_changes',
           {
-            event: "UPDATE",
-            schema: "public",
-            table: "endereco",
+            event: 'UPDATE',
+            schema: 'public',
+            table: 'endereco',
             filter: `id=eq.${endereco_id}`,
           },
           (payload) => {
@@ -120,7 +120,7 @@ const PerfilPessoaJuridica = () => {
               numero: dados.numero ?? prev.numero,
               cep: dados.cep ?? prev.cep,
             }));
-          }
+          },
         );
 
       canal.subscribe();
@@ -139,50 +139,50 @@ const PerfilPessoaJuridica = () => {
     campo: string,
     valor: string,
     clienteId: string,
-    enderecoId?: number
+    enderecoId?: number,
   ) => {
     const camposEmpresa = [
-      "razao_social",
-      "email",
-      "nome_fantasia",
-      "cnpj",
-      "nome_do_responsavel",
-      "cpf_responsavel",
-      "cargo_do_representante",
-      "telefone",
+      'razao_social',
+      'email',
+      'nome_fantasia',
+      'cnpj',
+      'nome_do_responsavel',
+      'cpf_responsavel',
+      'cargo_do_representante',
+      'telefone',
     ];
     const camposEndereco = [
-      "rua",
-      "bairro",
-      "cidade",
-      "estado",
-      "numero",
-      "cep",
+      'rua',
+      'bairro',
+      'cidade',
+      'estado',
+      'numero',
+      'cep',
     ];
 
     try {
       if (camposEmpresa.includes(campo)) {
         const { error } = await supabase
-          .from("pessoa_juridica")
+          .from('pessoa_juridica')
           .update({ [campo]: valor, ultima_atualizacao: new Date() })
-          .eq("id", clienteId);
+          .eq('id', clienteId);
 
         if (error) {
           console.error(
             `Erro ao atualizar ${campo} em pessoa_juridica:`,
-            error.message
+            error.message,
           );
         }
       } else if (camposEndereco.includes(campo) && enderecoId) {
         const { error } = await supabase
-          .from("endereco")
+          .from('endereco')
           .update({ [campo]: valor })
-          .eq("id", enderecoId);
+          .eq('id', enderecoId);
 
         if (error) {
           console.error(
             `Erro ao atualizar ${campo} em endereco:`,
-            error.message
+            error.message,
           );
         }
       }
@@ -207,7 +207,7 @@ const PerfilPessoaJuridica = () => {
       />
 
       <ScrollView style={styles.container}>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <PessoaJuridicaIcon
             color="#000"
             style={styles.userIcon}
@@ -226,42 +226,42 @@ const PerfilPessoaJuridica = () => {
         <EditableTextCard
           label="Razão Social"
           value={formData.razao_social}
-          onChangeText={(text) => handleChange("razao_social", text)}
+          onChangeText={(text) => handleChange('razao_social', text)}
         />
         <EditableTextCard
           label="Nome Fantasia"
           value={formData.nome_fantasia}
-          onChangeText={(text) => handleChange("nome_fantasia", text)}
+          onChangeText={(text) => handleChange('nome_fantasia', text)}
         />
         <EditableTextCard
           label="CNPJ"
           value={formData.cnpj}
-          onChangeText={(text) => handleChange("cnpj", text)}
+          onChangeText={(text) => handleChange('cnpj', text)}
         />
         <EditableTextCard
           label="Telefone"
           value={formData.telefone}
-          onChangeText={(text) => handleChange("telefone", text)}
+          onChangeText={(text) => handleChange('telefone', text)}
         />
         <EditableTextCard
           label="Email"
           value={formData.email}
-          onChangeText={(text) => handleChange("email", text)}
+          onChangeText={(text) => handleChange('email', text)}
         />
         <EditableTextCard
           label="Nome do Responsável"
           value={formData.nome_do_responsavel}
-          onChangeText={(text) => handleChange("nome_do_responsavel", text)}
+          onChangeText={(text) => handleChange('nome_do_responsavel', text)}
         />
         <EditableTextCard
           label="CPF do Responsável"
           value={formData.cpf_responsavel}
-          onChangeText={(text) => handleChange("cpf_responsavel", text)}
+          onChangeText={(text) => handleChange('cpf_responsavel', text)}
         />
         <EditableTextCard
           label="Cargo do Responsável"
           value={formData.cargo_do_respresentante}
-          onChangeText={(text) => handleChange("cargo_do_representante", text)}
+          onChangeText={(text) => handleChange('cargo_do_representante', text)}
         />
 
         {!showEndereco ? (
@@ -278,36 +278,36 @@ const PerfilPessoaJuridica = () => {
             <EditableTextCard
               label="Logradouro"
               value={formData.rua}
-              onChangeText={(text) => handleChange("rua", text)}
+              onChangeText={(text) => handleChange('rua', text)}
             />
             <EditableTextCard
               label="Bairro"
               value={formData.bairro}
-              onChangeText={(text) => handleChange("bairro", text)}
+              onChangeText={(text) => handleChange('bairro', text)}
             />
             <View style={styles.row}>
               <EditableTextCard
                 label="Número"
                 value={formData.numero}
                 width="48%"
-                onChangeText={(text) => handleChange("numero", text)}
+                onChangeText={(text) => handleChange('numero', text)}
               />
               <EditableTextCard
                 label="CEP"
                 value={formData.cep}
                 width="48%"
-                onChangeText={(text) => handleChange("cep", text)}
+                onChangeText={(text) => handleChange('cep', text)}
               />
             </View>
             <EditableTextCard
               label="Cidade"
               value={formData.cidade}
-              onChangeText={(text) => handleChange("cidade", text)}
+              onChangeText={(text) => handleChange('cidade', text)}
             />
             <EditableTextCard
               label="Estado"
               value={formData.estado}
-              onChangeText={(text) => handleChange("estado", text)}
+              onChangeText={(text) => handleChange('estado', text)}
             />
             <Button
               title="Fechar"
@@ -320,8 +320,8 @@ const PerfilPessoaJuridica = () => {
 
         <View
           style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
+            flexDirection: 'row',
+            justifyContent: 'space-between',
             gap: 10,
             paddingHorizontal: 30,
           }}
@@ -335,14 +335,14 @@ const PerfilPessoaJuridica = () => {
                 const promises = [];
 
                 for (const [campo, valor] of Object.entries(formData)) {
-                  if (String(valor).trim() !== "Não informado") {
+                  if (String(valor).trim() !== 'Não informado') {
                     promises.push(
                       updateCampoCliente(
                         campo,
                         String(valor),
                         String(id),
-                        endereco_id
-                      )
+                        endereco_id,
+                      ),
                     );
                   }
                 }
@@ -372,20 +372,20 @@ const PerfilPessoaJuridica = () => {
             const response = await fetch(
               `http://192.168.1.12:3001/delete-cliente/${id}`,
               {
-                method: "DELETE",
-              }
+                method: 'DELETE',
+              },
             );
 
             if (!response.ok) {
               const { error } = await response.json();
-              console.error("Erro ao deletar:", error);
+              console.error('Erro ao deletar:', error);
               return;
             }
 
             setShowDialog(false);
-            navigation.navigate("Clientes");
+            navigation.navigate('Clientes');
           } catch (err) {
-            console.error("Erro ao conectar com o backend:", err);
+            console.error('Erro ao conectar com o backend:', err);
           }
         }}
         onCancelar={() => setShowDialog(false)}
@@ -397,15 +397,15 @@ const PerfilPessoaJuridica = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ffffff",
+    backgroundColor: '#ffffff',
     padding: 20,
   },
   nome: {
     fontSize: 25,
-    fontWeight: "800",
+    fontWeight: '800',
   },
   email: {
-    color: "#5e5e5e",
+    color: '#5e5e5e',
     fontSize: 15,
     marginBottom: 10,
   },
@@ -413,13 +413,13 @@ const styles = StyleSheet.create({
     marginRight: 20,
   },
   row: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     paddingHorizontal: 2,
     gap: 10,
   },
   divider: {
-    borderBottomColor: "#000",
+    borderBottomColor: '#000',
     borderBottomWidth: 1,
     marginVertical: 10,
   },

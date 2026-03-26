@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   Modal,
   View,
@@ -7,12 +7,12 @@ import {
   TouchableWithoutFeedback,
   ScrollView,
   ActivityIndicator,
-} from "react-native";
-import BarraAdd from "@components/utilities/BarraAdd";
-import { supabase } from "@lib/supabase";
-import { RoleType } from "@context/types"; // Defina esse tipo com { id: number; nome: string }
-import DialogAdicionarRole from "./DialogAdicionarRole";
-import Role from "@components/ui-lists/Role";
+} from 'react-native';
+import BarraAdd from '@components/utilities/BarraAdd';
+import { supabase } from '@lib/supabase';
+import { RoleType } from '@context/types'; // Defina esse tipo com { id: number; nome: string }
+import DialogAdicionarRole from './DialogAdicionarRole';
+import Role from '@components/ui-lists/Role';
 
 type Props = {
   open?: boolean;
@@ -36,18 +36,18 @@ const DialogRoles = ({ open, onClose, onSelect }: Props) => {
       setLoading(true);
 
       const { data, error } = await supabase
-        .from("roles")
-        .select("*")
-        .order("id", { ascending: true });
+        .from('roles')
+        .select('*')
+        .order('id', { ascending: true });
 
       if (error) {
-        console.error("Erro ao buscar roles:", error.message);
+        console.error('Erro ao buscar roles:', error.message);
         setRoles([]);
       } else {
         setRoles(data as RoleType[]);
       }
     } catch (err) {
-      console.error("Erro inesperado ao carregar roles:", err);
+      console.error('Erro inesperado ao carregar roles:', err);
       setRoles([]);
     } finally {
       setLoading(false);
@@ -102,28 +102,28 @@ const DialogRoles = ({ open, onClose, onSelect }: Props) => {
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
-    justifyContent: "center",
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
     paddingHorizontal: 20,
   },
   container: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderRadius: 10,
-    overflow: "hidden",
-    borderColor: "#062046",
+    overflow: 'hidden',
+    borderColor: '#062046',
     borderWidth: 3,
-    maxHeight: "80%",
+    maxHeight: '80%',
   },
   header: {
-    backgroundColor: "#062046",
+    backgroundColor: '#062046',
     paddingVertical: 15,
     paddingHorizontal: 20,
   },
   title: {
     fontSize: 25,
-    fontWeight: "bold",
-    textAlign: "center",
-    color: "#fff",
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#fff',
   },
   content: {
     paddingHorizontal: 10,
@@ -132,12 +132,12 @@ const styles = StyleSheet.create({
   },
   text: {
     padding: 16,
-    textAlign: "center",
-    color: "#555",
+    textAlign: 'center',
+    color: '#555',
   },
   item: {
     padding: 16,
-    borderBottomColor: "#ccc",
+    borderBottomColor: '#ccc',
     borderBottomWidth: 1,
   },
   itemText: {

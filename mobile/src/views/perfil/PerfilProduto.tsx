@@ -1,28 +1,28 @@
-import Button from "@components/botoes/Button";
-import CardCategoria from "@components/cards/CardCategoria";
-import CardProduto from "@components/cards/CardProduto";
-import NavBar from "@components/utilities/NavBar";
-import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
-import { useRoute, RouteProp } from "@react-navigation/native";
-import { RootStackParamList } from "@context/types";
-import Nav from "@components/utilities/Nav";
-import DialogConfirmarAcao from "@components/dialogs/DialogConfirmarAcao";
-import EditableTextCard from "@components/EditableTextCard";
-import ProdutoIcon from "@components/Icons/ProdutoIcon";
-import SidebarAlert from "@components/sidebars/Sidebaralert";
-import { useEffect, useState } from "react";
-import { supabase } from "@lib/supabase";
-import ClickableTextCard from "@components/ClickableTextCard";
-import DialogFornecedores from "@components/dialogs/DialogFornecedores";
-import DialogCategorias from "@components/dialogs/DialogCategoria";
-import DialogMedida from "@components/dialogs/DialogMedida";
+import Button from '@components/botoes/Button';
+import CardCategoria from '@components/cards/CardCategoria';
+import CardProduto from '@components/cards/CardProduto';
+import NavBar from '@components/utilities/NavBar';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useRoute, RouteProp } from '@react-navigation/native';
+import { RootStackParamList } from '@context/types';
+import Nav from '@components/utilities/Nav';
+import DialogConfirmarAcao from '@components/dialogs/DialogConfirmarAcao';
+import EditableTextCard from '@components/EditableTextCard';
+import ProdutoIcon from '@components/Icons/ProdutoIcon';
+import SidebarAlert from '@components/sidebars/Sidebaralert';
+import { useEffect, useState } from 'react';
+import { supabase } from '@lib/supabase';
+import ClickableTextCard from '@components/ClickableTextCard';
+import DialogFornecedores from '@components/dialogs/DialogFornecedores';
+import DialogCategorias from '@components/dialogs/DialogCategoria';
+import DialogMedida from '@components/dialogs/DialogMedida';
 
 const PerfilProduto = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const route = useRoute<RouteProp<RootStackParamList, "PerfilProduto">>();
+  const route = useRoute<RouteProp<RootStackParamList, 'PerfilProduto'>>();
 
   const {
     id,
@@ -64,25 +64,25 @@ const PerfilProduto = () => {
   const [showMedida, setShowMedida] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [alertVisible, setAlertVisible] = useState(false);
-  const primeiroNome = nome?.split(" ")[0] || "Produto";
+  const primeiroNome = nome?.split(' ')[0] || 'Produto';
 
   useEffect(() => {
     const houveMudanca = Object.entries(formData).some(
       ([campo, valor]) =>
-        valor !== originalData[campo as keyof typeof originalData]
+        valor !== originalData[campo as keyof typeof originalData],
     );
     setBotaoHabilitado(houveMudanca);
   }, [formData, originalData]);
   useEffect(() => {
-    const canal = supabase.channel("produto-profile-listener");
+    const canal = supabase.channel('produto-profile-listener');
 
     if (id) {
       canal.on(
-        "postgres_changes",
+        'postgres_changes',
         {
-          event: "UPDATE",
-          schema: "public",
-          table: "produtos",
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'produtos',
           filter: `id=eq.${id}`,
         },
         (payload) => {
@@ -102,7 +102,7 @@ const PerfilProduto = () => {
               dados.fornecedor ?? prev.fornecedor_razao_social,
             categoria_titulo: dados.categoria_titulo ?? prev.categoria_titulo,
           }));
-        }
+        },
       );
 
       canal.subscribe();
@@ -132,7 +132,7 @@ const PerfilProduto = () => {
       />
 
       <ScrollView style={styles.container}>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <ProdutoIcon
             color="#000"
             style={styles.userIcon}
@@ -152,12 +152,12 @@ const PerfilProduto = () => {
         <EditableTextCard
           label="Nome"
           value={formData.nome}
-          onChangeText={(text) => handleChange("nome", text)}
+          onChangeText={(text) => handleChange('nome', text)}
         />
         <EditableTextCard
           label="Quantidade"
           value={String(formData.quantidade)}
-          onChangeText={(text) => handleChange("quantidade", text)}
+          onChangeText={(text) => handleChange('quantidade', text)}
         />
         <View style={styles.row}>
           <View style={{ flex: 1 }}>
@@ -171,30 +171,30 @@ const PerfilProduto = () => {
             <EditableTextCard
               label=" Preço Custo"
               tipo="number"
-              value={String(formData.preco_custo || "Não informado")}
-              onChangeText={(text) => handleChange("preco_custo", text)}
+              value={String(formData.preco_custo || 'Não informado')}
+              onChangeText={(text) => handleChange('preco_custo', text)}
             />
           </View>
         </View>
         <EditableTextCard
           label="Descrição"
           value={formData.descricao}
-          onChangeText={(text) => handleChange("descricao", text)}
+          onChangeText={(text) => handleChange('descricao', text)}
         />
         <EditableTextCard
           label="Validade"
-          value={formData.data_validade || "Não informado"}
-          onChangeText={(text) => handleChange("data_validade", text)}
+          value={formData.data_validade || 'Não informado'}
+          onChangeText={(text) => handleChange('data_validade', text)}
         />
         <EditableTextCard
           label="Data Entrada"
-          value={formData.data_de_entrada || "Não informado"}
-          onChangeText={(text) => handleChange("data_de_entrada", text)}
+          value={formData.data_de_entrada || 'Não informado'}
+          onChangeText={(text) => handleChange('data_de_entrada', text)}
         />
         <EditableTextCard
           label="Margem Lucro"
-          value={String(formData.margem_lucro || "Não informado")}
-          onChangeText={(text) => handleChange("margem_lucro", text)}
+          value={String(formData.margem_lucro || 'Não informado')}
+          onChangeText={(text) => handleChange('margem_lucro', text)}
         />
         <ClickableTextCard
           label="Fornecedor"
@@ -208,8 +208,8 @@ const PerfilProduto = () => {
         />
         <View
           style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
+            flexDirection: 'row',
+            justifyContent: 'space-between',
             gap: 10,
             paddingHorizontal: 30,
           }}
@@ -224,25 +224,25 @@ const PerfilProduto = () => {
                   const response = await fetch(
                     `http://192.168.9.10:3000/update-produto/${id}`,
                     {
-                      method: "PUT",
+                      method: 'PUT',
                       headers: {
-                        "Content-Type": "application/json",
+                        'Content-Type': 'application/json',
                       },
                       body: JSON.stringify(formData),
-                    }
+                    },
                   );
 
                   const result = await response.json();
 
                   if (!response.ok) {
-                    console.error("Erro ao atualizar produto:", result.error);
+                    console.error('Erro ao atualizar produto:', result.error);
                     return;
                   }
 
                   setBotaoHabilitado(false);
                   setAlertVisible(true);
                 } catch (err) {
-                  console.error("Erro ao conectar com o backend:", err);
+                  console.error('Erro ao conectar com o backend:', err);
                 }
               }}
             />
@@ -266,20 +266,20 @@ const PerfilProduto = () => {
             const response = await fetch(
               `http://192.168.9.10:3000/delete-produto/${id}`,
               {
-                method: "DELETE",
-              }
+                method: 'DELETE',
+              },
             );
 
             if (!response.ok) {
               const { error } = await response.json();
-              console.error("Erro ao deletar:", error);
+              console.error('Erro ao deletar:', error);
               return;
             }
 
             setShowDialog(false);
-            navigation.navigate("Produtos");
+            navigation.navigate('Produtos');
           } catch (err) {
-            console.error("Erro ao conectar com o backend:", err);
+            console.error('Erro ao conectar com o backend:', err);
           }
         }}
         onCancelar={() => setShowDialog(false)}
@@ -323,15 +323,15 @@ const PerfilProduto = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ffffff",
+    backgroundColor: '#ffffff',
     padding: 20,
   },
   nome: {
     fontSize: 25,
-    fontWeight: "800",
+    fontWeight: '800',
   },
   quantidade: {
-    color: "#5e5e5e",
+    color: '#5e5e5e',
     fontSize: 15,
     marginBottom: 10,
   },
@@ -339,12 +339,12 @@ const styles = StyleSheet.create({
     marginRight: 20,
   },
   row: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     gap: 10,
   },
   divider: {
-    borderBottomColor: "#000",
+    borderBottomColor: '#000',
     borderBottomWidth: 1,
     marginVertical: 10,
   },

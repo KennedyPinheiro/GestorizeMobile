@@ -1,7 +1,7 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { postLogin, postLogout, postRefreshToken } from "../api/apiAuth";
-import authConfig from "../configs/auth";
-import { secureStore } from "../utils/secureStore";
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { postLogin, postLogout, postRefreshToken } from '../api/apiAuth';
+import authConfig from '../configs/auth';
+import { secureStore } from '../utils/secureStore';
 
 type AuthContextType = {
   token: string | null;
@@ -53,7 +53,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(newUser);
       await secureStore.set(authConfig.storageTokenKeyName, newToken);
       if (newUser) {
-        await secureStore.set(authConfig.userDataKeyName, JSON.stringify(newUser));
+        await secureStore.set(
+          authConfig.userDataKeyName,
+          JSON.stringify(newUser),
+        );
       }
     } finally {
       setLoading(false);

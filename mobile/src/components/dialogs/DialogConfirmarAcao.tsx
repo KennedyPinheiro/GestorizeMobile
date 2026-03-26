@@ -1,7 +1,7 @@
-import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import Modal from "react-native-modal";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import Modal from 'react-native-modal';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 type Props<T> = {
   show: boolean;
@@ -32,13 +32,24 @@ const DialogConfirmarAcao = <T,>({
   return (
     <Modal isVisible={show} onBackdropPress={() => setShow(false)}>
       <View style={styles.dialogContainer}>
-        <MaterialCommunityIcons name="alert-circle-outline" size={64} color="#f57c00" style={styles.icon} />
+        <MaterialCommunityIcons
+          name="alert-circle-outline"
+          size={64}
+          color="#f57c00"
+          style={styles.icon}
+        />
         <Text style={styles.title}>{titulo}</Text>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.confirmButton} onPress={() => handleAction(true)}>
+          <TouchableOpacity
+            style={styles.confirmButton}
+            onPress={() => handleAction(true)}
+          >
             <Text style={styles.confirmText}>Sim</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.cancelButton} onPress={() => handleAction(false)}>
+          <TouchableOpacity
+            style={styles.cancelButton}
+            onPress={() => handleAction(false)}
+          >
             <Text style={styles.cancelText}>Cancelar</Text>
           </TouchableOpacity>
         </View>
@@ -49,38 +60,38 @@ const DialogConfirmarAcao = <T,>({
 
 const styles = StyleSheet.create({
   dialogContainer: {
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     borderRadius: 12,
     padding: 24,
-    alignItems: "center",
+    alignItems: 'center',
   },
   icon: {
     marginBottom: 16,
   },
   title: {
     fontSize: 18,
-    textAlign: "center",
+    textAlign: 'center',
     marginBottom: 24,
-    color: "#333",
+    color: '#333',
   },
   buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
+    flexDirection: 'row',
+    justifyContent: 'center',
     gap: 16,
   },
   confirmButton: {
-    backgroundColor: "#1976d2",
+    backgroundColor: '#1976d2',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 8,
     marginHorizontal: 8,
   },
   confirmText: {
-    color: "#fff",
-    fontWeight: "bold",
+    color: '#fff',
+    fontWeight: 'bold',
   },
   cancelButton: {
-    borderColor: "#aaa",
+    borderColor: '#aaa',
     borderWidth: 1,
     paddingVertical: 10,
     paddingHorizontal: 20,
@@ -88,7 +99,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
   },
   cancelText: {
-    color: "#555",
+    color: '#555',
   },
 });
 

@@ -1,21 +1,21 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    marginVertical: -10,   
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: -10,
   },
   linha: {
-    width: 130, 
+    width: 130,
     height: 1.2,
-    backgroundColor: "#26579E",
+    backgroundColor: '#26579E',
   },
   texto: {
     marginHorizontal: 8,
-    color: "#302b2b84",
-    fontWeight: "bold",
+    color: '#302b2b84',
+    fontWeight: 'bold',
     fontSize: 16,
   },
 });

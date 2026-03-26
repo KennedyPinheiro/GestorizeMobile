@@ -1,7 +1,7 @@
-import React from "react";
-import { View, StyleSheet, Text } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { TouchableOpacity } from "react-native";
+import React from 'react';
+import { View, StyleSheet, Text } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { TouchableOpacity } from 'react-native';
 
 type Props = {
   nome: string;
@@ -25,33 +25,33 @@ const Funcionario = ({ nome, funcao, onPress }: Props) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#516EBC",
-    flexDirection: "row",
-    alignItems: "center",
+    backgroundColor: '#516EBC',
+    flexDirection: 'row',
+    alignItems: 'center',
     padding: 10,
     borderRadius: 10,
-    justifyContent: "space-between",
+    justifyContent: 'space-between',
     marginBottom: 10,
     marginTop: 10,
     borderWidth: 1,
   },
   imageContainer: {
-    backgroundColor: "#D9D9D9",
+    backgroundColor: '#D9D9D9',
     borderRadius: 10,
     marginRight: 10,
     borderWidth: 1,
   },
   textContainer: {
     flex: 1,
-    justifyContent: "center",
+    justifyContent: 'center',
   },
   nome: {
-    color: "#fff",
-    fontWeight: 900,    
+    color: '#fff',
+    fontWeight: 900,
     fontSize: 25,
   },
   funcao: {
-    color: "#fff",
+    color: '#fff',
     fontWeight: 600,
     fontSize: 18,
   },

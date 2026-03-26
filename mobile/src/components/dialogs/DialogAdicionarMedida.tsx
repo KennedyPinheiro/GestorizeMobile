@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   Modal,
   StyleSheet,
   Text,
   TouchableWithoutFeedback,
   View,
-} from "react-native";
-import EditableTextCard from "@components/EditableTextCard";
-import Button from "@components/botoes/Button";
-import ErrorSidebarAlert from "@components/sidebars/ErrorSidebarAlert";
-import { MedidaType } from "@context/types";
-import { supabase } from "@lib/supabase";
+} from 'react-native';
+import EditableTextCard from '@components/EditableTextCard';
+import Button from '@components/botoes/Button';
+import ErrorSidebarAlert from '@components/sidebars/ErrorSidebarAlert';
+import { MedidaType } from '@context/types';
+import { supabase } from '@lib/supabase';
 
 interface Props {
   open: boolean;
@@ -20,29 +20,29 @@ interface Props {
 }
 
 const DialogAdicionarMedida = ({ open, onClose, onSave, disabled }: Props) => {
-  const [titulo, setTitulo] = useState("");
+  const [titulo, setTitulo] = useState('');
   const [erroVisible, setErroVisible] = useState(false);
-  const [erroMessage, setErroMessage] = useState("");
-  const isFormValid = titulo.trim() !== "";
+  const [erroMessage, setErroMessage] = useState('');
+  const isFormValid = titulo.trim() !== '';
 
   useEffect(() => {
     if (!open) {
-      setTitulo("");
+      setTitulo('');
       setErroVisible(false);
-      setErroMessage("");
+      setErroMessage('');
     }
   }, [open]);
 
   const salvarMedida = async () => {
     try {
       if (!titulo.trim()) {
-        setErroMessage("Por favor, informe o nome da medida");
+        setErroMessage('Por favor, informe o nome da medida');
         setErroVisible(true);
         return;
       }
 
       const { data, error } = await supabase
-        .from("medidas")
+        .from('medidas')
         .insert({ titulo })
         .select()
         .single();
@@ -53,14 +53,19 @@ const DialogAdicionarMedida = ({ open, onClose, onSave, disabled }: Props) => {
       onClose();
     } catch (e: any) {
       setErroMessage(
-        "Erro ao salvar medida: " + (e?.message ?? "Erro desconhecido")
+        'Erro ao salvar medida: ' + (e?.message ?? 'Erro desconhecido'),
       );
       setErroVisible(true);
     }
   };
 
   return (
-    <Modal transparent visible={open} onRequestClose={onClose} animationType="fade">
+    <Modal
+      transparent
+      visible={open}
+      onRequestClose={onClose}
+      animationType="fade"
+    >
       <TouchableWithoutFeedback onPress={onClose}>
         <View style={styles.overlay}>
           <TouchableWithoutFeedback>
@@ -106,28 +111,28 @@ export default DialogAdicionarMedida;
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.4)",
-    justifyContent: "center",
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'center',
     paddingHorizontal: 24,
   },
   modal: {
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     borderRadius: 12,
-    overflow: "hidden",
-    borderColor: "#062046",
+    overflow: 'hidden',
+    borderColor: '#062046',
     borderWidth: 3,
     paddingBottom: 20,
   },
   header: {
-    backgroundColor: "#062046",
+    backgroundColor: '#062046',
     paddingVertical: 16,
     paddingHorizontal: 20,
-    alignItems: "center",
+    alignItems: 'center',
   },
   title: {
     fontSize: 22,
-    fontWeight: "bold",
-    color: "#FFF",
+    fontWeight: 'bold',
+    color: '#FFF',
   },
   body: {
     paddingHorizontal: 20,
@@ -136,6 +141,6 @@ const styles = StyleSheet.create({
   },
   footer: {
     marginTop: 20,
-    alignItems: "center",
+    alignItems: 'center',
   },
 });
