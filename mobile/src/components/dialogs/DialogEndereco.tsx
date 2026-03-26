@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   Modal,
   View,
@@ -9,38 +9,38 @@ import {
 import InputCard from "@components/InputCard";
 import { Select, MenuItem } from "@components/utilities/Select";
 import Button from "@components/botoes/Button";
-import { formatCep } from "@core/utils/format";
 import ErrorSidebarAlert from "@components/sidebars/ErrorSidebarAlert";
 import { EnderecoType } from "@context/types";
+import { formatCep } from '@core/utils/format';
 
 export const estadosBrasileiros = [
-  "Acre",
-  "Alagoas",
-  "Amapá",
-  "Amazonas",
-  "Bahia",
-  "Ceará",
-  "Distrito Federal",
-  "Espírito Santo",
-  "Goiás",
-  "Maranhão",
-  "Mato Grosso",
-  "Mato Grosso do Sul",
-  "Minas Gerais",
-  "Pará",
-  "Paraíba",
-  "Paraná",
-  "Pernambuco",
-  "Piauí",
-  "Rio de Janeiro",
-  "Rio Grande do Norte",
-  "Rio Grande do Sul",
-  "Rondônia",
-  "Roraima",
-  "Santa Catarina",
-  "São Paulo",
-  "Sergipe",
-  "Tocantins",
+  'Acre',
+  'Alagoas',
+  'Amapá',
+  'Amazonas',
+  'Bahia',
+  'Ceará',
+  'Distrito Federal',
+  'Espírito Santo',
+  'Goiás',
+  'Maranhão',
+  'Mato Grosso',
+  'Mato Grosso do Sul',
+  'Minas Gerais',
+  'Pará',
+  'Paraíba',
+  'Paraná',
+  'Pernambuco',
+  'Piauí',
+  'Rio de Janeiro',
+  'Rio Grande do Norte',
+  'Rio Grande do Sul',
+  'Rondônia',
+  'Roraima',
+  'Santa Catarina',
+  'São Paulo',
+  'Sergipe',
+  'Tocantins',
 ];
 
 type DialogEnderecoProps = {
@@ -56,34 +56,34 @@ const DialogEndereco = ({
   onSave,
   disabled = false,
 }: DialogEnderecoProps) => {
-  const [rua, setRua] = useState("");
-  const [bairro, setBairro] = useState("");
-  const [cidade, setCidade] = useState("");
-  const [cep, setCep] = useState("");
-  const [numero, setNumero] = useState("");
-  const [estado, setEstado] = useState<string>("");
+  const [rua, setRua] = useState('');
+  const [bairro, setBairro] = useState('');
+  const [cidade, setCidade] = useState('');
+  const [cep, setCep] = useState('');
+  const [numero, setNumero] = useState('');
+  const [estado, setEstado] = useState<string>('');
   const [errorVisible, setErrorVisible] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState('');
   const handleSalvar = () => {
     if (disabled) return;
 
     if (!rua.trim()) {
-      setErrorMessage("Por favor, informe a rua");
+      setErrorMessage('Por favor, informe a rua');
       setErrorVisible(true);
       return;
     }
     if (!bairro.trim()) {
-      setErrorMessage("Por favor, informe o bairro");
+      setErrorMessage('Por favor, informe o bairro');
       setErrorVisible(true);
       return;
     }
     if (!cidade.trim()) {
-      setErrorMessage("Por favor, informe a cidade");
+      setErrorMessage('Por favor, informe a cidade');
       setErrorVisible(true);
       return;
     }
     if (!estado.trim()) {
-      setErrorMessage("Por favor, informe o estado");
+      setErrorMessage('Por favor, informe o estado');
       setErrorVisible(true);
       return;
     }
@@ -155,7 +155,6 @@ const DialogEndereco = ({
                   value={estado}
                   onChange={setEstado}
                   label="Estado"
-                  size="small"
                 >
                   {estadosBrasileiros.map((uf) => (
                     <MenuItem key={uf} value={uf}>
@@ -191,48 +190,48 @@ const DialogEndereco = ({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
-    justifyContent: "center",
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
     paddingHorizontal: 20,
   },
   overlayDisabled: {
-    backgroundColor: "rgba(0,0,0,0.2)",
+    backgroundColor: 'rgba(0,0,0,0.2)',
   },
   container: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderRadius: 10,
     marginHorizontal: 20,
-    overflow: "hidden",
-    borderColor: "#062046",
+    overflow: 'hidden',
+    borderColor: '#062046',
     borderWidth: 3,
   },
   containerDisabled: {
     opacity: 0.7,
-    borderColor: "#888",
+    borderColor: '#888',
   },
   header: {
-    backgroundColor: "#062046",
-    width: "100%",
+    backgroundColor: '#062046',
+    width: '100%',
     paddingVertical: 15,
     paddingHorizontal: 20,
   },
   headerDisabled: {
-    backgroundColor: "#888",
+    backgroundColor: '#888',
   },
   title: {
     fontSize: 25,
-    fontWeight: "900",
-    textAlign: "center",
-    color: "#fff",
+    fontWeight: '900',
+    textAlign: 'center',
+    color: '#fff',
   },
   titleDisabled: {
-    color: "#eee",
+    color: '#eee',
   },
   content: {
     padding: 20,
   },
   buttonContainer: {
-    alignItems: "center",
+    alignItems: 'center',
   },
 });
 

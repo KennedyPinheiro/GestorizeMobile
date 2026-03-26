@@ -1,50 +1,50 @@
-import { ScrollView, View, StyleSheet, Text, SafeAreaView } from "react-native";
+import { ScrollView, View, StyleSheet, Text, SafeAreaView } from 'react-native';
 
-import Button from "@components/botoes/Button";
+import Button from '@components/botoes/Button';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
-import DialogCategorias from "@components/dialogs/DialogCategoria";
-import { formatDate, parsePercent, parseReal } from "@core/utils/format";
-import Selecionado from "@components/Selecionado";
-import SidebarAlert from "@components/sidebars/Sidebaralert";
-import { supabase } from "@lib/supabase";
-import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import DialogFornecedores from "@components/dialogs/DialogFornecedores";
-import DialogMedida from "@components/dialogs/DialogMedida";
-import ErrorSidebarAlert from "@components/sidebars/ErrorSidebarAlert";
-import { RootStackParamList } from "@context/types";
-import Nav from "@components/utilities/Nav";
-import EditableTextCard from "@components/EditableTextCard";
-import ClickableTextCard from "@components/ClickableTextCard";
+import DialogCategorias from '@components/dialogs/DialogCategoria';
+import { formatDate, parsePercent, parseReal } from '@@core/format';
+import Selecionado from '@components/Selecionado';
+import SidebarAlert from '@components/sidebars/Sidebaralert';
+import { supabase } from '@lib/supabase';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import DialogFornecedores from '@components/dialogs/DialogFornecedores';
+import DialogMedida from '@components/dialogs/DialogMedida';
+import ErrorSidebarAlert from '@components/sidebars/ErrorSidebarAlert';
+import { RootStackParamList } from '@context/types';
+import Nav from '@components/utilities/Nav';
+import EditableTextCard from '@components/EditableTextCard';
+import ClickableTextCard from '@components/ClickableTextCard';
 
-const unidades = ["Unidade", "Litro", "Quilo", "Caixa"];
+const unidades = ['Unidade', 'Litro', 'Quilo', 'Caixa'];
 
 const CadastroProdutos = () => {
-  const [nomeProduto, setNomeProduto] = useState("");
-  const [descricao, setDescricao] = useState("");
+  const [nomeProduto, setNomeProduto] = useState('');
+  const [descricao, setDescricao] = useState('');
   const [categoria, setCategoria] = useState(false);
   const [fornecedorId, setFornecedor] = useState(false);
   const [codigoFornecedor, setCodigoFornecedor] = useState(0);
   const [codigoCategoria, setCodigoCategoria] = useState(0);
   const [codigoMedida, setCodigoMedida] = useState(0);
-  const [dataEntrada, setDataEntrada] = useState("");
-  const [quantidade, setQuantidade] = useState("");
-  const [dataValidade, setDataValidade] = useState("");
-  const [precoCustoTexto, setPrecoCustoTexto] = useState("");
-  const [margemLucroTexto, setMargemLucroTexto] = useState("");
+  const [dataEntrada, setDataEntrada] = useState('');
+  const [quantidade, setQuantidade] = useState('');
+  const [dataValidade, setDataValidade] = useState('');
+  const [precoCustoTexto, setPrecoCustoTexto] = useState('');
+  const [margemLucroTexto, setMargemLucroTexto] = useState('');
   const [precoCusto, setPrecoCusto] = useState<number>();
   const [unidadeMedida, setUnidadeMedida] = useState(false);
   const [erroAlertVisible, setErroAlertVisible] = useState(false);
-  const [erroMessage, setErroMessage] = useState("");
+  const [erroMessage, setErroMessage] = useState('');
   const [medidaSelecionada, setMedidaSelecionada] = useState<string>();
   const [fornecedorSelecionado, setFornecedorSelecionado] = useState<string>();
   const [categoriaSelecionada, setCategoriaSelecionada] = useState<string>();
   const [alertVisible, setAlertVisible] = useState(false);
-  const [message, setMessage] = useState("");
-  const [margemLucro, setMargemLucro] = useState("");
-  const isFormValid = nomeProduto.trim() !== "";
+  const [message, setMessage] = useState('');
+  const [margemLucro, setMargemLucro] = useState('');
+  const isFormValid = nomeProduto.trim() !== '';
   const handleOpenCategoria = () => setCategoria(true);
   const handleCloseCategoria = () => setCategoria(false);
   const handleOpenFornecedor = () => setFornecedor(true);
@@ -57,20 +57,20 @@ const CadastroProdutos = () => {
     setCodigoCategoria(id);
     setCategoriaSelecionada(nomeCategoria);
     setAlertVisible(true);
-    setMessage("Categoria Selecionada");
+    setMessage('Categoria Selecionada');
   };
   const handleSelectForncedor = (id: number, nomeFornecedor: string) => {
     setCodigoFornecedor(id);
     setFornecedorSelecionado(nomeFornecedor);
     setAlertVisible(true);
-    setMessage("Fornecedor Selecionada");
+    setMessage('Fornecedor Selecionada');
   };
 
   const handleSelectMedida = (id: number, titulo: string) => {
     setCodigoMedida(id);
     setMedidaSelecionada(titulo);
     setAlertVisible(true);
-    setMessage("Unidade de Medida Selecionada");
+    setMessage('Unidade de Medida Selecionada');
   };
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -81,26 +81,26 @@ const CadastroProdutos = () => {
 
     try {
       if (!nomeProduto.trim()) {
-        setMessage("Por favor, insira o nome do produto.");
+        setMessage('Por favor, insira o nome do produto.');
         setAlertVisible(true);
         setIsLoading(false);
         return;
       }
 
       if (!categoriaSelecionada) {
-        setMessage("Selecione uma categoria.");
+        setMessage('Selecione uma categoria.');
         setAlertVisible(true);
         setIsLoading(false);
         return;
       }
       if (!medidaSelecionada) {
-        setMessage("Selecione uma medida.");
+        setMessage('Selecione uma medida.');
         setAlertVisible(true);
         setIsLoading(false);
         return;
       }
 
-      const { error } = await supabase.from("produtos").insert({
+      const { error } = await supabase.from('produtos').insert({
         nome: nomeProduto,
         descricao: descricao,
         categoria_id: codigoCategoria,
@@ -119,16 +119,16 @@ const CadastroProdutos = () => {
         throw error;
       }
 
-      setMessage("Produto salvo com sucesso!");
+      setMessage('Produto salvo com sucesso!');
       setAlertVisible(true);
 
       setTimeout(() => {
-        navigation.navigate("Produtos", {
+        navigation.navigate('Produtos', {
           novoProduto: true,
         });
       }, 1500);
     } catch (error: any) {
-      setErroMessage("Erro ao salvar produto: " + error.message);
+      setErroMessage('Erro ao salvar produto: ' + error.message);
       setErroAlertVisible(true);
       setIsLoading(false);
     }
@@ -157,7 +157,7 @@ const CadastroProdutos = () => {
       />
       <Nav
         titulo="Produto"
-        onBackPress={() => navigation.navigate("Produtos")}
+        onBackPress={() => navigation.navigate('Produtos')}
       />
       <ScrollView
         style={styles.scrollContainer}
@@ -274,7 +274,7 @@ const CadastroProdutos = () => {
           </View>
 
           <Button
-            title={isLoading ? "SALVANDO..." : "ADICIONAR"}
+            title={isLoading ? 'SALVANDO...' : 'ADICIONAR'}
             variant="contained"
             color="primary"
             disabled={!isFormValid || isLoading}
@@ -310,45 +310,45 @@ const CadastroProdutos = () => {
 
 const styles = StyleSheet.create({
   scrollContainer: {
-    backgroundColor: "#ffffff",
-    width: "100%",
+    backgroundColor: '#ffffff',
+    width: '100%',
     flexGrow: 1,
   },
   contentContainer: {
-    alignItems: "center",
+    alignItems: 'center',
     paddingBottom: 32,
   },
   container: {
-    width: "100%",
-    alignItems: "center",
-    backgroundColor: "#ffffff",
+    width: '100%',
+    alignItems: 'center',
+    backgroundColor: '#ffffff',
     flex: 1,
   },
   formContainer: {
     marginTop: 24,
-    width: "100%",
-    alignItems: "center",
+    width: '100%',
+    alignItems: 'center',
     gap: 2,
   },
   inputItem: {
-    width: "90%",
+    width: '90%',
     maxWidth: 400,
-    alignSelf: "center",
+    alignSelf: 'center',
   },
   text: {
-    textAlign: "center",
-    textDecorationStyle: "solid",
-    alignItems: "center",
-    fontWeight: "900",
+    textAlign: 'center',
+    textDecorationStyle: 'solid',
+    alignItems: 'center',
+    fontWeight: '900',
     fontSize: 15,
-    width: "80%",
-    backgroundColor: "#6aa76a",
+    width: '80%',
+    backgroundColor: '#6aa76a',
     borderRadius: 10,
-    color: "#fff",
+    color: '#fff',
     padding: 10,
     marginBottom: 5,
     marginTop: -10,
-    alignSelf: "center",
+    alignSelf: 'center',
   },
 });
 

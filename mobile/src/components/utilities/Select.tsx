@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -9,8 +9,8 @@ import {
   ScrollView,
   TouchableWithoutFeedback,
   DimensionValue,
-} from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
+} from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 
 type SelectProps = {
   value: string;
@@ -27,21 +27,21 @@ type MenuItemProps = {
   onPress?: () => void;
 };
 
-const { height } = Dimensions.get("window");
+const { height } = Dimensions.get('window');
 
 const Select = ({
   value,
   onChange,
-  label = "Campo",
-  placeholder = "Selecionar...",
+  label = 'Campo',
+  placeholder = 'Selecionar...',
   children,
-  width = "100%",
+  width = '100%',
 }: SelectProps) => {
   const [visible, setVisible] = useState(false);
 
   const selectedLabel = React.Children.toArray(children).find(
     (child): child is React.ReactElement<MenuItemProps> =>
-      React.isValidElement<MenuItemProps>(child) && child.props.value === value
+      React.isValidElement<MenuItemProps>(child) && child.props.value === value,
   );
 
   const handleSelect = (val: string) => {
@@ -69,7 +69,6 @@ const Select = ({
             <Text style={styles.label}>{label}</Text>
             <Text style={[styles.valueText, isEmpty && styles.placeholderText]}>
               {value || placeholder}
-              
             </Text>
           </View>
           <MaterialIcons name="arrow-drop-down" size={28} color="#666" />
@@ -81,7 +80,6 @@ const Select = ({
           animationType="fade"
           onRequestClose={() => setVisible(false)}
         >
-          
           <TouchableWithoutFeedback onPress={() => setVisible(false)}>
             <View style={styles.overlay}>
               <TouchableWithoutFeedback>
@@ -100,44 +98,44 @@ const Select = ({
 const styles = StyleSheet.create({
   container: {
     borderWidth: 1,
-    borderColor: "#000",
+    borderColor: '#000',
     borderRadius: 15,
     paddingVertical: 10,
     paddingHorizontal: 20,
     marginVertical: 10,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
   },
   label: {
     fontSize: 13,
-    color: "#6e6e6e",
-    fontWeight: "bold",
+    color: '#6e6e6e',
+    fontWeight: 'bold',
     marginBottom: 5,
   },
   textContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   valueText: {
     fontSize: 20,
-    fontWeight: "bold",
-    color: "#111",
+    fontWeight: 'bold',
+    color: '#111',
     flex: 1,
   },
   placeholderText: {
-    color: "#999",
-    fontWeight: "normal",
+    color: '#999',
+    fontWeight: 'normal',
   },
   overlay: {
     flex: 1,
-    backgroundColor: "#00000050",
-    justifyContent: "center",
+    backgroundColor: '#00000050',
+    justifyContent: 'center',
     padding: 20,
   },
   modalContent: {
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     borderRadius: 10,
-    maxHeight: "50%",
+    maxHeight: '50%',
   },
 });
 
@@ -151,11 +149,11 @@ const menuStyles = StyleSheet.create({
   menuItem: {
     padding: 15,
     borderBottomWidth: 1,
-    borderBottomColor: "#eee",
+    borderBottomColor: '#eee',
   },
   menuItemText: {
     fontSize: 16,
-    color: "#333",
+    color: '#333',
   },
 });
 

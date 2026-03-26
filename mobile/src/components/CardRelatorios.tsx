@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from 'react-native';
 
 type props = {
   titulo: string;
@@ -31,55 +31,54 @@ const CardRelatorios = ({ titulo, icon }: props) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#062046",
+    backgroundColor: '#062046',
     borderRadius: 20,
     padding: 25,
-    width: "100%",
+    width: '100%',
     paddingHorizontal: 20,
   },
   titulo: {
-    alignItems: "center",
+    alignItems: 'center',
     marginBottom: 20,
   },
   title: {
-    backgroundColor: "#193A69",
+    backgroundColor: '#193A69',
     borderRadius: 20,
     width: 242,
     height: 41,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   titleText: {
-    color: "#FFF",
-    fontWeight: "bold",
+    color: '#FFF',
+    fontWeight: 'bold',
     fontSize: 20,
   },
-  
+
   icon: {
     marginLeft: 10,
   },
   items: {
-    flexDirection: "row",
-    justifyContent: "space-evenly",
-    flexWrap: "wrap",
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    flexWrap: 'wrap',
   },
   row: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     width: 140,
     marginBottom: 10,
   },
   label: {
-    color: "#FFF",
+    color: '#FFF',
     fontSize: 16,
-    marginRight:-10
+    marginRight: -10,
   },
   value: {
-    color: "#FFF",
+    color: '#FFF',
     fontSize: 16,
-    fontWeight: "bold",
-    
+    fontWeight: 'bold',
   },
 });
 

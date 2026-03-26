@@ -1,6 +1,10 @@
-import React from "react";
-import { TouchableOpacity, StyleSheet, GestureResponderEvent } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
+import React from 'react';
+import {
+  TouchableOpacity,
+  StyleSheet,
+  GestureResponderEvent,
+} from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 
 type props = {
   onPress: (event: GestureResponderEvent) => void;
@@ -16,11 +20,11 @@ const Voltar: React.FC<props> = ({ onPress }) => {
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: "#070e74bd",
+    backgroundColor: '#070e74bd',
     borderRadius: 16,
     padding: 5,
     elevation: 6,
-    shadowColor: "#ffffff",
+    shadowColor: '#ffffff',
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.4,
     shadowRadius: 3,
@@ -28,8 +32,8 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   icon: {
-    color: "#ffffff",
-    textShadowColor: "black",
+    color: '#ffffff',
+    textShadowColor: 'black',
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 1,
   },

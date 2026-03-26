@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 
 type Props = {
   titulo: string;
@@ -9,9 +9,9 @@ type Props = {
 
 const Categoria = ({ titulo, descricao, onPress, selected = false }: Props) => {
   const formatDescricao = (descricao?: string) => {
-    if (!descricao) return "";
+    if (!descricao) return '';
     return descricao.length > 30
-      ? descricao.substring(0, 27) + "..."
+      ? descricao.substring(0, 27) + '...'
       : descricao;
   };
 
@@ -31,31 +31,31 @@ export default Categoria;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#516EBC",
-    flexDirection: "row",
-    alignItems: "center",
+    backgroundColor: '#516EBC',
+    flexDirection: 'row',
+    alignItems: 'center',
     padding: 10,
     borderRadius: 5,
-    justifyContent: "space-between",
+    justifyContent: 'space-between',
     marginVertical: 10,
     borderWidth: 1,
-    borderColor: "#062046",
+    borderColor: '#062046',
   },
   containerSelecionado: {
-    borderColor: "lime",
-    backgroundColor: "#3b5aa1",
+    borderColor: 'lime',
+    backgroundColor: '#3b5aa1',
   },
   textContainer: {
     flex: 1,
-    justifyContent: "center",
+    justifyContent: 'center',
   },
   titulo: {
-    color: "#fff",
-    fontWeight: "bold",
+    color: '#fff',
+    fontWeight: 'bold',
     fontSize: 25,
   },
   descricao: {
-    color: "#fff",
+    color: '#fff',
     fontSize: 18,
   },
 });

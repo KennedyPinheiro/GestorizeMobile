@@ -1,6 +1,6 @@
-import { StyleSheet, Text, View, Dimensions } from "react-native";
+import { StyleSheet, Text, View, Dimensions } from 'react-native';
 
-const screenWidth = Dimensions.get("window").width;
+const screenWidth = Dimensions.get('window').width;
 
 type props = {
   titulo: string;
@@ -48,60 +48,60 @@ const Card = ({ titulo, icon }: props) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#062046",
+    backgroundColor: '#062046',
     borderRadius: 20,
     padding: 25,
-    width: "auto",
+    width: 'auto',
   },
   title: {
-    backgroundColor: "#193A69",
+    backgroundColor: '#193A69',
     borderRadius: 20,
     width: 242,
     height: 41,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     marginBottom: 20,
-    position: "relative",
+    position: 'relative',
   },
   titleText: {
-    color: "#FFF",
-    fontWeight: "bold",
+    color: '#FFF',
+    fontWeight: 'bold',
     fontSize: 20,
   },
   icon: {
     marginLeft: 10,
   },
   grid: {
-    flexDirection: "row",
-    justifyContent: "center",
-    flexWrap: "wrap",
+    flexDirection: 'row',
+    justifyContent: 'center',
+    flexWrap: 'wrap',
   },
   column: {
-    flexDirection: "column",
+    flexDirection: 'column',
     gap: 10,
   },
   leftColumn: {
     marginRight: screenWidth < 400 ? 20 : screenWidth < 600 ? 40 : 80,
   },
   row: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     width: 100,
   },
   label: {
-    color: "#FFF",
+    color: '#FFF',
     fontSize: 16,
   },
   value: {
-    color: "#FFF",
-    fontWeight: "bold",
+    color: '#FFF',
+    fontWeight: 'bold',
     fontSize: 16,
     marginLeft: 10,
   },
   titulo: {
-    display: "flex",
-    alignItems: "center",
+    display: 'flex',
+    alignItems: 'center',
   },
 });
 

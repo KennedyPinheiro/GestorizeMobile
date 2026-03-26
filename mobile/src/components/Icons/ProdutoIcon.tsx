@@ -1,5 +1,5 @@
-import { StyleSheet, View, ViewStyle } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { StyleSheet, View, ViewStyle } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 type Props = {
   color?: string;
@@ -10,7 +10,7 @@ type Props = {
 };
 
 const ProdutoIcon = ({
-  color = "#FFF",
+  color = '#FFF',
   style,
   size = 50,
   rounded = true,
@@ -42,8 +42,8 @@ export default ProdutoIcon;
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     borderWidth: 1,
   },
   rounded: {

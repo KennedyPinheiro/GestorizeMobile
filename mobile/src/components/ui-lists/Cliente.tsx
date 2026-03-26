@@ -1,17 +1,17 @@
-import React from "react";
-import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
-import TipoCliente from "@components/TipoCliente";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import React from 'react';
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import TipoCliente from '@components/TipoCliente';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 type Props = {
-  tipo: "PF" | "PJ";
+  tipo: 'PF' | 'PJ';
   nome: string;
   email: string;
   onPress?: () => void;
 };
 
 const Cliente = ({ tipo, nome, email, onPress }: Props) => {
-  const iconName = tipo === "PF" ? "account" : "office-building";
+  const iconName = tipo === 'PF' ? 'account' : 'office-building';
 
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
@@ -31,33 +31,33 @@ const Cliente = ({ tipo, nome, email, onPress }: Props) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#516EBC",
-    flexDirection: "row",
-    alignItems: "center",
+    backgroundColor: '#516EBC',
+    flexDirection: 'row',
+    alignItems: 'center',
     padding: 10,
     borderRadius: 10,
-    justifyContent: "space-between",
+    justifyContent: 'space-between',
     marginBottom: 10,
     marginTop: 10,
     borderWidth: 1,
   },
   imageContainer: {
-    backgroundColor: "#D9D9D9",
+    backgroundColor: '#D9D9D9',
     borderRadius: 10,
     marginRight: 10,
     borderWidth: 1,
   },
   textContainer: {
     flex: 1,
-    justifyContent: "center",
+    justifyContent: 'center',
   },
   nome: {
-    color: "#fff",
+    color: '#fff',
     fontWeight: 900,
     fontSize: 25,
   },
   email: {
-    color: "#fff",
+    color: '#fff',
     fontWeight: 600,
     fontSize: 18,
   },

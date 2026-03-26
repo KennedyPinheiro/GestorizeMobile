@@ -1,8 +1,15 @@
-import React from "react";
-import { Card } from "@components/ui/card";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { View, Text, StyleSheet, Pressable, Animated, ViewStyle } from "react-native";
-import { useTheme } from "@context/ThemeContext";
+import React from 'react';
+import { Card } from '@components/ui/card';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  Animated,
+  ViewStyle,
+} from 'react-native';
+import { useTheme } from '@context/ThemeContext';
 
 interface NavButtonProps {
   icon: keyof typeof MaterialCommunityIcons.glyphMap;
@@ -13,15 +20,36 @@ interface NavButtonProps {
   containerStyle?: ViewStyle;
 }
 
-export function NavButton({ icon, label, description, onClick, disabled, containerStyle }: NavButtonProps) {
+export function NavButton({
+  icon,
+  label,
+  description,
+  onClick,
+  disabled,
+  containerStyle,
+}: NavButtonProps) {
   const scale = React.useRef(new Animated.Value(1)).current;
-  const { colors } = useTheme();
-  const isDark = colors.background === "#062046";
-  const iconColor = disabled ? colors.muted : isDark ? "#062046" : "#ffffff";
-  const iconBg = disabled ? `${colors.border}` : isDark ? "#ffffff" : colors.primary;
-  const borderColor = disabled ? colors.border : isDark ? "#ffffff" : colors.primary;
-  const textColor = disabled ? colors.muted : colors.text;
-  const subtitleColor = disabled ? colors.muted : colors.muted;
+  const { colors, isDark } = useTheme(); // 🔥 agora correto
+
+  const cardBg = isDark ? '#005CE4' : '#ffffff';
+
+  const iconColor = disabled ? colors.muted : isDark ? '#005CE4' : '#ffffff';
+
+  const iconBg = disabled ? colors.border : isDark ? '#ffffff' : colors.primary;
+
+  const borderColor = disabled
+    ? colors.border
+    : isDark
+      ? '#ffffff'
+      : colors.primary;
+
+  const textColor = disabled ? colors.muted : isDark ? '#ffffff' : colors.text;
+
+  const subtitleColor = disabled
+    ? colors.muted
+    : isDark
+      ? '#e2e8f0'
+      : colors.muted;
 
   const handlePressIn = () => {
     if (disabled) return;
@@ -44,12 +72,15 @@ export function NavButton({ icon, label, description, onClick, disabled, contain
   };
 
   return (
-    <Animated.View style={[styles.shadowWrapper, containerStyle, { transform: [{ scale }] }]}>
+    <Animated.View
+      style={[styles.shadowWrapper, containerStyle, { transform: [{ scale }] }]}
+    >
       <Card
         onClick={disabled ? undefined : onClick}
         style={[
           styles.card,
           {
+            backgroundColor: cardBg,
             borderLeftColor: borderColor,
             opacity: disabled ? 0.6 : 1,
           },
@@ -65,9 +96,13 @@ export function NavButton({ icon, label, description, onClick, disabled, contain
           <View style={[styles.iconWrapper, { backgroundColor: iconBg }]}>
             <MaterialCommunityIcons name={icon} size={30} color={iconColor} />
           </View>
+
           <Text style={[styles.title, { color: textColor }]}>{label}</Text>
+
           {description ? (
-            <Text style={[styles.subtitle, { color: subtitleColor }]}>{description}</Text>
+            <Text style={[styles.subtitle, { color: subtitleColor }]}>
+              {description}
+            </Text>
           ) : null}
         </Pressable>
       </Card>
@@ -77,27 +112,29 @@ export function NavButton({ icon, label, description, onClick, disabled, contain
 
 const styles = StyleSheet.create({
   shadowWrapper: {
-    width: "100%",
+    width: '100%',
   },
   card: {
+    height: 200,
+    width: '100%',
     borderLeftWidth: 4,
-    backgroundColor: "#ffffff",
-    paddingVertical: 18,
+    backgroundColor: '#ffffff',
+    paddingVertical: 15,
     paddingHorizontal: 12,
     borderRadius: 14,
   },
   inner: {
-    alignItems: "center",
+    alignItems: 'center',
     gap: 10,
   },
   iconWrapper: {
     width: 64,
     height: 64,
     borderRadius: 14,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   textWrapper: { flex: 1 },
-  title: { fontWeight: "700", fontSize: 16, textAlign: "center" },
-  subtitle: { marginTop: 4, fontSize: 13, lineHeight: 18, textAlign: "center" },
+  title: { fontWeight: '700', fontSize: 16, textAlign: 'center' },
+  subtitle: { marginTop: 4, fontSize: 13, lineHeight: 18, textAlign: 'center' },
 });

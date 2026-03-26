@@ -1,8 +1,15 @@
-import React from "react";
-import { View, StyleSheet, Pressable, Animated, ScrollView, StatusBar } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import LogoIcon from "@components/LogoIcon";
-import { useTheme } from "@context/ThemeContext";
+import React from 'react';
+import {
+  View,
+  StyleSheet,
+  Pressable,
+  Animated,
+  ScrollView,
+  StatusBar,
+} from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import LogoIcon from '@components/LogoIcon';
+import { useTheme } from '@context/ThemeContext';
 
 type MenuItem = {
   icon: keyof typeof MaterialCommunityIcons.glyphMap;
@@ -37,7 +44,7 @@ export const SideMenu: React.FC<SideMenuProps> = ({
   }, [isOpen, translateX]);
 
   const renderItem = (item: MenuItem, index: number) => {
-    const color = item.danger ? "#ef4444" : colors.text;
+    const color = item.danger ? '#ef4444' : colors.text;
     return (
       <Pressable
         key={`${item.label}-${index}`}
@@ -45,7 +52,8 @@ export const SideMenu: React.FC<SideMenuProps> = ({
         style={({ pressed }) => [
           styles.item,
           {
-            backgroundColor: pressed && !item.disabled ? `${colors.primary}18` : "transparent",
+            backgroundColor:
+              pressed && !item.disabled ? `${colors.primary}18` : 'transparent',
             opacity: item.disabled ? 0.5 : 1,
           },
         ]}
@@ -55,7 +63,12 @@ export const SideMenu: React.FC<SideMenuProps> = ({
           size={22}
           color={item.disabled ? colors.muted : color}
         />
-        <Animated.Text style={[styles.itemLabel, { color: item.disabled ? colors.muted : color }]}>
+        <Animated.Text
+          style={[
+            styles.itemLabel,
+            { color: item.disabled ? colors.muted : color },
+          ]}
+        >
           {item.label}
         </Animated.Text>
       </Pressable>
@@ -99,20 +112,20 @@ export const SideMenu: React.FC<SideMenuProps> = ({
 
 const styles = StyleSheet.create({
   overlay: {
-    position: "absolute",
+    position: 'absolute',
     inset: 0,
-    backgroundColor: "rgba(0,0,0,0.35)",
+    backgroundColor: 'rgba(0,0,0,0.35)',
     zIndex: 40,
   },
   container: {
-    position: "absolute",
+    position: 'absolute',
     right: 0,
     top: 0,
     bottom: 0,
     width: 280,
     zIndex: 50,
     borderLeftWidth: 1,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOpacity: 0.2,
     shadowRadius: 8,
     elevation: 12,
@@ -120,7 +133,7 @@ const styles = StyleSheet.create({
   header: {
     minHeight: 90,
     paddingHorizontal: 16,
-    justifyContent: "center",
+    justifyContent: 'center',
     borderBottomWidth: 1,
   },
   list: {
@@ -129,8 +142,8 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   item: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 10,
     paddingVertical: 12,
     paddingHorizontal: 10,
@@ -138,7 +151,7 @@ const styles = StyleSheet.create({
   },
   itemLabel: {
     fontSize: 15,
-    fontWeight: "600",
+    fontWeight: '600',
   },
   footer: {
     paddingHorizontal: 10,

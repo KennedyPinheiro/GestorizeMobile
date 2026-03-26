@@ -1,12 +1,12 @@
-import React from "react";
+import React from 'react';
 import {
   View,
   Text,
   StyleSheet,
   Modal,
   TouchableWithoutFeedback,
-} from "react-native";
-import Button from "@components/botoes/Button";
+} from 'react-native';
+import Button from '@components/botoes/Button';
 
 type Props = {
   show: boolean;
@@ -64,40 +64,40 @@ const DialogSelecione = ({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.3)",
-    justifyContent: "center",
-    alignItems: "center",
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   container: {
     width: 280,
-    backgroundColor: "#F3F3F2",
+    backgroundColor: '#F3F3F2',
     borderRadius: 12,
-    overflow: "hidden",
+    overflow: 'hidden',
     elevation: 4,
     borderWidth: 1,
-    borderColor: "#062046",
-    shadowColor: "#000",
+    borderColor: '#062046',
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
   },
   header: {
-    backgroundColor: "#062046",
+    backgroundColor: '#062046',
     paddingVertical: 20,
-    alignItems: "center",
+    alignItems: 'center',
     borderTopLeftRadius: 12,
     borderTopRightRadius: 12,
   },
   titulo: {
-    color: "#FFFFFF",
+    color: '#FFFFFF',
     fontSize: 25,
-    fontWeight: "900",
+    fontWeight: '900',
   },
   body: {
-    backgroundColor: "#F3F3F2",
+    backgroundColor: '#F3F3F2',
     paddingVertical: 10,
     paddingHorizontal: 2,
-    alignItems: "center",
+    alignItems: 'center',
   },
 });
 

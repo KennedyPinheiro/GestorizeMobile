@@ -1,50 +1,57 @@
-import React, { useEffect, useState } from "react";
-import { StyleSheet, View, ScrollView, TextInput } from "react-native";
-import BarraAdd from "@components/utilities/BarraAdd";
-import DialogSelecione from "@components/dialogs/DialogSelecione";
-import Cliente from "@components/ui-lists/Cliente";
-import { useNavigation, useIsFocused, useRoute } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import SidebarAlert from "@components/sidebars/Sidebaralert";
-import ErrorSidebarAlert from "@components/sidebars/ErrorSidebarAlert";
-import Nav from "@components/utilities/Nav";
-import { RootStackParamList } from "@context/types";
-import api from "@configs/axios";
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View, ScrollView, TextInput } from 'react-native';
+import BarraAdd from '@components/utilities/BarraAdd';
+import DialogSelecione from '@components/dialogs/DialogSelecione';
+import Cliente from '@components/ui-lists/Cliente';
+import {
+  useNavigation,
+  useIsFocused,
+  useRoute,
+} from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import SidebarAlert from '@components/sidebars/Sidebaralert';
+import ErrorSidebarAlert from '@components/sidebars/ErrorSidebarAlert';
+import Nav from '@components/utilities/Nav';
+import { RootStackParamList } from '@context/types';
+import api from '@configs/axios';
 
 type ClienteApi = {
   id: number;
   nome: string;
   email: string | null;
-  tipo: "pf" | "pj";
+  tipo: 'pf' | 'pj';
 };
 
 const Clientes = () => {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const route = useRoute();
   const isFocused = useIsFocused();
 
   const [alertVisible, setAlertVisible] = useState(false);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState('');
   const [erroAlertVisible, setErroAlertVisible] = useState(false);
-  const [erroMessage, setErroMessage] = useState("");
+  const [erroMessage, setErroMessage] = useState('');
   const [showDialog, setShowDialog] = useState(false);
   const [clientes, setClientes] = useState<ClienteApi[]>([]);
-  const [termoBusca, setTermoBusca] = useState("");
+  const [termoBusca, setTermoBusca] = useState('');
 
-  const buscarClientes = async (termo: string = "") => {
+  const buscarClientes = async (termo: string = '') => {
     try {
-      const { data } = await api.get("/clientes");
+      const { data } = await api.get('/clientes');
       const lista: ClienteApi[] = data?.data ?? data ?? [];
       const filtrados =
-        termo.trim() === ""
+        termo.trim() === ''
           ? lista
-          : lista.filter((c) => c.nome.toLowerCase().includes(termo.toLowerCase()));
+          : lista.filter((c) =>
+              c.nome.toLowerCase().includes(termo.toLowerCase()),
+            );
       setClientes(filtrados);
     } catch (error: any) {
       setErroMessage(
         `Erro ao buscar clientes: ${
-          error?.response?.data?.message ?? error?.message ?? "desconhecido"
-        }`
+          error?.response?.data?.message ?? error?.message ?? 'desconhecido'
+        }`,
       );
       setErroAlertVisible(true);
     }
@@ -55,7 +62,7 @@ const Clientes = () => {
       buscarClientes();
       const params = (route as any).params;
       if (params?.novoCliente) {
-        setMessage("Cliente cadastrado com sucesso!");
+        setMessage('Cliente cadastrado com sucesso!');
         setAlertVisible(true);
         navigation.setParams({ novoCliente: undefined });
       }
@@ -80,7 +87,10 @@ const Clientes = () => {
         visible={erroAlertVisible}
         onClose={() => setErroAlertVisible(false)}
       />
-      <Nav titulo="Clientes" onBackPress={() => navigation.navigate("Homepage")} />
+      <Nav
+        titulo="Clientes"
+        onBackPress={() => navigation.navigate('Homepage')}
+      />
       <BarraAdd onPressAdd={() => setShowDialog(true)} />
       <View style={styles.barraBuscaContainer}>
         <TextInput
@@ -96,27 +106,27 @@ const Clientes = () => {
         {clientes.map((cliente) => (
           <Cliente
             key={cliente.id}
-            tipo={cliente.tipo.toUpperCase() === "PJ" ? "PJ" : "PF"}
+            tipo={cliente.tipo.toUpperCase() === 'PJ' ? 'PJ' : 'PF'}
             nome={cliente.nome}
-            email={cliente.email || "Email não informado"}
+            email={cliente.email || 'Email não informado'}
             onPress={() =>
-              navigation.navigate("PerfilPessoaFisica", {
+              navigation.navigate('PerfilPessoaFisica', {
                 id: cliente.id,
                 nome: cliente.nome,
-                email: cliente.email || "Email não informado",
-                telefone: "",
-                genero: "",
-                estado_civil: "",
-                data_nascimento: "",
-                rg: "",
-                cpf: "",
+                email: cliente.email || 'Email não informado',
+                telefone: '',
+                genero: '',
+                estado_civil: '',
+                data_nascimento: '',
+                rg: '',
+                cpf: '',
                 endereco_id: null,
-                rua: "",
-                bairro: "",
-                cidade: "",
-                estado: "",
-                numero: "",
-                cep: "",
+                rua: '',
+                bairro: '',
+                cidade: '',
+                estado: '',
+                numero: '',
+                cep: '',
               })
             }
           />
@@ -130,11 +140,11 @@ const Clientes = () => {
         titulo02="Pessoa Jurídica"
         onPress01={() => {
           setShowDialog(false);
-          navigation.navigate("PessoaFisica");
+          navigation.navigate('PessoaFisica');
         }}
         onPress02={() => {
           setShowDialog(false);
-          navigation.navigate("PessoaJuridica");
+          navigation.navigate('PessoaJuridica');
         }}
       />
     </View>
@@ -144,21 +154,21 @@ const Clientes = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ffffff",
+    backgroundColor: '#ffffff',
   },
   barraBuscaContainer: {
     paddingHorizontal: 15,
     paddingTop: 10,
   },
   inputBusca: {
-    backgroundColor: "#f2f2f2",
+    backgroundColor: '#f2f2f2',
     borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 10,
     fontSize: 16,
     borderWidth: 1,
-    borderColor: "#ddd",
-    color: "#333",
+    borderColor: '#ddd',
+    color: '#333',
   },
 });
 

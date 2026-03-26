@@ -1,40 +1,58 @@
-import React from "react";
-import { View, StyleSheet, Pressable, StatusBar } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import LogoIcon from "@components/LogoIcon";
-import { useTheme } from "@context/ThemeContext";
+import React from 'react';
+import { View, StyleSheet, Pressable, StatusBar } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import LogoIcon from '@components/LogoIcon';
+import { useTheme } from '@context/ThemeContext';
 
 type HomeHeaderProps = {
   onMenuToggle: () => void;
   isMenuOpen: boolean;
 };
 
-const HomeHeader: React.FC<HomeHeaderProps> = ({ onMenuToggle, isMenuOpen }) => {
+const HomeHeader: React.FC<HomeHeaderProps> = ({
+  onMenuToggle,
+  isMenuOpen,
+}) => {
   const { colors } = useTheme();
+
+  const isDark = colors.background !== '#ffffff';
+  const headerBackground = isDark ? '#ffffff' : '#062046';
+  const isDarkBackground = headerBackground !== '#ffffff';
+  const iconColor = isDarkBackground ? '#fff' : '#000';
 
   return (
     <View
       style={[
         styles.container,
         {
-          backgroundColor: "#062046",
+          backgroundColor: headerBackground,
           paddingTop: (StatusBar.currentHeight ?? 25) + 6,
         },
       ]}
     >
-      <LogoIcon />
+      <LogoIcon
+        variant="header"
+        background={isDarkBackground ? 'dark' : 'light'}
+      />
+
       <Pressable
-        accessibilityLabel={isMenuOpen ? "Fechar menu" : "Abrir menu"}
+        accessibilityLabel={isMenuOpen ? 'Fechar menu' : 'Abrir menu'}
         onPress={onMenuToggle}
         style={({ pressed }) => [
           styles.iconButton,
-          { backgroundColor: pressed ? "#ffffff20" : "transparent" },
+          {
+            backgroundColor: pressed
+              ? isDarkBackground
+                ? '#ffffff'
+                : '#00000020'
+              : 'transparent',
+          },
         ]}
       >
         <MaterialCommunityIcons
-          name={isMenuOpen ? "close" : "menu"}
+          name={isMenuOpen ? 'close' : 'menu'}
           size={28}
-          color="#fff"
+          color={iconColor}
         />
       </Pressable>
     </View>
@@ -47,10 +65,10 @@ const styles = StyleSheet.create({
   container: {
     height: 140,
     paddingHorizontal: 16,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    shadowColor: "#000",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    shadowColor: '#000',
     shadowOpacity: 0.2,
     shadowRadius: 6,
     elevation: 6,
@@ -61,7 +79,7 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 12,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

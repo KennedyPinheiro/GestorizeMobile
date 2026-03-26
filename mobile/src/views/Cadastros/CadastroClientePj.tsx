@@ -1,46 +1,46 @@
-import { ScrollView, View, StyleSheet } from "react-native";
-import EditableTextCard from "@components/EditableTextCard";
-import Button from "@components/botoes/Button";
-import Nav from "@components/utilities/Nav";
-import SidebarAlert from "@components/sidebars/Sidebaralert";
-import ErrorSidebarAlert from "@components/sidebars/ErrorSidebarAlert";
-import { MenuItem, Select } from "@components/utilities/Select";
-import { estadosBrasileiros } from "@components/dialogs/DialogEndereco";
-import { supabase } from "@lib/supabase";
-import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useEffect, useState } from "react";
-import { formatCNPJ, formatCpf, formatTelefone } from "@core/utils/format";
-import { RootStackParamList } from "@context/types";
+import { ScrollView, View, StyleSheet } from 'react-native';
+import EditableTextCard from '@components/EditableTextCard';
+import Button from '@components/botoes/Button';
+import Nav from '@components/utilities/Nav';
+import SidebarAlert from '@components/sidebars/Sidebaralert';
+import ErrorSidebarAlert from '@components/sidebars/ErrorSidebarAlert';
+import { MenuItem, Select } from '@components/utilities/Select';
+import { estadosBrasileiros } from '@components/dialogs/DialogEndereco';
+import { supabase } from '@lib/supabase';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useEffect, useState } from 'react';
+import { formatCNPJ, formatCpf, formatTelefone } from 'src/@core/format';
+import { RootStackParamList } from '@context/types';
 
 type Navigation = NativeStackNavigationProp<RootStackParamList>;
 
 const CadastroClientePJ = () => {
   const navigation = useNavigation<Navigation>();
 
-  const [razaoSocial, setRazaoSocial] = useState("");
-  const [nomeFantasia, setNomeFantasia] = useState("");
-  const [cnpj, setCnpj] = useState("");
-  const [nomeResponsavel, setNomeResponsavel] = useState("");
-  const [cpfResponsavel, setCpfResponsavel] = useState("");
-  const [cargoResponsavel, setCargoResponsavel] = useState("");
-  const [telefone, setTelefone] = useState("");
-  const [email, setEmail] = useState("");
+  const [razaoSocial, setRazaoSocial] = useState('');
+  const [nomeFantasia, setNomeFantasia] = useState('');
+  const [cnpj, setCnpj] = useState('');
+  const [nomeResponsavel, setNomeResponsavel] = useState('');
+  const [cpfResponsavel, setCpfResponsavel] = useState('');
+  const [cargoResponsavel, setCargoResponsavel] = useState('');
+  const [telefone, setTelefone] = useState('');
+  const [email, setEmail] = useState('');
 
-  const [rua, setRua] = useState("");
-  const [bairro, setBairro] = useState("");
-  const [cidade, setCidade] = useState("");
-  const [cep, setCep] = useState("");
-  const [numero, setNumero] = useState("");
-  const [estadoSelecionado, setEstadoSelecionado] = useState<string>("");
+  const [rua, setRua] = useState('');
+  const [bairro, setBairro] = useState('');
+  const [cidade, setCidade] = useState('');
+  const [cep, setCep] = useState('');
+  const [numero, setNumero] = useState('');
+  const [estadoSelecionado, setEstadoSelecionado] = useState<string>('');
   const [showEnderecoForm, setShowEnderecoForm] = useState(false);
 
-  const [msgSucesso, setMsgSucesso] = useState("");
+  const [msgSucesso, setMsgSucesso] = useState('');
   const [sucessoVisivel, setSucessoVisivel] = useState(false);
-  const [msgErro, setMsgErro] = useState("");
+  const [msgErro, setMsgErro] = useState('');
   const [erroVisivel, setErroVisivel] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const isFormValid = razaoSocial.trim() !== "";
+  const isFormValid = razaoSocial.trim() !== '';
 
   useEffect(() => {
     if (sucessoVisivel) {
@@ -62,16 +62,16 @@ const CadastroClientePJ = () => {
 
     try {
       if (!razaoSocial.trim())
-        throw new Error("Por favor, informe a Razão Social!");
+        throw new Error('Por favor, informe a Razão Social!');
       if (showEnderecoForm && !rua.trim()) {
-        throw new Error("Preencha o endereço ou feche o formulário.");
+        throw new Error('Preencha o endereço ou feche o formulário.');
       }
 
       setIsLoading(true);
 
       if (showEnderecoForm) {
         const { data: endIns, error: errEnd } = await supabase
-          .from("endereco")
+          .from('endereco')
           .insert([
             { rua, bairro, cidade, cep, numero, estado: estadoSelecionado },
           ])
@@ -96,17 +96,17 @@ const CadastroClientePJ = () => {
       };
 
       const { error: errPJ } = await supabase
-        .from("pessoa_juridica")
+        .from('pessoa_juridica')
         .insert(pjData);
       if (errPJ) throw errPJ;
 
-      setMsgSucesso("Cliente cadastrado com sucesso!");
+      setMsgSucesso('Cliente cadastrado com sucesso!');
       setSucessoVisivel(true);
-      navigation.navigate("Clientes", { novoCliente: true });
+      navigation.navigate('Clientes', { novoCliente: true });
     } catch (e: any) {
       if (idEnderecoCriado)
-        await supabase.from("endereco").delete().eq("id", idEnderecoCriado);
-      setMsgErro("Erro ao salvar cliente: " + (e?.message ?? "desconhecido"));
+        await supabase.from('endereco').delete().eq('id', idEnderecoCriado);
+      setMsgErro('Erro ao salvar cliente: ' + (e?.message ?? 'desconhecido'));
       setErroVisivel(true);
     } finally {
       setIsLoading(false);
@@ -130,7 +130,7 @@ const CadastroClientePJ = () => {
 
       <Nav
         titulo="Pessoa Jurídica"
-        onBackPress={() => navigation.navigate("Clientes")}
+        onBackPress={() => navigation.navigate('Clientes')}
       />
 
       <ScrollView
@@ -203,7 +203,7 @@ const CadastroClientePJ = () => {
                 value={cidade}
                 onChangeText={setCidade}
               />
-              <View style={{ width: "100%" }}>
+              <View style={{ width: '100%' }}>
                 <Select
                   width="100%"
                   label="Estado"
@@ -260,7 +260,7 @@ const CadastroClientePJ = () => {
           />
 
           <Button
-            title={isLoading ? "SALVANDO..." : "CADASTRAR"}
+            title={isLoading ? 'SALVANDO...' : 'CADASTRAR'}
             variant="contained"
             color="primary"
             disabled={!isFormValid || isLoading}
@@ -276,34 +276,34 @@ const CadastroClientePJ = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: "100%",
-    alignItems: "center",
-    backgroundColor: "#fff",
+    width: '100%',
+    alignItems: 'center',
+    backgroundColor: '#fff',
   },
   scrollContainer: {
     flexGrow: 1,
-    width: "100%",
-    backgroundColor: "#fff",
+    width: '100%',
+    backgroundColor: '#fff',
   },
   contentContainer: {
-    alignItems: "center",
+    alignItems: 'center',
     paddingBottom: 32,
   },
   formContainer: {
     marginTop: 24,
-    width: "100%",
+    width: '100%',
     paddingHorizontal: 20,
-    alignItems: "center",
+    alignItems: 'center',
     gap: 4,
   },
   row: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     gap: 10,
   },
   addressBlock: {
-    width: "100%",
-    alignItems: "center",
+    width: '100%',
+    alignItems: 'center',
   },
 });
 

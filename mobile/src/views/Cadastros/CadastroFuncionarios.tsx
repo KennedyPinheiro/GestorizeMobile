@@ -1,50 +1,50 @@
-import { ScrollView, View, StyleSheet } from "react-native";
-import EditableTextCard from "@components/EditableTextCard";
-import Button from "@components/botoes/Button";
-import Nav from "@components/utilities/Nav";
-import SidebarAlert from "@components/sidebars/Sidebaralert";
-import ErrorSidebarAlert from "@components/sidebars/ErrorSidebarAlert";
-import { MenuItem, Select } from "@components/utilities/Select";
-import { estadosBrasileiros } from "@components/dialogs/DialogEndereco";
-import DialogRoles from "@components/dialogs/DialogRoles";
-import Selecionado from "@components/Selecionado";
-import { supabase } from "@lib/supabase";
-import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useEffect, useState } from "react";
+import { ScrollView, View, StyleSheet } from 'react-native';
+import EditableTextCard from '@components/EditableTextCard';
+import Button from '@components/botoes/Button';
+import Nav from '@components/utilities/Nav';
+import SidebarAlert from '@components/sidebars/Sidebaralert';
+import ErrorSidebarAlert from '@components/sidebars/ErrorSidebarAlert';
+import { MenuItem, Select } from '@components/utilities/Select';
+import { estadosBrasileiros } from '@components/dialogs/DialogEndereco';
+import DialogRoles from '@components/dialogs/DialogRoles';
+import Selecionado from '@components/Selecionado';
+import { supabase } from '@lib/supabase';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useEffect, useState } from 'react';
 import {
   formatCpf,
   formatDate,
   formatRg,
   formatTelefone,
-} from "@core/utils/format";
-import { RootStackParamList } from "@context/types";
+} from 'src/@core/format';
+import { RootStackParamList } from '@context/types';
 
-const generos = ["Masculino", "Feminino", "Prefiro não dizer"];
-const estadosCivis = ["Casado(a)", "Solteiro(a)", "Prefiro não dizer"];
+const generos = ['Masculino', 'Feminino', 'Prefiro não dizer'];
+const estadosCivis = ['Casado(a)', 'Solteiro(a)', 'Prefiro não dizer'];
 
 type Navigation = NativeStackNavigationProp<RootStackParamList>;
 
 const CadastroFuncionarios = () => {
   const navigation = useNavigation<Navigation>();
 
-  const [nome, setNome] = useState("");
-  const [cpf, setCpf] = useState("");
-  const [rg, setRg] = useState("");
-  const [dataNasc, setDataNasc] = useState("");
-  const [genero, setGenero] = useState<string>("");
-  const [estadoCivil, setEstadoCivil] = useState<string>("");
-  const [cargo, setCargo] = useState("");
-  const [telefone, setTelefone] = useState("");
-  const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
-  const [confirmarSenha, setConfirmarSenha] = useState("");
-  const [rua, setRua] = useState("");
-  const [bairro, setBairro] = useState("");
-  const [cidade, setCidade] = useState("");
-  const [cep, setCep] = useState("");
-  const [numero, setNumero] = useState("");
-  const [estadoSelecionado, setEstadoSelecionado] = useState<string>("");
+  const [nome, setNome] = useState('');
+  const [cpf, setCpf] = useState('');
+  const [rg, setRg] = useState('');
+  const [dataNasc, setDataNasc] = useState('');
+  const [genero, setGenero] = useState<string>('');
+  const [estadoCivil, setEstadoCivil] = useState<string>('');
+  const [cargo, setCargo] = useState('');
+  const [telefone, setTelefone] = useState('');
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
+  const [confirmarSenha, setConfirmarSenha] = useState('');
+  const [rua, setRua] = useState('');
+  const [bairro, setBairro] = useState('');
+  const [cidade, setCidade] = useState('');
+  const [cep, setCep] = useState('');
+  const [numero, setNumero] = useState('');
+  const [estadoSelecionado, setEstadoSelecionado] = useState<string>('');
   const [showEnderecoForm, setShowEnderecoForm] = useState(false);
 
   const [showRoleDialog, setShowRoleDialog] = useState(false);
@@ -52,12 +52,12 @@ const CadastroFuncionarios = () => {
   const [roleSelecionada, setRoleSelecionada] = useState<string | null>(null);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [msgSucesso, setMsgSucesso] = useState("");
+  const [msgSucesso, setMsgSucesso] = useState('');
   const [sucessoVisivel, setSucessoVisivel] = useState(false);
-  const [msgErro, setMsgErro] = useState("");
+  const [msgErro, setMsgErro] = useState('');
   const [erroVisivel, setErroVisivel] = useState(false);
 
-  const isFormValid = nome.trim() !== "";
+  const isFormValid = nome.trim() !== '';
 
   useEffect(() => {
     if (sucessoVisivel) {
@@ -77,17 +77,17 @@ const CadastroFuncionarios = () => {
     if (isLoading) return;
 
     if (senha !== confirmarSenha) {
-      setMsgErro("As senhas não coincidem!");
+      setMsgErro('As senhas não coincidem!');
       setErroVisivel(true);
       return;
     }
     if (senha.length < 6) {
-      setMsgErro("A senha deve ter pelo menos 6 caracteres.");
+      setMsgErro('A senha deve ter pelo menos 6 caracteres.');
       setErroVisivel(true);
       return;
     }
     if (!roleSelecionada || codigoRole == null) {
-      setMsgErro("Selecione a permissão do usuário.");
+      setMsgErro('Selecione a permissão do usuário.');
       setErroVisivel(true);
       return;
     }
@@ -96,14 +96,14 @@ const CadastroFuncionarios = () => {
     let idEnderecoCriado: number | null = null;
 
     try {
-      if (!nome.trim()) throw new Error("Por favor, informe o nome!");
+      if (!nome.trim()) throw new Error('Por favor, informe o nome!');
       if (showEnderecoForm && !rua.trim()) {
-        throw new Error("Preencha o endereço ou feche o formulário.");
+        throw new Error('Preencha o endereço ou feche o formulário.');
       }
 
       if (showEnderecoForm) {
         const { data: endIns, error: errEnd } = await supabase
-          .from("endereco")
+          .from('endereco')
           .insert([
             {
               rua,
@@ -154,18 +154,18 @@ const CadastroFuncionarios = () => {
       };
 
       const { error: errFunc } = await supabase
-        .from("funcionarios")
+        .from('funcionarios')
         .insert(funcionario);
       if (errFunc) throw errFunc;
 
-      setMsgSucesso("Funcionário cadastrado com sucesso!");
+      setMsgSucesso('Funcionário cadastrado com sucesso!');
       setSucessoVisivel(true);
-      navigation.navigate("Funcionarios", { novoFuncionario: true });
+      navigation.navigate('Funcionarios', { novoFuncionario: true });
     } catch (e: any) {
       if (idEnderecoCriado)
-        await supabase.from("endereco").delete().eq("id", idEnderecoCriado);
+        await supabase.from('endereco').delete().eq('id', idEnderecoCriado);
       setMsgErro(
-        "Erro ao salvar funcionário: " + (e?.message ?? "desconhecido")
+        'Erro ao salvar funcionário: ' + (e?.message ?? 'desconhecido'),
       );
       setErroVisivel(true);
     } finally {
@@ -215,7 +215,7 @@ const CadastroFuncionarios = () => {
             onChangeText={(t) => setRg(formatRg(t))}
           />
 
-          <View style={{ width: "100%" }}>
+          <View style={{ width: '100%' }}>
             <Select
               width="100%"
               label="GÊNERO"
@@ -230,7 +230,7 @@ const CadastroFuncionarios = () => {
             </Select>
           </View>
 
-          <View style={{ width: "100%" }}>
+          <View style={{ width: '100%' }}>
             <Select
               width="100%"
               label="ESTADO CIVIL"
@@ -290,7 +290,7 @@ const CadastroFuncionarios = () => {
                 placeholder="Cidade"
                 onChangeText={setCidade}
               />
-              <View style={{ width: "100%" }}>
+              <View style={{ width: '100%' }}>
                 <Select
                   width="100%"
                   label="Estado"
@@ -370,7 +370,7 @@ const CadastroFuncionarios = () => {
           />
 
           <Button
-            title={isLoading ? "SALVANDO..." : "SALVAR"}
+            title={isLoading ? 'SALVANDO...' : 'SALVAR'}
             variant="contained"
             color="primary"
             disabled={!isFormValid || isLoading}
@@ -387,7 +387,7 @@ const CadastroFuncionarios = () => {
           onSelect={(id, titulo) => {
             setCodigoRole(id);
             setRoleSelecionada(titulo);
-            setMsgSucesso("Permissão selecionada com sucesso!");
+            setMsgSucesso('Permissão selecionada com sucesso!');
             setSucessoVisivel(true);
           }}
         />
@@ -399,34 +399,34 @@ const CadastroFuncionarios = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: "100%",
-    alignItems: "center",
-    backgroundColor: "#fff",
+    width: '100%',
+    alignItems: 'center',
+    backgroundColor: '#fff',
   },
   scrollContainer: {
     flexGrow: 1,
-    width: "100%",
-    backgroundColor: "#fff",
+    width: '100%',
+    backgroundColor: '#fff',
   },
   contentContainer: {
-    alignItems: "center",
+    alignItems: 'center',
     paddingBottom: 32,
   },
   formContainer: {
     marginTop: 24,
-    width: "100%",
+    width: '100%',
     paddingHorizontal: 20,
-    alignItems: "center",
+    alignItems: 'center',
     gap: 4,
   },
   row: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     gap: 10,
   },
   addressBlock: {
-    width: "100%",
-    alignItems: "center",
+    width: '100%',
+    alignItems: 'center',
   },
 });
 

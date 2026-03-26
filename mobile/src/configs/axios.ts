@@ -4,12 +4,12 @@ import { secureStore } from '@utils/secureStore'
 
 export const authStorage = {
   async get(): Promise<string | null> {
-    return secureStore.get(auth.storageTokenKeyName)
+    return secureStore.get(auth.storageTokenKeyName);
   },
   async set(token: string | null): Promise<void> {
-    await secureStore.set(auth.storageTokenKeyName, token)
-  }
-}
+    await secureStore.set(auth.storageTokenKeyName, token);
+  },
+};
 
 export const api = axios.create({
   baseURL: "http://192.168.15.4:8000/api", 

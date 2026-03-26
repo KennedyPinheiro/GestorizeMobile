@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   Modal,
   View,
@@ -7,12 +7,12 @@ import {
   TouchableWithoutFeedback,
   ScrollView,
   ActivityIndicator,
-} from "react-native";
-import BarraAdd from "@components/utilities/BarraAdd";
-import DialogAdicionarCategoria from "@components/dialogs/DialogAdicionarCategoria";
-import { CategoriaType } from "@context/types";
-import Categoria from "@components/ui-lists/Categoria";
-import { supabase } from "@lib/supabase"; // ajuste conforme seu caminho real
+} from 'react-native';
+import BarraAdd from '@components/utilities/BarraAdd';
+import DialogAdicionarCategoria from '@components/dialogs/DialogAdicionarCategoria';
+import { CategoriaType } from '@context/types';
+import Categoria from '@components/ui-lists/Categoria';
+import { supabase } from '@lib/supabase'; // ajuste conforme seu caminho real
 
 type props = {
   open?: boolean;
@@ -34,12 +34,11 @@ const DialogCategorias = ({ open, onClose, onSelect }: props) => {
   const carregarCategorias = async () => {
     setLoading(true);
     const { data, error } = await supabase
-      .from("categorias")
-      .select("*")
-      .order("id", { ascending: true });
+      .from('categorias')
+      .select('*')
+      .order('id', { ascending: true });
 
     if (error) {
-     
     } else if (data) {
       setDadosCategoria(data as CategoriaType[]);
     }
@@ -73,7 +72,9 @@ const DialogCategorias = ({ open, onClose, onSelect }: props) => {
                   {loading ? (
                     <ActivityIndicator size="large" color="#062046" />
                   ) : dadosCategoria.length === 0 ? (
-                    <Text style={styles.text}>Nenhuma categoria cadastrada.</Text>
+                    <Text style={styles.text}>
+                      Nenhuma categoria cadastrada.
+                    </Text>
                   ) : (
                     dadosCategoria.map((cat) => (
                       <Categoria
@@ -106,28 +107,28 @@ const DialogCategorias = ({ open, onClose, onSelect }: props) => {
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
-    justifyContent: "center",
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
     paddingHorizontal: 20,
   },
   container: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderRadius: 10,
-    overflow: "hidden",
-    borderColor: "#062046",
+    overflow: 'hidden',
+    borderColor: '#062046',
     borderWidth: 3,
-    maxHeight: "80%",
+    maxHeight: '80%',
   },
   header: {
-    backgroundColor: "#062046",
+    backgroundColor: '#062046',
     paddingVertical: 15,
     paddingHorizontal: 20,
   },
   title: {
     fontSize: 25,
-    fontWeight: "bold",
-    textAlign: "center",
-    color: "#fff",
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#fff',
   },
   content: {
     paddingHorizontal: 10,
@@ -135,8 +136,8 @@ const styles = StyleSheet.create({
   },
   text: {
     padding: 16,
-    textAlign: "center",
-    color: "#555",
+    textAlign: 'center',
+    color: '#555',
   },
 });
 

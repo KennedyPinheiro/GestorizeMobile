@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   Modal,
   View,
@@ -7,10 +7,10 @@ import {
   TouchableWithoutFeedback,
   ScrollView,
   ActivityIndicator,
-} from "react-native";
-import { supabase } from "@lib/supabase";
-import { FornecedorTipo } from "@context/types";
-import Fornecedor from "@components/ui-lists/Fornecedor";
+} from 'react-native';
+import { supabase } from '@lib/supabase';
+import { FornecedorTipo } from '@context/types';
+import Fornecedor from '@components/ui-lists/Fornecedor';
 
 type Props = {
   open?: boolean;
@@ -31,9 +31,9 @@ const DialogFornecedores = ({ open, onClose, onSelect }: Props) => {
   const carregarFornecedores = async () => {
     setLoading(true);
     const { data, error } = await supabase
-      .from("fornecedor")
-      .select("id, razao_social, email")
-      .order("id", { ascending: true });
+      .from('fornecedor')
+      .select('id, razao_social, email')
+      .order('id', { ascending: true });
 
     if (error) {
     } else {
@@ -88,28 +88,28 @@ const DialogFornecedores = ({ open, onClose, onSelect }: Props) => {
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
-    justifyContent: "center",
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
     paddingHorizontal: 20,
   },
   container: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderRadius: 10,
-    overflow: "hidden",
-    borderColor: "#062046",
+    overflow: 'hidden',
+    borderColor: '#062046',
     borderWidth: 3,
-    maxHeight: "80%",
+    maxHeight: '80%',
   },
   header: {
-    backgroundColor: "#062046",
+    backgroundColor: '#062046',
     paddingVertical: 15,
     paddingHorizontal: 20,
   },
   title: {
     fontSize: 25,
-    fontWeight: "bold",
-    textAlign: "center",
-    color: "#fff",
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#fff',
   },
   content: {
     paddingHorizontal: 10,
@@ -117,8 +117,8 @@ const styles = StyleSheet.create({
   },
   text: {
     padding: 16,
-    textAlign: "center",
-    color: "#555",
+    textAlign: 'center',
+    color: '#555',
   },
 });
 

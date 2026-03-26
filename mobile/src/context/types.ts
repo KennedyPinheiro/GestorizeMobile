@@ -49,7 +49,7 @@ export type StringfiedDate = string;
 export type ClienteType = {
   pessoa_fisica: PessoaFisicaType;
   pessoa_juridica: PessoaJuridicatype;
-  tipo: "PF" | "PJ";
+  tipo: 'PF' | 'PJ';
 };
 
 export type PessoaFisicaType = {

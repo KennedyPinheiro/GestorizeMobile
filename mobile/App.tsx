@@ -75,7 +75,7 @@ const AppNavigator = () => {
 
 const PaperThemedProvider = ({ children }: { children: React.ReactNode }) => {
   const { mode } = useThemeToggle();
-  const paper = mode === "light" ? lightTheme : darkTheme;
+  const paper = mode === 'light' ? lightTheme : darkTheme;
   return <PaperProvider theme={paper}>{children}</PaperProvider>;
 };
 

@@ -1,54 +1,54 @@
-import { ScrollView, View, StyleSheet } from "react-native";
-import EditableTextCard from "@components/EditableTextCard";
-import Button from "@components/botoes/Button";
-import Nav from "@components/utilities/Nav";
+import { ScrollView, View, StyleSheet } from 'react-native';
+import EditableTextCard from '@components/EditableTextCard';
+import Button from '@components/botoes/Button';
+import Nav from '@components/utilities/Nav';
 
-import ErrorSidebarAlert from "@components/sidebars/ErrorSidebarAlert";
+import ErrorSidebarAlert from '@components/sidebars/ErrorSidebarAlert';
 
-import { MenuItem, Select } from "@components/utilities/Select";
-import { estadosBrasileiros } from "@components/dialogs/DialogEndereco";
+import { MenuItem, Select } from '@components/utilities/Select';
+import { estadosBrasileiros } from '@components/dialogs/DialogEndereco';
 
-import { useState } from "react";
-import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { supabase } from "@lib/supabase";
-import { RootStackParamList } from "@context/types";
-import { formatCpf, formatDate, formatRg, formatTelefone } from "@core/utils/format";
-import SidebarAlert from "@components/sidebars/Sidebaralert";
+import { supabase } from '@lib/supabase';
+import { RootStackParamList } from '@context/types';
+import { formatCpf, formatDate, formatRg, formatTelefone } from '@@core/format';
+import SidebarAlert from '@components/sidebars/Sidebaralert';
 
-const generos = ["Masculino", "Feminino", "Prefiro não dizer"];
-const estadosCivis = ["Casado(a)", "Solteiro(a)", "Prefiro não dizer"];
+const generos = ['Masculino', 'Feminino', 'Prefiro não dizer'];
+const estadosCivis = ['Casado(a)', 'Solteiro(a)', 'Prefiro não dizer'];
 
 const CadastroPessoaFisica = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
-  const [nome, setNome] = useState("");
-  const [dataNasc, setDataNasc] = useState("");
-  const [cpf, setCpf] = useState("");
-  const [rg, setRg] = useState("");
-  const [genero, setGenero] = useState<string>("");
-  const [estadoCivil, setEstadoCivil] = useState<string>("");
+  const [nome, setNome] = useState('');
+  const [dataNasc, setDataNasc] = useState('');
+  const [cpf, setCpf] = useState('');
+  const [rg, setRg] = useState('');
+  const [genero, setGenero] = useState<string>('');
+  const [estadoCivil, setEstadoCivil] = useState<string>('');
 
-  const [telefone, setTelefone] = useState("");
-  const [email, setEmail] = useState("");
+  const [telefone, setTelefone] = useState('');
+  const [email, setEmail] = useState('');
 
   const [showEnderecoForm, setShowEnderecoForm] = useState(false);
-  const [rua, setRua] = useState("");
-  const [bairro, setBairro] = useState("");
-  const [cidade, setCidade] = useState("");
-  const [cep, setCep] = useState("");
-  const [numero, setNumero] = useState("");
-  const [estadoSelecionado, setEstadoSelecionado] = useState<string>("");
+  const [rua, setRua] = useState('');
+  const [bairro, setBairro] = useState('');
+  const [cidade, setCidade] = useState('');
+  const [cep, setCep] = useState('');
+  const [numero, setNumero] = useState('');
+  const [estadoSelecionado, setEstadoSelecionado] = useState<string>('');
 
   const [isLoading, setIsLoading] = useState(false);
-  const [msgSucesso, setMsgSucesso] = useState("");
+  const [msgSucesso, setMsgSucesso] = useState('');
   const [sucessoVisivel, setSucessoVisivel] = useState(false);
-  const [msgErro, setMsgErro] = useState("");
+  const [msgErro, setMsgErro] = useState('');
   const [erroVisivel, setErroVisivel] = useState(false);
 
-  const isFormValid = nome.trim() !== "";
+  const isFormValid = nome.trim() !== '';
 
   const salvarCliente = async () => {
     if (isLoading) return;
@@ -56,14 +56,14 @@ const CadastroPessoaFisica = () => {
 
     let idEnderecoCriado: number | null = null;
     try {
-      if (!nome.trim()) throw new Error("Por favor, informe o nome!");
+      if (!nome.trim()) throw new Error('Por favor, informe o nome!');
       if (showEnderecoForm && !rua.trim()) {
-        throw new Error("Preencha o endereço ou feche o formulário.");
+        throw new Error('Preencha o endereço ou feche o formulário.');
       }
 
       if (showEnderecoForm) {
         const { data: endIns, error: errEnd } = await supabase
-          .from("endereco")
+          .from('endereco')
           .insert([
             {
               rua,
@@ -81,7 +81,7 @@ const CadastroPessoaFisica = () => {
         idEnderecoCriado = endIns.id;
       }
 
-      const { error: errPF } = await supabase.from("pessoa_fisica").insert([
+      const { error: errPF } = await supabase.from('pessoa_fisica').insert([
         {
           nome,
           data_nascimento: dataNasc || null,
@@ -98,14 +98,14 @@ const CadastroPessoaFisica = () => {
       ]);
       if (errPF) throw errPF;
 
-      setMsgSucesso("Cliente salvo com sucesso!");
+      setMsgSucesso('Cliente salvo com sucesso!');
       setSucessoVisivel(true);
-      navigation.navigate("Clientes", { novoCliente: true });
+      navigation.navigate('Clientes', { novoCliente: true });
     } catch (e: any) {
       if (idEnderecoCriado) {
-        await supabase.from("endereco").delete().eq("id", idEnderecoCriado);
+        await supabase.from('endereco').delete().eq('id', idEnderecoCriado);
       }
-      setMsgErro(`Erro ao salvar cliente: ${e?.message ?? "Desconhecido"}`);
+      setMsgErro(`Erro ao salvar cliente: ${e?.message ?? 'Desconhecido'}`);
       setErroVisivel(true);
     } finally {
       setIsLoading(false);
@@ -128,7 +128,7 @@ const CadastroPessoaFisica = () => {
 
       <Nav
         titulo="Pessoa Física"
-        onBackPress={() => navigation.navigate("Clientes")}
+        onBackPress={() => navigation.navigate('Clientes')}
       />
 
       <ScrollView
@@ -160,13 +160,12 @@ const CadastroPessoaFisica = () => {
             label="RG"
             placeholder="00.000.000‑X"
             tipo="number"
-
             value={rg}
             onChangeText={(t) => setRg(formatRg(t))}
           />
-          <View style={{ width: "100%" }}>
+          <View style={{ width: '100%' }}>
             <Select
-              width={"100%"}
+              width={'100%'}
               label="ESTADO CIVIL"
               value={estadoCivil}
               onChange={setEstadoCivil}
@@ -224,9 +223,9 @@ const CadastroPessoaFisica = () => {
                 placeholder="Cidade"
                 onChangeText={setCidade}
               />
-              <View style={{ width: "100%" }}>
+              <View style={{ width: '100%' }}>
                 <Select
-                  width={"100%"}
+                  width={'100%'}
                   label="Estado"
                   value={estadoSelecionado}
                   onChange={setEstadoSelecionado}
@@ -248,9 +247,9 @@ const CadastroPessoaFisica = () => {
             </View>
           )}
 
-          <View style={{ width: "100%" }}>
+          <View style={{ width: '100%' }}>
             <Select
-              width={"100%"}
+              width={'100%'}
               label="GÊNERO"
               value={genero}
               onChange={setGenero}
@@ -278,7 +277,7 @@ const CadastroPessoaFisica = () => {
           />
 
           <Button
-            title={isLoading ? "SALVANDO..." : "SALVAR"}
+            title={isLoading ? 'SALVANDO...' : 'SALVAR'}
             variant="contained"
             color="primary"
             disabled={!isFormValid || isLoading}
@@ -294,32 +293,32 @@ const CadastroPessoaFisica = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: "100%",
-    alignItems: "center",
-    backgroundColor: "#fff",
+    width: '100%',
+    alignItems: 'center',
+    backgroundColor: '#fff',
   },
   scrollContainer: {
     flexGrow: 1,
-    width: "100%",
-    backgroundColor: "#fff",
+    width: '100%',
+    backgroundColor: '#fff',
   },
   contentContainer: {
-    alignItems: "center",
+    alignItems: 'center',
     paddingBottom: 32,
   },
   formContainer: {
     marginTop: 24,
-    width: "100%",
+    width: '100%',
     paddingHorizontal: 20,
-    alignItems: "center",
+    alignItems: 'center',
     gap: 4,
   },
   row: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     gap: 10,
   },
-  addressBlock: { width: "100%", alignItems: "center" },
+  addressBlock: { width: '100%', alignItems: 'center' },
 });
 
 export default CadastroPessoaFisica;

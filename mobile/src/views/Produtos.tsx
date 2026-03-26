@@ -1,53 +1,53 @@
-import React, { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, TextInput, View } from "react-native";
-import NavBar from "@components/utilities/NavBar";
-import BarraAdd from "@components/utilities/BarraAdd";
+import React, { useEffect, useState } from 'react';
+import { ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import NavBar from '@components/utilities/NavBar';
+import BarraAdd from '@components/utilities/BarraAdd';
 import {
   useIsFocused,
   useNavigation,
   useRoute,
-} from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+} from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import {
   CategoriaType,
   FornecedorTipo,
   MedidaType,
   ProdutoTipo,
   RootStackParamList,
-} from "@context/types";
-import SidebarAlert from "@components/sidebars/Sidebaralert";
-import ErrorSidebarAlert from "@components/sidebars/ErrorSidebarAlert";
-import { supabase } from "@lib/supabase";
-import Produto from "@components/ui-lists/Produto"; // componente que exibe nome e preço
-import { formatarMedida } from "@core/utils/format";
-import Nav from "@components/utilities/Nav";
+} from '@context/types';
+import SidebarAlert from '@components/sidebars/Sidebaralert';
+import ErrorSidebarAlert from '@components/sidebars/ErrorSidebarAlert';
+import { supabase } from '@lib/supabase';
+import Produto from '@components/ui-lists/Produto'; // componente que exibe nome e preço
+import { formatarMedida } from '@@core/format';
+import Nav from '@components/utilities/Nav';
 
 const Produtos = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [alertVisible, setAlertVisible] = useState(false);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState('');
   const [erroAlertVisible, setErroAlertVisible] = useState(false);
-  const [erroMessage, setErroMessage] = useState("");
+  const [erroMessage, setErroMessage] = useState('');
   const route = useRoute();
   const isFocused = useIsFocused();
   const [produto, setProduto] = useState<ProdutoTipo[]>([]);
   const [tituloCategoria, setTituloCategoria] = useState<CategoriaType[]>([]);
   const [tituloMedida, setTituloMedida] = useState<MedidaType[]>([]);
   const [fornecedor, setFornecedor] = useState<FornecedorTipo[]>([]);
-  const [termoBusca, setTermoBusca] = useState("");
+  const [termoBusca, setTermoBusca] = useState('');
 
   const buscarCategoria = async () => {
     const { data, error } = await supabase
-      .from("categorias")
+      .from('categorias')
       .select(
         `
       id,
       titulo,
       descricao
-    `
+    `,
       )
-      .order("id", { ascending: false });
+      .order('id', { ascending: false });
     if (error) {
       setErroMessage(`Erro ao buscar titulo da categoria: ${error.message}`);
       setErroAlertVisible(true);
@@ -57,11 +57,11 @@ const Produtos = () => {
   };
   const buscarFornecedor = async () => {
     const { data, error } = await supabase
-      .from("fornecedor")
+      .from('fornecedor')
       .select(
-        "id, razao_social, email ,cnpj, ramo_de_atividade, telefone, endereco_id, nome_responsavel,chave_pix"
+        'id, razao_social, email ,cnpj, ramo_de_atividade, telefone, endereco_id, nome_responsavel,chave_pix',
       )
-      .order("id", { ascending: false });
+      .order('id', { ascending: false });
 
     if (error) {
       setErroMessage(`Erro ao buscar fornecedores: ${error.message}`);
@@ -70,9 +70,9 @@ const Produtos = () => {
       setFornecedor(data || []);
     }
   };
-  const buscarProduto = async (termo: string = "") => {
+  const buscarProduto = async (termo: string = '') => {
     let query = supabase
-      .from("produtos")
+      .from('produtos')
       .select(
         `
         id,
@@ -86,12 +86,12 @@ const Produtos = () => {
         data_de_entrada,
         margem_lucro,
         fornecedor_id
-      `
+      `,
       )
-      .order("nome", { ascending: true });
+      .order('nome', { ascending: true });
 
-    if (termo.trim() !== "") {
-      query = query.ilike("nome", `%${termo}%`);
+    if (termo.trim() !== '') {
+      query = query.ilike('nome', `%${termo}%`);
     }
 
     const { data, error } = await query;
@@ -106,9 +106,9 @@ const Produtos = () => {
 
   const buscarMedida = async () => {
     const { data, error } = await supabase
-      .from("medidas")
-      .select("id, titulo")
-      .order("id", { ascending: false });
+      .from('medidas')
+      .select('id, titulo')
+      .order('id', { ascending: false });
     if (error) {
       setErroMessage(`Erro ao buscar titulo da categoria: ${error.message}`);
       setErroAlertVisible(true);
@@ -126,7 +126,7 @@ const Produtos = () => {
 
       const params = route?.params as { novoProduto?: boolean };
       if (params?.novoProduto) {
-        setMessage("Produto cadastrado com sucesso!");
+        setMessage('Produto cadastrado com sucesso!');
         setAlertVisible(true);
         navigation.setParams({ novoProduto: undefined });
       }
@@ -155,10 +155,10 @@ const Produtos = () => {
       />
       <Nav
         titulo="Produtos"
-        onBackPress={() => navigation.navigate("Homepage")}
+        onBackPress={() => navigation.navigate('Homepage')}
       />
 
-      <BarraAdd onPressAdd={() => navigation.navigate("CadastroProdutos")} />
+      <BarraAdd onPressAdd={() => navigation.navigate('CadastroProdutos')} />
       <View style={{ paddingHorizontal: 10, paddingTop: 10 }}>
         <TextInput
           placeholder="Buscar produto por nome"
@@ -171,16 +171,16 @@ const Produtos = () => {
       <ScrollView contentContainerStyle={{ padding: 10 }}>
         {produto.map((item) => {
           const categoriaEncontrada = tituloCategoria.find(
-            (cat) => cat.id === item.categoria_id
+            (cat) => cat.id === item.categoria_id,
           );
 
           const medidaEncontrada = tituloMedida.find(
-            (medida) => medida.id === item.medida_id
+            (medida) => medida.id === item.medida_id,
           );
 
           const medidaFormatada = medidaEncontrada
             ? formatarMedida(medidaEncontrada.titulo)
-            : "UN";
+            : 'UN';
           return (
             <Produto
               key={item.id}
@@ -190,23 +190,25 @@ const Produtos = () => {
               medida={medidaFormatada}
               onPress={() => {
                 const fornecedorEncontrado = fornecedor.find(
-                  (f) => f.id === item.fornecedor_id
+                  (f) => f.id === item.fornecedor_id,
                 );
 
-                navigation.navigate("PerfilProduto", {
+                navigation.navigate('PerfilProduto', {
                   id: item.id,
                   nome: item.nome,
                   quantidade: item.quantidade ?? 0,
                   medida_id: item.medida_id,
-                  medida_titulo: medidaEncontrada?.titulo ?? "Não Informado",
-                  categoria_titulo: categoriaEncontrada?.titulo ?? "Não Informado",
-                  descricao: item.descricao ?? "",
+                  medida_titulo: medidaEncontrada?.titulo ?? 'Não Informado',
+                  categoria_titulo:
+                    categoriaEncontrada?.titulo ?? 'Não Informado',
+                  descricao: item.descricao ?? '',
                   data_validade: item.data_validade,
                   preco_custo: item.preco_custo ?? 0,
-                  data_de_entrada: item.data_de_entrada ,
+                  data_de_entrada: item.data_de_entrada,
                   categoria_id: item.categoria_id,
                   margem_lucro: item.margem_lucro ?? 0,
-                  fornecedor_razao_social: fornecedorEncontrado?.razao_social ?? "Não Informado",
+                  fornecedor_razao_social:
+                    fornecedorEncontrado?.razao_social ?? 'Não Informado',
                   fornecedor_id: item.fornecedor_id,
                 });
               }}
@@ -221,7 +223,7 @@ const Produtos = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ffffff",
+    backgroundColor: '#ffffff',
   },
   barraBuscaContainer: {
     paddingHorizontal: 15,
@@ -229,14 +231,14 @@ const styles = StyleSheet.create({
   },
 
   inputBusca: {
-    backgroundColor: "#f2f2f2",
+    backgroundColor: '#f2f2f2',
     borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 10,
     fontSize: 16,
     borderWidth: 1,
-    borderColor: "#ddd",
-    color: "#333",
+    borderColor: '#ddd',
+    color: '#333',
   },
 });
 

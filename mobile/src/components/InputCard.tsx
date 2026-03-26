@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,11 +7,11 @@ import {
   KeyboardTypeOptions,
   Dimensions,
   TouchableOpacity,
-} from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 type Props = {
-  tipo?: "string" | "number" | "password";
+  tipo?: 'string' | 'number' | 'password';
   value?: string | number;
   onlyView?: boolean;
   label?: string;
@@ -22,14 +22,14 @@ type Props = {
   onBlur?: () => void;
 };
 
-const { height } = Dimensions.get("window");
+const { height } = Dimensions.get('window');
 
 const InputCard = ({
-  tipo = "string",
-  value = "",
+  tipo = 'string',
+  value = '',
   onlyView = false,
-  label = "",
-  placeholder = "",
+  label = '',
+  placeholder = '',
   onChangeText,
   maxLength,
 }: Props) => {
@@ -37,13 +37,13 @@ const InputCard = ({
   const [secureText, setSecureText] = useState(true);
 
   const keyboardType: KeyboardTypeOptions =
-    tipo === "number" ? "numeric" : "default";
+    tipo === 'number' ? 'numeric' : 'default';
 
-  const isPassword = tipo === "password";
+  const isPassword = tipo === 'password';
 
   return (
     <View
-      style={[styles.container, onlyView && { backgroundColor: "#B0B0B0" }]}
+      style={[styles.container, onlyView && { backgroundColor: '#B0B0B0' }]}
     >
       {!!label && <Text style={styles.label}>{label}</Text>}
 
@@ -51,7 +51,7 @@ const InputCard = ({
         <TextInput
           style={[
             styles.input,
-            onlyView && { color: "#ddd" },
+            onlyView && { color: '#ddd' },
             isFocused && styles.inputFocused,
           ]}
           keyboardType={keyboardType}
@@ -59,7 +59,7 @@ const InputCard = ({
           secureTextEntry={isPassword && secureText}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
-          value={typeof value === "number" ? value.toString() : value}
+          value={typeof value === 'number' ? value.toString() : value}
           onChangeText={onChangeText}
           placeholder={placeholder}
           placeholderTextColor="#cccccc9d"
@@ -72,7 +72,7 @@ const InputCard = ({
             style={styles.iconWrapper}
           >
             <Ionicons
-              name={secureText ? "eye-off-outline" : "eye-outline"}
+              name={secureText ? 'eye-off-outline' : 'eye-outline'}
               size={24}
               color="#cccccc9d"
             />
@@ -85,20 +85,20 @@ const InputCard = ({
 
 const styles = StyleSheet.create({
   container: {
-    width: "100%",
-    maxWidth: "110%",
+    width: '100%',
+    maxWidth: '110%',
     height: height * 0.08,
-    backgroundColor: "#7294CA",
+    backgroundColor: '#7294CA',
     paddingHorizontal: 20,
     paddingVertical: 8,
     borderRadius: 15,
     marginBottom: 15,
-    justifyContent: "center",
+    justifyContent: 'center',
   },
   inputWrapper: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
 
   iconWrapper: {
@@ -106,21 +106,21 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 13,
-    color: "#0f3164",
-    fontWeight: "600",
+    color: '#0f3164',
+    fontWeight: '600',
     marginBottom: 7,
     marginTop: 5,
   },
   input: {
     fontSize: 20,
-    fontWeight: "bold",
-    flex: 1, 
-  paddingRight: 10,
-    color: "#fff",
+    fontWeight: 'bold',
+    flex: 1,
+    paddingRight: 10,
+    color: '#fff',
   },
   inputFocused: {
     borderWidth: 2,
-    borderColor: "#ffffff70",
+    borderColor: '#ffffff70',
     borderRadius: 10,
     marginTop: -5,
     padding: 2,

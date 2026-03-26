@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from 'react-native';
 
 type props = {
   title: string;
@@ -16,18 +16,18 @@ export default NavTitle;
 
 const styes = StyleSheet.create({
   container: {
-    display: "flex",
-    backgroundColor: "#193A69",
+    display: 'flex',
+    backgroundColor: '#193A69',
     borderRadius: 25,
-    minWidth: "55%",
+    minWidth: '55%',
     marginRight: 15,
     marginLeft: -15,
   },
   tittle: {
-    color: "#fff",
+    color: '#fff',
     fontSize: 25,
-    fontWeight: "bold",
-    textAlign: "center",
+    fontWeight: 'bold',
+    textAlign: 'center',
     paddingHorizontal: 15,
     paddingVertical: 5,
   },

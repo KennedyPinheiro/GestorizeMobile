@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { LoginData, RefreshData } from '@context/requestTypes';
 import { ResponseType } from '@context/types';
 
-const unwrap = (responseData: any) => responseData?.data ?? responseData
+const unwrap = (responseData: any) => responseData?.data ?? responseData;
 
 
 

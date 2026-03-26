@@ -1,12 +1,12 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import UserIcon from "@components/UserIcon";
-import DialogUserMenu from "@components/dialogs/DialogUserMenu";
-import { useState } from "react";
-import PessoaFisicaIcon from "@components/Icons/PessoaFisicaIcon";
-import PessoaJuridicaIcon from "@components/Icons/PessoaJuridicaIcon";
-import FornecedorIcon from "@components/Icons/FornecedorIcon";
-import ProdutoIcon from "@components/Icons/ProdutoIcon";
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import UserIcon from '@components/UserIcon';
+import DialogUserMenu from '@components/dialogs/DialogUserMenu';
+import { useState } from 'react';
+import PessoaFisicaIcon from '@components/Icons/PessoaFisicaIcon';
+import PessoaJuridicaIcon from '@components/Icons/PessoaJuridicaIcon';
+import FornecedorIcon from '@components/Icons/FornecedorIcon';
+import ProdutoIcon from '@components/Icons/ProdutoIcon';
 
 type props = {
   titulo?: string;
@@ -69,38 +69,38 @@ export default Nav;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#062046",
-    height: "13%",
-    width: "100%",
-    justifyContent: "center",
+    backgroundColor: '#062046',
+    height: '13%',
+    width: '100%',
+    justifyContent: 'center',
     paddingTop: 35,
   },
   nav: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    position: "relative",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
   },
   titulo: {
-    color: "#FFF",
+    color: '#FFF',
     fontSize: 30,
-    fontWeight: "900",
-    textAlign: "center",
+    fontWeight: '900',
+    textAlign: 'center',
   },
   tituloInline: {
-    color: "#FFF",
+    color: '#FFF',
     fontSize: 24,
-    fontWeight: "800",
+    fontWeight: '800',
     marginLeft: 10,
   },
   leftIcon: {
-    position: "absolute",
+    position: 'absolute',
     left: 5,
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   rightIcon: {
-    position: "absolute",
+    position: 'absolute',
     right: 45,
   },
 });

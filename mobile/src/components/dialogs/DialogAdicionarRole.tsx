@@ -1,16 +1,16 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   Modal,
   StyleSheet,
   Text,
   TouchableWithoutFeedback,
   View,
-} from "react-native";
-import InputCard from "@components/InputCard";
-import Button from "@components/botoes/Button";
-import ErrorSidebarAlert from "@components/sidebars/ErrorSidebarAlert";
-import { RoleType } from "@context/types";
-import { supabase } from "@lib/supabase";
+} from 'react-native';
+import InputCard from '@components/InputCard';
+import Button from '@components/botoes/Button';
+import ErrorSidebarAlert from '@components/sidebars/ErrorSidebarAlert';
+import { RoleType } from '@context/types';
+import { supabase } from '@lib/supabase';
 
 type Props = {
   open: boolean;
@@ -19,21 +19,16 @@ type Props = {
   disabled?: boolean;
 };
 
-const DialogAdicionarRole = ({
-  disabled,
-  open,
-  onClose,
-  onSave,
-}: Props) => {
-  const [nome, setNome] = useState("");
-  const [descricao, setDescricao] = useState("");
+const DialogAdicionarRole = ({ disabled, open, onClose, onSave }: Props) => {
+  const [nome, setNome] = useState('');
+  const [descricao, setDescricao] = useState('');
   const [erroVisible, setErroVisible] = useState(false);
-  const [errorMessage, setErroMessage] = useState("");
+  const [errorMessage, setErroMessage] = useState('');
 
   async function salvarRole() {
     try {
       if (!nome.trim()) {
-        setErroMessage("Por favor, informe o nome da permissao.");
+        setErroMessage('Por favor, informe o nome da permissao.');
         setErroVisible(true);
         return;
       }
@@ -46,21 +41,21 @@ const DialogAdicionarRole = ({
       };
 
       const { data, error } = await supabase
-        .from("roles")
+        .from('roles')
         .insert(roleData)
         .select();
 
       if (error) throw error;
 
       onSave(data[0]);
-      setNome("");
-      setDescricao("");
+      setNome('');
+      setDescricao('');
       setErroVisible(false);
       onClose();
     } catch (error) {
       setErroMessage(
-        "Erro ao salvar role: " +
-          ((error as any)?.message || "Erro desconhecido")
+        'Erro ao salvar role: ' +
+          ((error as any)?.message || 'Erro desconhecido'),
       );
       setErroVisible(true);
     }
@@ -124,28 +119,28 @@ export default DialogAdicionarRole;
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
-    justifyContent: "center",
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
     paddingHorizontal: 20,
   },
   container: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderRadius: 10,
-    overflow: "hidden",
-    borderColor: "#062046",
+    overflow: 'hidden',
+    borderColor: '#062046',
     borderWidth: 3,
   },
   header: {
-    backgroundColor: "#062046",
-    width: "100%",
+    backgroundColor: '#062046',
+    width: '100%',
     paddingVertical: 15,
     paddingHorizontal: 20,
   },
   title: {
     fontSize: 25,
-    fontWeight: "bold",
-    textAlign: "center",
-    color: "#fff",
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#fff',
   },
   content: {
     padding: 16,
@@ -153,6 +148,6 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginBottom: 20,
-    alignItems: "center",
+    alignItems: 'center',
   },
 });

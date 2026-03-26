@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Animated, StyleSheet, Text, Dimensions } from "react-native";
+import React, { useEffect, useRef, useState } from 'react';
+import { Animated, StyleSheet, Text, Dimensions } from 'react-native';
 
 type ErrorSidebarAlertProps = {
   message: string;
@@ -13,7 +13,7 @@ const ErrorSidebarAlert = ({
   onClose,
 }: ErrorSidebarAlertProps) => {
   const slideAnim = useRef(
-    new Animated.Value(Dimensions.get("window").width)
+    new Animated.Value(Dimensions.get('window').width),
   ).current;
   const [isVisible, setIsVisible] = useState(visible);
 
@@ -28,7 +28,7 @@ const ErrorSidebarAlert = ({
 
       const timer = setTimeout(() => {
         Animated.timing(slideAnim, {
-          toValue: Dimensions.get("window").width,
+          toValue: Dimensions.get('window').width,
           duration: 500,
           useNativeDriver: true,
         }).start(() => {
@@ -59,26 +59,26 @@ const ErrorSidebarAlert = ({
 
 const styles = StyleSheet.create({
   container: {
-    position: "absolute",
+    position: 'absolute',
     right: 0,
     top: 80,
-    backgroundColor: "#dc3545",
+    backgroundColor: '#dc3545',
     paddingVertical: 14,
     paddingHorizontal: 20,
     borderTopLeftRadius: 12,
     borderBottomLeftRadius: 12,
     elevation: 10,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: { width: -2, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
-    maxWidth: "80%",
+    maxWidth: '80%',
     zIndex: 1000,
   },
   text: {
-    color: "#fff",
+    color: '#fff',
     fontSize: 14,
-    fontWeight: "600",
+    fontWeight: '600',
   },
 });
 
