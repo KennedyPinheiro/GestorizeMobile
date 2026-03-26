@@ -12,7 +12,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { supabase } from '@lib/supabase';
 import { EnderecoType, RootStackParamList } from '@context/types';
-import { formatCNPJ, formatTelefone } from '@@core/format';
+import { formatCNPJ, formatTelefone } from '@core/utils/format';
 import SidebarAlert from '@components/sidebars/Sidebaralert';
 
 const CadastroFornecedores = () => {

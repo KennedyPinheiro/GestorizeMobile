@@ -24,18 +24,14 @@ const Login = ({ navigation }: Props) => {
   const translateYLogo = useRef(new Animated.Value(0)).current;
   const scaleLogo = useRef(new Animated.Value(1)).current;
 
-  // 🔄 inversão do topo
   const headerBackground = isDark ? '#ffffff' : '#0D2B52';
   const isDarkHeader = headerBackground !== '#ffffff';
 
-  // 🎯 cores dinâmicas
   const textColor = isDarkHeader ? '#ffffff' : '#0f172a';
   const subtitleColor = isDarkHeader ? '#ffffffcc' : '#475569';
 
-  // 🔄 card invertido também
   const cardBackground = isDark ? '#0b274f' : '#ffffff';
 
-  // 🎯 logo dinâmica
   const logoSource = isDarkHeader
     ? require('@assets/images/LogoLight.png')
     : require('@assets/images/Logo.png');
@@ -66,7 +62,6 @@ const Login = ({ navigation }: Props) => {
         style={[styles.container, { backgroundColor: headerBackground }]}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        {/* HEADER */}
         <View style={styles.header}>
           <Animated.Image
             source={logoSource}
@@ -88,7 +83,6 @@ const Login = ({ navigation }: Props) => {
           </Text>
         </View>
 
-        {/* CARD */}
         <Animated.View
           style={[
             styles.cardContainer,

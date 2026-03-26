@@ -10,7 +10,7 @@ import { supabase } from '@lib/supabase';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useEffect, useState } from 'react';
-import { formatCNPJ, formatCpf, formatTelefone } from 'src/@core/format';
+import { formatCNPJ, formatCpf, formatTelefone } from '@core/utils/format';
 import { RootStackParamList } from '@context/types';
 
 type Navigation = NativeStackNavigationProp<RootStackParamList>;

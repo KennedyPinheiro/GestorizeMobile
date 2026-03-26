@@ -19,7 +19,7 @@ import SidebarAlert from '@components/sidebars/Sidebaralert';
 import ErrorSidebarAlert from '@components/sidebars/ErrorSidebarAlert';
 import { supabase } from '@lib/supabase';
 import Produto from '@components/ui-lists/Produto'; // componente que exibe nome e preço
-import { formatarMedida } from '@@core/format';
+import { formatarMedida } from '@core/utils/format';
 import Nav from '@components/utilities/Nav';
 
 const Produtos = () => {

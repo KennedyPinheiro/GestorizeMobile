@@ -1,4 +1,4 @@
-import React from 'react';
+import React , { useRef } from 'react';
 import { Card } from '@components/ui/card';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import {
