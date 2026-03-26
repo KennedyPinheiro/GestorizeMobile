@@ -1,66 +1,101 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import UserIcon from '@components/UserIcon';
-import DialogUserMenu from '@components/dialogs/DialogUserMenu';
-import { useState } from 'react';
-import PessoaFisicaIcon from '@components/Icons/PessoaFisicaIcon';
-import PessoaJuridicaIcon from '@components/Icons/PessoaJuridicaIcon';
-import FornecedorIcon from '@components/Icons/FornecedorIcon';
-import ProdutoIcon from '@components/Icons/ProdutoIcon';
+import { useTheme } from '@context/ThemeContext';
+import { useMenu } from '@context/MenuContext';
 
 type props = {
-  titulo?: string;
-  showPessoaFisicaIcon?: boolean;
-  showPessoaJuridicaIcon?: boolean;
-  showFornecedorIcon?: boolean;
-  showProdutoIcon?: boolean;
+  title?: string;
+  subtitle?: string;
   onBackPress?: () => void;
+
+  rightType?: 'menu' | 'add';
+  onAddPress?: () => void;
 };
+
 const Nav = ({
-  titulo,
-  showFornecedorIcon,
-  showPessoaFisicaIcon,
-  showPessoaJuridicaIcon,
-  showProdutoIcon,
+  title,
+  subtitle,
   onBackPress,
+  rightType = 'add',
+  onAddPress,
 }: props) => {
-  const [show, setShow] = useState(false);
-  const handleClose = () => {
-    setShow(false);
-  };
+  const { colors } = useTheme();
+  const { open } = useMenu();
 
-  const handleShowDialog = () => {
-    setShow(true);
-  };
+  const isDarkTheme = colors.background !== '#ffffff';
 
-  const hasExtraIcon =
-    showPessoaFisicaIcon ||
-    showPessoaJuridicaIcon ||
-    showFornecedorIcon ||
-    showProdutoIcon;
+  const backgroundColor = isDarkTheme ? '#ffffff' : '#062046';
+  const isDarkBackground = backgroundColor !== '#ffffff';
+
+  const textColor = isDarkBackground ? '#ffffff' : '#0f172a';
+  const subtitleColor = isDarkBackground ? '#ffffffcc' : '#475569';
+  const iconColor = isDarkBackground ? '#ffffff' : '#0f172a';
+
+  const handleRightPress = () => {
+    if (rightType === 'menu') {
+      open();
+    } else {
+      onAddPress?.();
+    }
+  };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor }]}>
       <View style={styles.nav}>
-        <TouchableOpacity style={styles.leftIcon} onPress={onBackPress}>
-          <Ionicons name="chevron-back" size={30} color="#fff" />
-          {showPessoaFisicaIcon && <PessoaFisicaIcon size={40} iconSize={30} />}
-          {showPessoaJuridicaIcon && (
-            <PessoaJuridicaIcon size={40} iconSize={30} />
-          )}
-          {showFornecedorIcon && <FornecedorIcon size={40} iconSize={30} />}
-          {showProdutoIcon && <ProdutoIcon size={40} iconSize={30} />}
-          {hasExtraIcon && <Text style={styles.tituloInline}>{titulo}</Text>}
+        <TouchableOpacity style={styles.leftContainer} onPress={onBackPress}>
+          <Ionicons name="chevron-back" size={26} color={iconColor} />
+
+          <View style={styles.textWrapper}>
+            <Text style={[styles.title, { color: textColor }]}>{title}</Text>
+
+            {subtitle && (
+              <Text style={[styles.subtitle, { color: subtitleColor }]}>
+                {subtitle}
+              </Text>
+            )}
+          </View>
         </TouchableOpacity>
 
-        {!hasExtraIcon && <Text style={styles.titulo}>{titulo}</Text>}
-
-        <View style={styles.rightIcon}>
-          <UserIcon onPress={handleShowDialog} />
-        </View>
+        {rightType === 'menu' ? (
+          <Pressable
+            onPress={handleRightPress}
+            style={({ pressed }) => [
+              styles.iconButton,
+              {
+                backgroundColor: pressed
+                  ? isDarkBackground
+                    ? '#ffffff20'
+                    : '#00000020'
+                  : 'transparent',
+              },
+            ]}
+          >
+            <Ionicons name="menu" size={28} color={iconColor} />
+          </Pressable>
+        ) : (
+          <TouchableOpacity
+            style={[
+              styles.addButton,
+              {
+                backgroundColor: isDarkBackground ? '#ffffff' : '#062046',
+              },
+            ]}
+            onPress={handleRightPress}
+          >
+            <Ionicons
+              name="add"
+              size={24}
+              color={isDarkBackground ? '#0f172a' : '#ffffff'}
+            />
+          </TouchableOpacity>
+        )}
       </View>
-
-      <DialogUserMenu show={show} onClose={handleClose} />
     </View>
   );
 };
@@ -69,38 +104,60 @@ export default Nav;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#062046',
-    height: '13%',
-    width: '100%',
+    height: 140,
+    paddingTop: 50,
+    paddingHorizontal: 16,
+    borderBottomLeftRadius: 35,
+    borderBottomRightRadius: 35,
     justifyContent: 'center',
-    paddingTop: 35,
+    zIndex: 20,
+    elevation: 20,
   },
+
   nav: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    justifyContent: 'center',
-    position: 'relative',
   },
-  titulo: {
-    color: '#FFF',
-    fontSize: 30,
-    fontWeight: '900',
-    textAlign: 'center',
-  },
-  tituloInline: {
-    color: '#FFF',
-    fontSize: 24,
-    fontWeight: '800',
-    marginLeft: 10,
-  },
-  leftIcon: {
-    position: 'absolute',
-    left: 5,
+
+  leftContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 10,
   },
-  rightIcon: {
-    position: 'absolute',
-    right: 45,
+
+  textWrapper: {
+    justifyContent: 'center',
+  },
+
+  title: {
+    fontSize: 22,
+    fontWeight: '800',
+  },
+
+  subtitle: {
+    fontSize: 15,
+    marginTop: 2,
+  },
+
+  iconButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  addButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+
+    shadowColor: '#000',
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    elevation: 4,
   },
 });

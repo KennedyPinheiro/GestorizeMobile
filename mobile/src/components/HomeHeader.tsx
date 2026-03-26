@@ -3,23 +3,23 @@ import { View, StyleSheet, Pressable, StatusBar } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import LogoIcon from '@components/LogoIcon';
 import { useTheme } from '@context/ThemeContext';
+import { useMenu } from '@context/MenuContext';
 
-type HomeHeaderProps = {
-  onMenuToggle: () => void;
-  isMenuOpen: boolean;
-};
-
-const HomeHeader: React.FC<HomeHeaderProps> = ({
-  onMenuToggle,
-  isMenuOpen,
-}) => {
+const HomeHeader = () => {
   const { colors } = useTheme();
-
+  const { open, close, isOpen } = useMenu();
   const isDark = colors.background !== '#ffffff';
   const headerBackground = isDark ? '#ffffff' : '#062046';
   const isDarkBackground = headerBackground !== '#ffffff';
   const iconColor = isDarkBackground ? '#fff' : '#000';
 
+  const handleMenu = () => {
+    if (isOpen) {
+      close();
+    } else {
+      open();
+    }
+  };
   return (
     <View
       style={[
@@ -36,8 +36,8 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({
       />
 
       <Pressable
-        accessibilityLabel={isMenuOpen ? 'Fechar menu' : 'Abrir menu'}
-        onPress={onMenuToggle}
+        accessibilityLabel={isOpen ? 'Fechar menu' : 'Abrir menu'}
+        onPress={handleMenu}
         style={({ pressed }) => [
           styles.iconButton,
           {
@@ -50,7 +50,7 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({
         ]}
       >
         <MaterialCommunityIcons
-          name={isMenuOpen ? 'close' : 'menu'}
+          name={isOpen ? 'close' : 'menu'}
           size={28}
           color={iconColor}
         />

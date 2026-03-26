@@ -43,7 +43,7 @@ const ThemeToggleContext = createContext<{
 });
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
-  const [mode, setMode] = useState<'light' | 'dark'>('dark');
+  const [mode, setMode] = useState<'light' | 'dark'>('light');
 
   const value = useMemo(() => {
     const light = defaultTheme;
