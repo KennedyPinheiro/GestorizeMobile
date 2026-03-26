@@ -56,11 +56,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         JSON.stringify(user)
       );
     } catch (error) {
-      Toast.error(formatErrorMessage(error, "Erro no login:"));
+      Toast.show({
+        type: "error",
+        text1: "Erro no login",
+        text2: formatErrorMessage(error, "Erro no login"),
+        visibilityTime: 1000,
+        topOffset: 50,
+        props: { rightOffset: 40 }
+      });
 
       setToken(null);
       setUser(null);
-    } finally {
+    }
+    finally {
       setLoading(false);
     }
   };

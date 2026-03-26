@@ -28,14 +28,16 @@ import { Provider as PaperProvider } from "react-native-paper";
 import { ThemeProvider, useThemeToggle } from "@context/ThemeContext";
 import lightTheme from "./src/theme/paperTheme";
 import darkTheme from "./src/theme/paperThemeDark";
+import { Text, View } from "react-native";
+import toastConfig from "@components/ui/ToastConfig";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
+
 
 const AppNavigator = () => {
   const { token, loading } = useAuth();
 
   if (loading) return null;
-
   return (
     <Stack.Navigator
       key={token ? "app-stack" : "auth-stack"}
@@ -84,7 +86,7 @@ const App = () => (
         <NavigationContainer>
           <AppNavigator />
         </NavigationContainer>
-        <Toast />
+        <Toast config={toastConfig} />
       </PaperThemedProvider>
     </ThemeProvider>
   </AuthProvider>

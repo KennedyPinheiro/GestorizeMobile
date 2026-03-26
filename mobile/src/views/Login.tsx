@@ -2,13 +2,12 @@ import React, { useRef } from "react";
 import {
   View,
   StyleSheet,
-  Image,
   Text,
   TouchableWithoutFeedback,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
-  Animated, // do React Native
+  Animated, 
 } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "@context/types";
@@ -60,7 +59,7 @@ const Login = ({ navigation }: Props) => {
   const handleLoginAnimation = () => {
     Animated.parallel([
       Animated.timing(translateYCard, {
-        toValue: -200, // valor seguro, relativo ao layout
+        toValue: -200,
         duration: 600,
         useNativeDriver: true,
       }),
@@ -74,7 +73,7 @@ const Login = ({ navigation }: Props) => {
         duration: 600,
         useNativeDriver: true,
       }),
-    ]).start(() => navigation.replace("Homepage"));
+    ]).start();
   };
 
   return (

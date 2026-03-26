@@ -5,13 +5,12 @@ export type UserType = {
   roles: string[];
 };
 
-export type ErrorResponseType =
-  | string
-  | {
-    success: boolean
-    message: string
-    code: number
-  }
+export type ErrorResponseType = {
+  success?: boolean;
+  message?: string;
+  code?: number;
+  errors?: Record<string, string[]>;
+};
 
 export type MessageConversionObject = {
   defaultMessage: string

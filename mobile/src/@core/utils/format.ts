@@ -146,14 +146,20 @@ export function formatarCampo(valor?: string | null): string {
 
 export function formatErrorMessage(
   err: AxiosError<ErrorResponseType> | unknown,
-  message: MessageConversionObject | string
-) {
-  const messages: MessageConversionObject = typeof message === 'string' ? { defaultMessage: message } : message
+  fallback: string = "Erro inesperado"
+): string {
+  if (!isAxiosError<ErrorResponseType>(err)) return fallback;
 
-  if (!isAxiosError<ErrorResponseType>(err) || !err.response || typeof err.response.data === 'string')
-    return messages.defaultMessage
+  const data = err.response?.data;
 
-  const responseMessage = err.response.data.message
+  if (!data) return fallback;
 
-  return messages[responseMessage] || responseMessage
+  if (data.message) return data.message;
+
+  const firstFieldError = Object.values(data.errors ?? {})[0]?.[0];
+
+  if (firstFieldError) return firstFieldError;
+
+  return fallback;
 }
+
