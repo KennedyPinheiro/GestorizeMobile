@@ -137,6 +137,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   textWrapper: { flex: 1 },
-  title: { marginTop: 5,fontWeight: '700', fontSize: 18, textAlign: 'center' },
+  title: { marginTop: 5, fontWeight: '700', fontSize: 18, textAlign: 'center' },
   subtitle: { marginTop: 5, fontSize: 17, lineHeight: 18, textAlign: 'center' },
 });

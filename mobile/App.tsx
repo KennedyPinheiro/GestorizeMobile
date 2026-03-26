@@ -5,7 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from '@views/Login';
 import { AuthProvider, useAuth } from '@context/AuthContext';
 import Homepage from '@views/Homepage';
-import Clientes from '@views/Clientes';
+import Clientes from '@views/Clientes/index';
 import CadastroClientePF from '@views/Cadastros/CadastroClientePF';
 import CadastroClientePJ from '@views/Cadastros/CadastroClientePj';
 import Produtos from '@views/Produtos';

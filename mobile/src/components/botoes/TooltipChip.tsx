@@ -1,23 +1,16 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Pressable, Text, StyleSheet } from 'react-native';
 import { useTheme } from '@context/ThemeContext';
 
 type Props = {
   label: string;
-  onPress?: (active: boolean) => void;
+  active?: boolean;
+  onPress?: () => void;
 };
 
-const TooltipChip = ({ label, onPress }: Props) => {
+const TooltipChip = ({ label, active = false, onPress }: Props) => {
   const { colors } = useTheme();
-  const [active, setActive] = useState(false);
-
   const isDark = colors.background !== '#ffffff';
-
-  const handlePress = () => {
-    const newState = !active;
-    setActive(newState);
-    onPress?.(newState);
-  };
 
   const backgroundColor = active
     ? isDark
@@ -37,7 +30,7 @@ const TooltipChip = ({ label, onPress }: Props) => {
 
   return (
     <Pressable
-      onPress={handlePress}
+      onPress={onPress}
       style={[styles.container, { backgroundColor }]}
     >
       <Text style={[styles.text, { color: textColor }]}>{label}</Text>

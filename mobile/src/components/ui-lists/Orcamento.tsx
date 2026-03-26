@@ -18,7 +18,6 @@ const Orcamento = ({ title, cliente, valor, onPress }: props) => {
   const subText = isDark ? '#cbd5e1' : '#6b7280';
 
   const circleColor = isDark ? '#09377B' : 'rgba(6, 32, 70, 0.22)';
-
   const arrowColor = isDark ? '#ffffff' : '#062046';
 
   return (
