@@ -15,64 +15,11 @@ const Homepage = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { user, signOut } = useAuth();
-  const [menuOpen, setMenuOpen] = React.useState(false);
   const { colors } = useTheme();
-
-  const mainMenu = [
-    {
-      icon: 'account-group' as const,
-      label: 'Clientes',
-      onPress: () => navigation.navigate('Clientes'),
-    },
-    {
-      icon: 'cube-outline' as const,
-      label: 'Produtos',
-      onPress: () => navigation.navigate('Produtos'),
-    },
-    {
-      icon: 'truck-fast-outline' as const,
-      label: 'Fornecedores',
-      onPress: () => navigation.navigate('Fornecedores'),
-    },
-    {
-      icon: 'file-document-outline' as const,
-      label: 'Orçamentos',
-      onPress: () => {},
-      disabled: true,
-    },
-    {
-      icon: 'account-tie' as const,
-      label: 'Funcionários',
-      onPress: () => navigation.navigate('Funcionarios'),
-    },
-    {
-      icon: 'chart-bar' as const,
-      label: 'Relatórios',
-      onPress: () => {},
-      disabled: true,
-    },
-  ];
-
-  const bottomMenu = [
-    { icon: 'cog' as const, label: 'Configurações', onPress: () => {} },
-    { icon: 'help-circle' as const, label: 'Ajuda', onPress: () => {} },
-    {
-      icon: 'logout' as const,
-      label: 'Sair',
-      onPress: async () => {
-        await signOut();
-        setMenuOpen(false);
-      },
-      danger: true,
-    },
-  ];
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <HomeHeader
-        onMenuToggle={() => setMenuOpen((v) => !v)}
-        isMenuOpen={menuOpen}
-      />
+      <HomeHeader />
       <ScrollView
         style={[styles.container, { backgroundColor: colors.background }]}
       >
@@ -109,7 +56,7 @@ const Homepage = () => {
               icon="file-document-outline"
               label="Orçamentos"
               description="Criar e gerenciar propostas"
-              disabled
+              onClick={() => navigation.navigate('Orcamentos')}
               containerStyle={styles.gridItem}
             />
             <NavButton
@@ -153,13 +100,6 @@ const Homepage = () => {
 
         <StatusBar style={colors.background === '#ffffff' ? 'light' : 'dark'} />
       </ScrollView>
-
-      <SideMenu
-        isOpen={menuOpen}
-        onClose={() => setMenuOpen(false)}
-        menuItems={mainMenu}
-        bottomItems={bottomMenu}
-      />
     </View>
   );
 };
@@ -180,7 +120,8 @@ const styles = StyleSheet.create({
     marginTop: 12,
     marginBottom: 4,
     color: '#0f172a',
-    fontWeight: '700',
+    fontWeight: '800',
+    fontSize: 18,
   },
   grid: {
     width: '100%',
