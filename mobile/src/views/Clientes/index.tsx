@@ -4,16 +4,17 @@ import { useNavigation } from '@react-navigation/native';
 import { useTheme } from '@context/ThemeContext';
 import Orcamento from '@components/ui-lists/Orcamento';
 import SearchBar from '@components/ui/SearchBar';
-import { useState, useRef, useMemo, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import {} from 'react-native-paper';
 import TooltipChip from '@components/botoes/TooltipChip';
 import { Animated } from 'react-native';
+import Cliente, { ClienteType } from '@components/ui-lists/Cliente';
 
-const Orcamentos = () => {
+const Clientes = () => {
   const navigation = useNavigation();
   const { colors } = useTheme();
+  const [selectedTipo, setSelectedTipo] = useState<'PF' | 'PJ' | null>(null);
   const [search, setSearch] = useState('');
-  const [selectedFilter, setSelectedFilter] = useState<string | null>(null);
 
   const scrollY = useRef(new Animated.Value(0)).current;
   const opacity = scrollY.interpolate({
@@ -27,76 +28,47 @@ const Orcamentos = () => {
     extrapolate: 'clamp',
   });
 
-  const allData = useMemo(
+  const allData = useMemo<ClienteType[]>(
     () =>
       Array.from({ length: 100 }, (_, i) => ({
         id: i.toString(),
-        title: `Orçamento ${i}`,
-        cliente: `Cliente ${i}`,
-        valor: 1000 + i * 50,
-        data: new Date(Date.now() - i * 86400000),
+        nome: `Cliente ${i}`,
+        email: `cliente${i}@exemplo.com`,
+        estado: `Minas Gerais - MG`,
+        tipo: i % 2 === 0 ? 'PF' : 'PJ',
       })),
     [],
   );
-  const filteredData = useMemo(() => {
-    return allData.filter((item) => {
-      const matchSearch =
-        item.title.toLowerCase().includes(search.toLowerCase()) ||
-        item.cliente.toLowerCase().includes(search.toLowerCase());
 
-      let matchFilter = true;
+  const filteredData = allData.filter((item) => {
+    const matchTipo = selectedTipo ? item.tipo === selectedTipo : true;
 
-      if (selectedFilter === '1') {
-        matchFilter = Date.now() - item.data.getTime() <= 24 * 60 * 60 * 1000;
-      }
+    const matchSearch =
+      item.nome.toLowerCase().includes(search.toLowerCase()) ||
+      item.email.toLowerCase().includes(search.toLowerCase());
 
-      if (selectedFilter === '2') {
-        matchFilter =
-          Date.now() - item.data.getTime() <= 7 * 24 * 60 * 60 * 1000;
-      }
+    return matchTipo && matchSearch;
+  });
+  const [visibleData, setVisibleData] = useState(filteredData.slice(0, 10));
 
-      if (selectedFilter === '3') {
-        const now = new Date();
-        matchFilter =
-          item.data.getMonth() === now.getMonth() &&
-          item.data.getFullYear() === now.getFullYear();
-      }
-
-      return matchSearch && matchFilter;
-    });
-  }, [allData, search, selectedFilter]);
-
-  const sortedData = useMemo(() => {
-    const data = [...filteredData];
-    if (selectedFilter === '4') {
-      return data.sort((a, b) => b.valor - a.valor);
-    }
-    if (selectedFilter === '5') {
-      return data.sort((a, b) => a.valor - b.valor);
-    }
-
-    return data;
-  }, [filteredData, selectedFilter]);
-  const [visibleData, setVisibleData] = useState(sortedData.slice(0, 10));
+  useEffect(() => {
+    setVisibleData(filteredData.slice(0, 10));
+  }, [selectedTipo, search]);
 
   const loadMore = () => {
-    if (visibleData.length >= sortedData.length) return;
+    if (visibleData.length >= filteredData.length) return;
 
-    const nextItems = sortedData.slice(
+    const nextItems = filteredData.slice(
       visibleData.length,
       visibleData.length + 10,
     );
 
     setVisibleData((prev) => [...prev, ...nextItems]);
   };
-
-  useEffect(() => {
-    setVisibleData(sortedData.slice(0, 10));
-  }, [sortedData]);
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <Nav
-        title="Orçamentos"
+        title="Clientes"
         subtitle="100 cadastrados"
         onBackPress={() => navigation.goBack()}
         rightType="add"
@@ -123,26 +95,23 @@ const Orcamentos = () => {
         <View style={styles.filtersContainer}>
           <FlatList
             data={[
-              { id: '1', label: 'Últimas 24h' },
-              { id: '2', label: 'Últimos 7 dias' },
-              { id: '3', label: 'Este mês' },
-              { id: '4', label: 'Maior valor' },
-              { id: '5', label: 'Menor valor' },
+              { id: 'PF', label: 'Pessoa Física' },
+              { id: 'PJ', label: 'Pessoa Jurídica' },
             ]}
             horizontal
             showsHorizontalScrollIndicator={false}
             keyExtractor={(item) => item.id}
             contentContainerStyle={{ paddingHorizontal: 10, gap: 8 }}
             renderItem={({ item }) => {
-              const isActive = selectedFilter === item.id;
+              const isActive = selectedTipo === item.id;
 
               return (
                 <TooltipChip
                   label={item.label}
                   active={isActive}
                   onPress={() =>
-                    setSelectedFilter((prev) =>
-                      prev === item.id ? null : item.id,
+                    setSelectedTipo((prev) =>
+                      prev === item.id ? null : (item.id as 'PF' | 'PJ'),
                     )
                   }
                 />
@@ -157,10 +126,11 @@ const Orcamentos = () => {
         contentContainerStyle={{ padding: 10, paddingTop: 135 }}
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (
-          <Orcamento
-            title={item.title}
-            cliente={item.cliente}
-            valor={item.valor}
+          <Cliente
+            tipo={item.tipo}
+            nome={item.nome}
+            email={item.email}
+            estado={item.estado}
           />
         )}
         onEndReached={loadMore}
@@ -179,7 +149,7 @@ const Orcamentos = () => {
   );
 };
 
-export default Orcamentos;
+export default Clientes;
 
 const styles = StyleSheet.create({
   container: {
