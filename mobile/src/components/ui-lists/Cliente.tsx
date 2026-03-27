@@ -35,7 +35,6 @@ const Cliente = ({ tipo, nome, email, estado, onPress }: Props) => {
     if (isDark) {
       return tipo === 'PJ' ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.2)';
     }
-
     return tipo === 'PJ' ? 'rgba(0,104,255,0.4)' : 'rgba(0,104,255,0.2)';
   };
 
@@ -43,7 +42,6 @@ const Cliente = ({ tipo, nome, email, estado, onPress }: Props) => {
     if (isDark) {
       return '#ffffff';
     }
-
     return '#062046';
   };
 

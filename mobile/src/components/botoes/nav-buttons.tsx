@@ -31,7 +31,7 @@ export function NavButton({
   const scale = React.useRef(new Animated.Value(1)).current;
   const { colors, isDark } = useTheme();
 
-  const cardBg = isDark ? '#005CE4' : '#ffffff';
+  const cardBg = isDark ? '#6476dacc' : '#ffffff';
 
   const iconColor = disabled ? colors.muted : isDark ? '#005CE4' : '#ffffff';
 
@@ -40,7 +40,7 @@ export function NavButton({
   const borderColor = disabled
     ? colors.border
     : isDark
-      ? '#ffffff'
+      ? '#ffffff00'
       : colors.primary;
 
   const textColor = disabled ? colors.muted : isDark ? '#ffffff' : colors.text;
