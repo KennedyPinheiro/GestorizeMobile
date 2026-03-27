@@ -29,9 +29,9 @@ export function NavButton({
   containerStyle,
 }: NavButtonProps) {
   const scale = React.useRef(new Animated.Value(1)).current;
-  const { colors, isDark } = useTheme(); // 🔥 agora correto
+  const { colors, isDark } = useTheme();
 
-  const cardBg = isDark ? '#005CE4' : '#ffffff';
+  const cardBg = isDark ? '#6476dacc' : '#ffffff';
 
   const iconColor = disabled ? colors.muted : isDark ? '#005CE4' : '#ffffff';
 
@@ -40,7 +40,7 @@ export function NavButton({
   const borderColor = disabled
     ? colors.border
     : isDark
-      ? '#ffffff'
+      ? '#ffffff00'
       : colors.primary;
 
   const textColor = disabled ? colors.muted : isDark ? '#ffffff' : colors.text;
@@ -82,6 +82,8 @@ export function NavButton({
           {
             backgroundColor: cardBg,
             borderLeftColor: borderColor,
+            shadowColor: isDark ? '#ffffff' : '#000000',
+            shadowOpacity: isDark ? 0.07 : 0.1,
             opacity: disabled ? 0.6 : 1,
           },
         ]}
@@ -94,7 +96,7 @@ export function NavButton({
           disabled={disabled}
         >
           <View style={[styles.iconWrapper, { backgroundColor: iconBg }]}>
-            <MaterialCommunityIcons name={icon} size={30} color={iconColor} />
+            <MaterialCommunityIcons name={icon} size={45} color={iconColor} />
           </View>
 
           <Text style={[styles.title, { color: textColor }]}>{label}</Text>
@@ -115,7 +117,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   card: {
-    height: 200,
+    height: 230,
     width: '100%',
     borderLeftWidth: 4,
     backgroundColor: '#ffffff',
@@ -128,13 +130,13 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   iconWrapper: {
-    width: 64,
-    height: 64,
-    borderRadius: 14,
+    width: 70,
+    height: 70,
+    borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
   },
   textWrapper: { flex: 1 },
-  title: { fontWeight: '700', fontSize: 16, textAlign: 'center' },
-  subtitle: { marginTop: 4, fontSize: 13, lineHeight: 18, textAlign: 'center' },
+  title: { marginTop: 5, fontWeight: '700', fontSize: 18, textAlign: 'center' },
+  subtitle: { marginTop: 5, fontSize: 17, lineHeight: 18, textAlign: 'center' },
 });

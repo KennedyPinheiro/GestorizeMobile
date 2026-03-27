@@ -6,14 +6,14 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from '@views/Login';
 import { AuthProvider, useAuth } from '@context/AuthContext';
 import Homepage from '@views/Homepage';
-import Clientes from '@views/Clientes';
+import Clientes from '@views/Clientes/index';
 import CadastroClientePF from '@views/Cadastros/CadastroClientePF';
 import CadastroClientePJ from '@views/Cadastros/CadastroClientePj';
-import Produtos from '@views/Produtos';
+import Produtos from '@views/Produtos/index';
 import CadastroProdutos from '@views/Cadastros/CadastroProdutos';
-import Fornecedores from '@views/Fornecedores';
+import Fornecedores from '@views/Fornecedores/index';
 import CadastroFornecedores from '@views/Cadastros/CadastroFornecedores';
-import Funcionarios from '@views/Funcionarios';
+import Funcionarios from '@views/Funcionarios/index';
 import CadastroFuncionarios from '@views/Cadastros/CadastroFuncionarios';
 import { RootStackParamList } from '@context/types';
 import PerfilProduto from '@views/perfil/PerfilProduto';
@@ -28,8 +28,8 @@ import { Provider as PaperProvider } from 'react-native-paper';
 import { ThemeProvider, useThemeToggle } from '@context/ThemeContext';
 import lightTheme from './src/theme/paperTheme';
 import darkTheme from './src/theme/paperThemeDark';
-import { Text, View } from 'react-native';
-import toastConfig from '@components/ui/ToastConfig';
+import Orcamentos from '@views/Orcamentos/index';
+import { MenuProvider } from '@context/MenuContext';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -38,52 +38,69 @@ const AppNavigator = () => {
 
   if (loading) return null;
   return (
-    <Stack.Navigator
-      key={token ? 'app-stack' : 'auth-stack'}
-      screenOptions={{ headerShown: false }}
-    >
-      {!token ? (
-        <>
-          <Stack.Screen name="Login" component={Login} />
-          <Stack.Screen name="ForgoutPassword" component={ForgoutPassword} />
-          <Stack.Screen name="ResetPassword" component={ResetPassword} />
-        </>
-      ) : (
-        <>
-          <Stack.Screen name="Homepage" component={Homepage} />
-          <Stack.Screen name="Clientes" component={Clientes} />
-          <Stack.Screen name="Funcionarios" component={Funcionarios} />
-          <Stack.Screen name="PessoaFisica" component={CadastroClientePF} />
-          <Stack.Screen name="PerfilProduto" component={PerfilProduto} />
-          <Stack.Screen name="Fornecedores" component={Fornecedores} />
-          <Stack.Screen name="Produtos" component={Produtos} />
-          <Stack.Screen name="PerfilFornecedor" component={PerfilFornecedor} />
-          <Stack.Screen
-            name="PerfilPessoaFisica"
-            component={PerfilPessoaFisica}
-          />
-          <Stack.Screen
-            name="PerfilPessoaJuridica"
-            component={PerfilPessoaJuridica}
-          />
-          <Stack.Screen
-            name="PerfilFuncionario"
-            component={PerfilFuncionario}
-          />
-          <Stack.Screen name="UserPerfil" component={UserPerfil} />
-          <Stack.Screen name="PessoaJuridica" component={CadastroClientePJ} />
-          <Stack.Screen name="CadastroProdutos" component={CadastroProdutos} />
-          <Stack.Screen
-            name="CadastroFornecedores"
-            component={CadastroFornecedores}
-          />
-          <Stack.Screen
-            name="CadastroFuncionarios"
-            component={CadastroFuncionarios}
-          />
-        </>
-      )}
-    </Stack.Navigator>
+    <NavigationContainer>
+      <MenuProvider>
+        <Stack.Navigator
+          key={token ? 'app-stack' : 'auth-stack'}
+          screenOptions={{ headerShown: false }}
+        >
+          {!token ? (
+            <>
+              <Stack.Screen name="Login" component={Login} />
+              <Stack.Screen
+                name="ForgoutPassword"
+                component={ForgoutPassword}
+              />
+              <Stack.Screen name="ResetPassword" component={ResetPassword} />
+            </>
+          ) : (
+            <>
+              <Stack.Screen name="Homepage" component={Homepage} />
+              <Stack.Screen name="Clientes" component={Clientes} />
+              <Stack.Screen name="Orcamentos" component={Orcamentos} />
+              <Stack.Screen name="Funcionarios" component={Funcionarios} />
+              <Stack.Screen name="PessoaFisica" component={CadastroClientePF} />
+              <Stack.Screen name="PerfilProduto" component={PerfilProduto} />
+              <Stack.Screen name="Fornecedores" component={Fornecedores} />
+              <Stack.Screen name="Produtos" component={Produtos} />
+              <Stack.Screen
+                name="PerfilFornecedor"
+                component={PerfilFornecedor}
+              />
+              <Stack.Screen
+                name="PerfilPessoaFisica"
+                component={PerfilPessoaFisica}
+              />
+              <Stack.Screen
+                name="PerfilPessoaJuridica"
+                component={PerfilPessoaJuridica}
+              />
+              <Stack.Screen
+                name="PerfilFuncionario"
+                component={PerfilFuncionario}
+              />
+              <Stack.Screen name="UserPerfil" component={UserPerfil} />
+              <Stack.Screen
+                name="PessoaJuridica"
+                component={CadastroClientePJ}
+              />
+              <Stack.Screen
+                name="CadastroProdutos"
+                component={CadastroProdutos}
+              />
+              <Stack.Screen
+                name="CadastroFornecedores"
+                component={CadastroFornecedores}
+              />
+              <Stack.Screen
+                name="CadastroFuncionarios"
+                component={CadastroFuncionarios}
+              />
+            </>
+          )}
+        </Stack.Navigator>
+      </MenuProvider>
+    </NavigationContainer>
   );
 };
 

@@ -187,6 +187,7 @@ export type RootStackParamList = {
   ResetPassword: undefined;
   ForgoutPassword: undefined;
   Homepage: undefined;
+  Orcamentos: undefined;
   Funcionarios: { novoFuncionario: boolean } | undefined;
   Clientes: { novoCliente: boolean } | undefined;
   Produtos: { novoProduto: boolean } | undefined;

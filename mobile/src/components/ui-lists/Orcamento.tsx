@@ -2,15 +2,14 @@ import { TouchableOpacity, View, Text, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@context/ThemeContext';
 
-type Props = {
-  nome: string;
-  email: string;
-  local?: string; 
-  tipo?: string; 
+type props = {
+  title: string;
+  cliente: string;
+  valor: number;
   onPress?: () => void;
 };
 
-const Fornecedor = ({ nome, email, local, tipo, onPress }: Props) => {
+const Orcamento = ({ title, cliente, valor, onPress }: props) => {
   const { colors } = useTheme();
   const isDark = colors.background !== '#ffffff';
 
@@ -20,12 +19,6 @@ const Fornecedor = ({ nome, email, local, tipo, onPress }: Props) => {
 
   const circleColor = isDark ? '#09377B' : 'rgba(6, 32, 70, 0.22)';
   const arrowColor = isDark ? '#ffffff' : '#062046';
-
-  const badgeBg = isDark
-    ? 'rgba(255,255,255,0.2)'
-    : 'rgba(0,104,255,0.2)';
-
-  const badgeText = isDark ? '#ffffff' : '#062046';
 
   return (
     <TouchableOpacity activeOpacity={0.9} onPress={onPress}>
@@ -42,42 +35,22 @@ const Fornecedor = ({ nome, email, local, tipo, onPress }: Props) => {
         <View style={styles.left}>
           <View style={[styles.circle, { backgroundColor: circleColor }]}>
             <Ionicons
-              name="business-outline"
+              name="cart-outline"
               size={50}
               color={isDark ? '#ffffff' : '#062046'}
             />
           </View>
 
           <View>
-            <View style={styles.row}>
-              <Text style={[styles.title, { color: textColor }]}>
-                {nome}
-              </Text>
-
-              {tipo && (
-                <View style={[styles.badge, { backgroundColor: badgeBg }]}>
-                  <Text
-                    style={{
-                      color: badgeText,
-                      fontWeight: '700',
-                      fontSize: 12,
-                    }}
-                  >
-                    {tipo}
-                  </Text>
-                </View>
-              )}
-            </View>
+            <Text style={[styles.title, { color: textColor }]}>{title}</Text>
 
             <Text style={[styles.subtitle, { color: subText }]}>
-              {email}
+              Cliente: {cliente}
             </Text>
 
-            {local && (
-              <Text style={[styles.subtitle, { color: subText }]}>
-                {local}
-              </Text>
-            )}
+            <Text style={[styles.subtitle, { color: subText }]}>
+              Valor: {valor.toLocaleString('pt-BR')} R$
+            </Text>
           </View>
         </View>
 
@@ -87,8 +60,7 @@ const Fornecedor = ({ nome, email, local, tipo, onPress }: Props) => {
   );
 };
 
-export default Fornecedor;
-
+export default Orcamento;
 const styles = StyleSheet.create({
   card: {
     borderRadius: 20,
@@ -114,18 +86,6 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
-
-  badge: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 12,
   },
 
   title: {
