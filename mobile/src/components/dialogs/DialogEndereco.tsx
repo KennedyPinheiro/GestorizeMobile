@@ -9,9 +9,9 @@ import {
 import InputCard from '@components/InputCard';
 import { Select, MenuItem } from '@components/utilities/Select';
 import Button from '@components/botoes/Button';
-import { formatCep } from '@@core/format';
 import ErrorSidebarAlert from '@components/sidebars/ErrorSidebarAlert';
 import { EnderecoType } from '@context/types';
+import { formatCep } from '@core/utils/format';
 
 export const estadosBrasileiros = [
   'Acre',
@@ -151,12 +151,7 @@ const DialogEndereco = ({
                   value={numero}
                   onChangeText={setNumero}
                 />
-                <Select
-                  value={estado}
-                  onChange={setEstado}
-                  label="Estado"
-                  size="small"
-                >
+                <Select value={estado} onChange={setEstado} label="Estado">
                   {estadosBrasileiros.map((uf) => (
                     <MenuItem key={uf} value={uf}>
                       {uf}

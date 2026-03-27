@@ -1,7 +1,10 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { postLogin, postLogout, postRefreshToken } from '../api/apiAuth';
+import { postLogin, postLogout } from '../api/apiAuth';
+import Toast from 'react-native-toast-message';
 import authConfig from '../configs/auth';
 import { secureStore } from '../utils/secureStore';
+import { setAuthToken } from 'src/services/api';
+import { formatErrorMessage } from '@core/utils/format';
 
 type AuthContextType = {
   token: string | null;
@@ -28,38 +31,55 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const loadStoredAuth = async () => {
       const storedToken = await secureStore.get(authConfig.storageTokenKeyName);
       const storedUser = await secureStore.get(authConfig.userDataKeyName);
+
       if (storedToken) setToken(storedToken);
       if (storedUser) setUser(JSON.parse(storedUser));
+
       setLoading(false);
     };
+
     loadStoredAuth();
   }, []);
 
-  const signOut = async () => {
-    await postLogout();
-    setToken(null);
-    setUser(null);
-    await secureStore.remove(authConfig.storageTokenKeyName);
-    await secureStore.remove(authConfig.userDataKeyName);
-  };
-
   const signIn = async (email: string, password: string) => {
     setLoading(true);
+
     try {
-      const data = await postLogin(email, password);
-      const newToken = data?.token ?? null;
-      const newUser = data?.user ?? null;
-      setToken(newToken);
-      setUser(newUser);
-      await secureStore.set(authConfig.storageTokenKeyName, newToken);
-      if (newUser) {
-        await secureStore.set(
-          authConfig.userDataKeyName,
-          JSON.stringify(newUser),
-        );
-      }
+      const { token, user } = await postLogin(email, password);
+
+      setToken(token);
+      setUser(user);
+
+      await secureStore.set(authConfig.storageTokenKeyName, token);
+      await secureStore.set(authConfig.userDataKeyName, JSON.stringify(user));
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Erro no login',
+        text2: formatErrorMessage(error, 'Erro no login'),
+        visibilityTime: 1000,
+        topOffset: 50,
+        props: { rightOffset: 40 },
+      });
+
+      setToken(null);
+      setUser(null);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const signOut = async () => {
+    try {
+      await postLogout();
+    } catch (e) {
+      Toast.error(formatErrorMessage(e, 'Erro ao sair:'));
+    } finally {
+      setToken(null);
+      setUser(null);
+      setAuthToken(null);
+      await secureStore.remove(authConfig.storageTokenKeyName);
+      await secureStore.remove(authConfig.userDataKeyName);
     }
   };
 

@@ -1,4 +1,9 @@
-import { StringfiedDate } from '@context/types';
+import {
+  ErrorResponseType,
+  MessageConversionObject,
+  StringfiedDate,
+} from '@context/types';
+import { AxiosError, isAxiosError } from 'axios';
 
 export const clearNumber = (value = '') => {
   return value.replace(/\D+/g, '');
@@ -141,4 +146,23 @@ export function formatarMedida(titulo: string): string {
 
 export function formatarCampo(valor?: string | null): string {
   return valor && valor.trim() !== '' ? valor : 'Não informado';
+}
+
+export function formatErrorMessage(
+  err: AxiosError<ErrorResponseType> | unknown,
+  fallback: string = 'Erro inesperado',
+): string {
+  if (!isAxiosError<ErrorResponseType>(err)) return fallback;
+
+  const data = err.response?.data;
+
+  if (!data) return fallback;
+
+  if (data.message) return data.message;
+
+  const firstFieldError = Object.values(data.errors ?? {})[0]?.[0];
+
+  if (firstFieldError) return firstFieldError;
+
+  return fallback;
 }

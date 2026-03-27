@@ -53,7 +53,6 @@ export default function LoginCard({ onLoginSuccess }: props) {
         secureTextEntry
         icon="lock-closed-outline"
       />
-
       <TouchableOpacity>
         <Text style={styles.forgot}>Esqueceu a senha?</Text>
       </TouchableOpacity>
@@ -72,7 +71,6 @@ export default function LoginCard({ onLoginSuccess }: props) {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#EDEDED',
     borderRadius: 24,
     padding: 20,
     width: '100%',

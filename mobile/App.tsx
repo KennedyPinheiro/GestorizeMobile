@@ -1,5 +1,6 @@
 import 'react-native-url-polyfill/auto';
 import React from 'react';
+import Toast from 'react-native-toast-message';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from '@views/Login';
@@ -113,7 +114,10 @@ const App = () => (
   <AuthProvider>
     <ThemeProvider>
       <PaperThemedProvider>
-        <AppNavigator />
+        <NavigationContainer>
+          <AppNavigator />
+        </NavigationContainer>
+        <Toast config={toastConfig} />
       </PaperThemedProvider>
     </ThemeProvider>
   </AuthProvider>

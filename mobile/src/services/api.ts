@@ -6,6 +6,7 @@ export const api = axios.create({
     'Content-Type': 'application/json',
   },
 });
+export const getAxios = () => api;
 
 export const setAuthToken = (token: string | null) => {
   if (token) {
