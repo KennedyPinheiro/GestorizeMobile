@@ -63,6 +63,5 @@ export const getAxios = ({
   return instance;
 };
 
-// Export default para compatibilidade anterior
 const api = getAxios();
 export default api;

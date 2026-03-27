@@ -20,50 +20,58 @@ export const MenuProvider = ({ children }: { children: React.ReactNode }) => {
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { signOut } = useAuth();
 
+  const handleMenuAction = (action: () => void | Promise<void>) => {
+    setIsOpen(false);
+    action();
+  };
   const mainMenu = [
     {
       icon: 'account-group' as const,
       label: 'Clientes',
-      onPress: () => navigation.navigate('Clientes'),
+      onPress: () => handleMenuAction(() => navigation.navigate('Clientes')),
     },
     {
       icon: 'cube-outline' as const,
       label: 'Produtos',
-      onPress: () => navigation.navigate('Produtos'),
+      onPress: () => handleMenuAction(() => navigation.navigate('Produtos')),
     },
     {
       icon: 'truck-fast-outline' as const,
       label: 'Fornecedores',
-      onPress: () => navigation.navigate('Fornecedores'),
+      onPress: () =>
+        handleMenuAction(() => navigation.navigate('Fornecedores')),
     },
     {
       icon: 'file-document-outline' as const,
       label: 'Orçamentos',
-      onPress: () => {},
-      disabled: true,
+      onPress: () => handleMenuAction(() => navigation.navigate('Orcamentos')),
     },
     {
       icon: 'account-tie' as const,
       label: 'Funcionários',
-      onPress: () => navigation.navigate('Funcionarios'),
-    },
-    {
-      icon: 'chart-bar' as const,
-      label: 'Relatórios',
-      onPress: () => {},
-      disabled: true,
+      onPress: () =>
+        handleMenuAction(() => navigation.navigate('Funcionarios')),
     },
   ];
 
   const bottomMenu = [
-    { icon: 'cog' as const, label: 'Configurações', onPress: () => {} },
-    { icon: 'help-circle' as const, label: 'Ajuda', onPress: () => {} },
+    {
+      icon: 'cog' as const,
+      label: 'Configurações',
+      onPress: () => handleMenuAction(() => {}),
+    },
+    {
+      icon: 'help-circle' as const,
+      label: 'Ajuda',
+      onPress: () => handleMenuAction(() => {}),
+    },
     {
       icon: 'logout' as const,
       label: 'Sair',
-      onPress: async () => {
-        await signOut();
-      },
+      onPress: () =>
+        handleMenuAction(async () => {
+          await signOut();
+        }),
       danger: true,
     },
   ];
