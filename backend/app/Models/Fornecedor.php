@@ -13,9 +13,16 @@ class Fornecedor extends Model
         'cnpj',
         'email',
         'telefone',
-        'ramo_atividade',
         'nome_responsavel',
         'chave_pix',
         'endereco_id',
+        'fornecedor_categoria_id', 
     ];
+
+    public function categoria()
+    {
+        return $this->belongsTo(FornecedorCategoria::class, 'fornecedor_categoria_id');
+    }
+
+    
 }
