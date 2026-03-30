@@ -1,24 +1,79 @@
+# ========================
+# Logs
+# ========================
 *.log
-.DS_Store
+npm-debug.log
+yarn-error.log
+pnpm-debug.log
+
+# ========================
+# Environment
+# ========================
 .env
-.env.backup
-.env.production
-.phpactor.json
-.phpunit.result.cache
-/.fleet
-/.idea
-/.nova
-/.phpunit.cache
-/.vscode
-/.zed
-/auth.json
+.env.*
+!.env.example
+
+# ========================
+# OS Files
+# ========================
+.DS_Store
+Thumbs.db
+
+# ========================
+# IDEs / Editors
+# ========================
+.vscode/
+.idea/
+.fleet/
+.zed/
+.nova/
+
+# ========================
+# PHP / Laravel
+# ========================
+/vendor
 /node_modules
+
 /public/build
 /public/hot
 /public/storage
+
 /storage/*.key
+/storage/app/*
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/storage/logs/*
 /storage/pail
-/vendor
+
+/bootstrap/cache/*.php
+
+# ========================
+# Cache / Tools
+# ========================
+.phpactor.json
+.phpunit.result.cache
+.phpunit.cache
+
+# ========================
+# Auth / Tokens
+# ========================
+/auth.json
+
+# ========================
+# Homestead (Laravel VM)
+# ========================
 Homestead.json
 Homestead.yaml
-Thumbs.db
+
+# ========================
+# Coverage
+# ========================
+coverage/
+
+# ========================
+# Composer (IMPORTANTE)
+# ========================
+# NÃO ignorar esses arquivos:
+!composer.json
+!composer.lock
