@@ -14,7 +14,12 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { supabase } from '@lib/supabase';
 import { RootStackParamList } from '@context/types';
-import { formatCpf, formatDate, formatRg, formatTelefone } from '@core/utils/format';
+import {
+  formatCpf,
+  formatDate,
+  formatRg,
+  formatTelefone,
+} from '@core/utils/format';
 import SidebarAlert from '@components/sidebars/Sidebaralert';
 
 const generos = ['Masculino', 'Feminino', 'Prefiro não dizer'];

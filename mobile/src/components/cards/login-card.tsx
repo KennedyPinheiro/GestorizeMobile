@@ -84,14 +84,14 @@ const styles = StyleSheet.create({
   },
 
   subtitle: {
-    fontSize: 14,
+    fontSize: 17,
     color: '#444',
     marginTop: 6,
     marginBottom: 20,
   },
 
   label: {
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: '600',
     marginBottom: 8,
     marginTop: 10,
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     color: '#1E5ED6',
     textAlign: 'right',
     marginTop: 10,
-    marginBottom: 20,
+    marginBottom: 25,
     fontWeight: '500',
   },
 });

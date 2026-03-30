@@ -14,8 +14,9 @@ type props = {
   subtitle?: string;
   onBackPress?: () => void;
 
-  rightType?: 'menu' | 'add';
+  rightType?: 'menu' | 'add' | 'download';
   onAddPress?: () => void;
+  onDownloadPress?: () => void;
 };
 
 const Nav = ({
@@ -24,6 +25,7 @@ const Nav = ({
   onBackPress,
   rightType = 'add',
   onAddPress,
+  onDownloadPress,
 }: props) => {
   const { colors } = useTheme();
   const { open } = useMenu();
@@ -40,8 +42,71 @@ const Nav = ({
   const handleRightPress = () => {
     if (rightType === 'menu') {
       open();
-    } else {
+    } else if (rightType === 'add') {
       onAddPress?.();
+    } else if (rightType === 'download') {
+      onDownloadPress?.();
+    }
+  };
+
+  const renderRightIcon = () => {
+    switch (rightType) {
+      case 'menu':
+        return (
+          <Pressable
+            onPress={handleRightPress}
+            style={({ pressed }) => [
+              styles.iconButton,
+              {
+                backgroundColor: pressed
+                  ? isDarkBackground
+                    ? '#ffffff20'
+                    : '#00000020'
+                  : 'transparent',
+              },
+            ]}
+          >
+            <Ionicons name="menu" size={28} color={iconColor} />
+          </Pressable>
+        );
+      case 'add':
+        return (
+          <TouchableOpacity
+            style={[
+              styles.actionButton,
+              {
+                backgroundColor: isDarkBackground ? '#ffffff' : '#062046',
+              },
+            ]}
+            onPress={handleRightPress}
+          >
+            <Ionicons
+              name="add"
+              size={24}
+              color={isDarkBackground ? '#0f172a' : '#ffffff'}
+            />
+          </TouchableOpacity>
+        );
+      case 'download':
+        return (
+          <TouchableOpacity
+            style={[
+              styles.actionButton,
+              {
+                backgroundColor: isDarkBackground ? '#ffffff' : '#062046',
+              },
+            ]}
+            onPress={handleRightPress}
+          >
+            <Ionicons
+              name="download-outline"
+              size={24}
+              color={isDarkBackground ? '#0f172a' : '#ffffff'}
+            />
+          </TouchableOpacity>
+        );
+      default:
+        return null;
     }
   };
 
@@ -62,39 +127,7 @@ const Nav = ({
           </View>
         </TouchableOpacity>
 
-        {rightType === 'menu' ? (
-          <Pressable
-            onPress={handleRightPress}
-            style={({ pressed }) => [
-              styles.iconButton,
-              {
-                backgroundColor: pressed
-                  ? isDarkBackground
-                    ? '#ffffff20'
-                    : '#00000020'
-                  : 'transparent',
-              },
-            ]}
-          >
-            <Ionicons name="menu" size={28} color={iconColor} />
-          </Pressable>
-        ) : (
-          <TouchableOpacity
-            style={[
-              styles.addButton,
-              {
-                backgroundColor: isDarkBackground ? '#ffffff' : '#062046',
-              },
-            ]}
-            onPress={handleRightPress}
-          >
-            <Ionicons
-              name="add"
-              size={24}
-              color={isDarkBackground ? '#0f172a' : '#ffffff'}
-            />
-          </TouchableOpacity>
-        )}
+        {renderRightIcon()}
       </View>
     </View>
   );
@@ -148,13 +181,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 
-  addButton: {
+  actionButton: {
     width: 44,
     height: 44,
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-
     shadowColor: '#000',
     shadowOpacity: 0.15,
     shadowRadius: 4,

@@ -5,8 +5,8 @@ import { useTheme } from '@context/ThemeContext';
 type Props = {
   nome: string;
   email: string;
-  local?: string; 
-  tipo?: string; 
+  local?: string;
+  tipo?: string;
   onPress?: () => void;
 };
 
@@ -21,9 +21,7 @@ const Fornecedor = ({ nome, email, local, tipo, onPress }: Props) => {
   const circleColor = isDark ? '#09377B' : 'rgba(6, 32, 70, 0.22)';
   const arrowColor = isDark ? '#ffffff' : '#062046';
 
-  const badgeBg = isDark
-    ? 'rgba(255,255,255,0.2)'
-    : 'rgba(0,104,255,0.2)';
+  const badgeBg = isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,104,255,0.2)';
 
   const badgeText = isDark ? '#ffffff' : '#062046';
 
@@ -50,9 +48,7 @@ const Fornecedor = ({ nome, email, local, tipo, onPress }: Props) => {
 
           <View>
             <View style={styles.row}>
-              <Text style={[styles.title, { color: textColor }]}>
-                {nome}
-              </Text>
+              <Text style={[styles.title, { color: textColor }]}>{nome}</Text>
 
               {tipo && (
                 <View style={[styles.badge, { backgroundColor: badgeBg }]}>
@@ -69,14 +65,10 @@ const Fornecedor = ({ nome, email, local, tipo, onPress }: Props) => {
               )}
             </View>
 
-            <Text style={[styles.subtitle, { color: subText }]}>
-              {email}
-            </Text>
+            <Text style={[styles.subtitle, { color: subText }]}>{email}</Text>
 
             {local && (
-              <Text style={[styles.subtitle, { color: subText }]}>
-                {local}
-              </Text>
+              <Text style={[styles.subtitle, { color: subText }]}>{local}</Text>
             )}
           </View>
         </View>

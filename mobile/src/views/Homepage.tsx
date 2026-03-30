@@ -3,7 +3,6 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { Text } from 'react-native-paper';
 import HomeHeader from '@components/HomeHeader';
-import { SideMenu } from '@components/SideMenu';
 import { NavButton } from '@components/botoes/nav-buttons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -70,7 +69,7 @@ const Homepage = () => {
               icon="chart-bar"
               label="Relatórios"
               description="Em breve"
-              disabled
+              onClick={() => navigation.navigate('Relatorios')}
               containerStyle={styles.gridItem}
             />
           </View>

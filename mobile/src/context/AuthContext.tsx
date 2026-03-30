@@ -73,7 +73,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       await postLogout();
     } catch (e) {
-      Toast.error(formatErrorMessage(e, 'Erro ao sair:'));
+      Toast.show({
+        type: 'error',
+        text1: 'Erro ao sair',
+        text2: formatErrorMessage(e, 'Erro ao sair:'),
+      });
     } finally {
       setToken(null);
       setUser(null);

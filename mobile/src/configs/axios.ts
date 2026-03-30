@@ -39,8 +39,4 @@ api.interceptors.response.use(
   },
 );
 
-  return instance;
-};
-
-const api = getAxios();
 export default api;

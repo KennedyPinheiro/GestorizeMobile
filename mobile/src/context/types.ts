@@ -183,6 +183,7 @@ export type RoleType = {
 };
 
 export type RootStackParamList = {
+  Relatorios:undefined
   Login: undefined;
   ResetPassword: undefined;
   ForgoutPassword: undefined;

@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
   View,
   StyleSheet,
@@ -36,6 +36,34 @@ const Login = ({ navigation }: Props) => {
     ? require('@assets/images/LogoLight.png')
     : require('@assets/images/Logo.png');
 
+  useEffect(() => {
+    const showSub = Keyboard.addListener('keyboardDidShow', () => {});
+
+    const hideSub = Keyboard.addListener('keyboardDidHide', () => {
+      Animated.parallel([
+        Animated.timing(translateYCard, {
+          toValue: 0,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+        Animated.timing(translateYLogo, {
+          toValue: 0,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+        Animated.timing(scaleLogo, {
+          toValue: 1,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    });
+
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
+  }, []);
   const handleLoginAnimation = () => {
     Animated.parallel([
       Animated.timing(translateYCard, {
@@ -61,6 +89,7 @@ const Login = ({ navigation }: Props) => {
       <KeyboardAvoidingView
         style={[styles.container, { backgroundColor: headerBackground }]}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={-70}
       >
         <View style={styles.header}>
           <Animated.Image
@@ -129,7 +158,7 @@ const styles = StyleSheet.create({
   },
   cardContainer: {
     flex: 1,
-    backgroundColor: '#EDEDED',
+    backgroundColor: '#ffffff',
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
     padding: 20,

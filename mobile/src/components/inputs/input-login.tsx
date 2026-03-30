@@ -1,5 +1,12 @@
-import React, { useState , useRef } from 'react';
-import { View, TextInput, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import React, { useState, useRef } from 'react';
+import {
+  View,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  Keyboard,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@context/ThemeContext';
 
@@ -46,47 +53,40 @@ export default function InputLogin({
   const placeholderColor = isDark ? '#ffffff80' : '#00000080';
 
   return (
-    <TouchableWithoutFeedback
-      onPress={() => {
-        Keyboard.dismiss();
-        inputRef.current?.blur();
-        setIsFocused(false);
-      }}
+    <View
+      style={[
+        styles.container,
+        {
+          backgroundColor: isFocused ? focusedBg : backgroundColor,
+          borderColor: isFocused ? colors.primary : 'transparent',
+        },
+      ]}
     >
-      <View
-        style={[
-          styles.container,
-          {
-            backgroundColor: isFocused ? focusedBg : backgroundColor,
-            borderColor: isFocused ? colors.primary : 'transparent',
-          },
-        ]}
-      >
-        <Ionicons name={icon} size={24} color={iconColor} />
+      <Ionicons name={icon} size={24} color={iconColor} />
 
-        <TextInput
-          ref={inputRef}
-          style={[styles.input, { color: textColor }]}
-          placeholder={placeholder}
-          placeholderTextColor={placeholderColor}
-          value={value}
-          onChangeText={onChangeText}
-          secureTextEntry={isSecure}
-          underlineColorAndroid="transparent"
-          onFocus={() => setIsFocused(true)}
-        />
+      <TextInput
+        ref={inputRef}
+        style={[styles.input, { color: textColor }]}
+        placeholder={placeholder}
+        placeholderTextColor={placeholderColor}
+        value={value}
+        onChangeText={onChangeText}
+        secureTextEntry={isSecure}
+        underlineColorAndroid="transparent"
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
+      />
 
-        {secureTextEntry && (
-          <TouchableOpacity onPress={() => setIsSecure(!isSecure)}>
-            <Ionicons
-              name={isSecure ? 'eye-off-outline' : 'eye-outline'}
-              size={24}
-              color={iconColor}
-            />
-          </TouchableOpacity>
-        )}
-      </View>
-    </TouchableWithoutFeedback>
+      {secureTextEntry && (
+        <TouchableOpacity onPress={() => setIsSecure(!isSecure)}>
+          <Ionicons
+            name={isSecure ? 'eye-off-outline' : 'eye-outline'}
+            size={24}
+            color={iconColor}
+          />
+        </TouchableOpacity>
+      )}
+    </View>
   );
 }
 

@@ -32,12 +32,13 @@ const Funcionario = ({ nome, email, role, onPress }: Props) => {
       ? 'rgba(255,215,0,0.3)'
       : 'rgba(255,255,255,0.2)'
     : role === 'Gestor'
-    ? 'rgba(255,215,0,0.25)'
-    : 'rgba(0,104,255,0.2)';
+      ? 'rgba(255,215,0,0.25)'
+      : 'rgba(0,104,255,0.2)';
 
   const badgeText = isDark ? '#ffffff' : '#062046';
 
-  const iconName = role === 'Gestor' ? 'person-circle-outline' : 'person-outline';
+  const iconName =
+    role === 'Gestor' ? 'person-circle-outline' : 'person-outline';
 
   return (
     <TouchableOpacity activeOpacity={0.9} onPress={onPress}>
@@ -63,9 +64,7 @@ const Funcionario = ({ nome, email, role, onPress }: Props) => {
           <View>
             {/* NOME + ROLE */}
             <View style={styles.row}>
-              <Text style={[styles.title, { color: textColor }]}>
-                {nome}
-              </Text>
+              <Text style={[styles.title, { color: textColor }]}>{nome}</Text>
 
               <View style={[styles.badge, { backgroundColor: badgeBg }]}>
                 <Text
@@ -80,9 +79,7 @@ const Funcionario = ({ nome, email, role, onPress }: Props) => {
               </View>
             </View>
 
-            <Text style={[styles.subtitle, { color: subText }]}>
-              {email}
-            </Text>
+            <Text style={[styles.subtitle, { color: subText }]}>{email}</Text>
           </View>
         </View>
 

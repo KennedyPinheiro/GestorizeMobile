@@ -30,22 +30,22 @@ const Funcionarios = () => {
   });
 
   const allData = useMemo<FuncionarioType[]>(
-  () => [
-    {
-      id: '1',
-      nome: 'Kennedy Xavier',
-      email: 'kennedy@email.com',
-      role: 'Gestor',
-    },
-    {
-      id: '2',
-      nome: 'João Silva',
-      email: 'joao@email.com',
-      role: 'Funcionario',
-    },
-  ],
-  [],
-);
+    () => [
+      {
+        id: '1',
+        nome: 'Kennedy Xavier',
+        email: 'kennedy@email.com',
+        role: 'Gestor',
+      },
+      {
+        id: '2',
+        nome: 'João Silva',
+        email: 'joao@email.com',
+        role: 'Funcionario',
+      },
+    ],
+    [],
+  );
 
   const roles = [
     { id: '1', label: 'Gestor' },
