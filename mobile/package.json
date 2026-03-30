@@ -38,10 +38,19 @@
     "ui": "^0.2.4"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.4",
     "@types/react": "~19.2.2",
+    "@typescript-eslint/eslint-plugin": "^8.57.2",
+    "@typescript-eslint/parser": "^8.57.2",
     "babel-plugin-module-resolver": "^5.0.2",
+    "eslint": "^9.39.4",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "globals": "^17.4.0",
+    "jiti": "^2.6.1",
     "prettier": "^3.8.1",
-    "typescript": "~5.9.2"
+    "typescript": "~5.9.2",
+    "typescript-eslint": "^8.57.2"
   },
   "private": true
 }

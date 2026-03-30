@@ -1,9 +1,9 @@
 import Nav from '@components/utilities/Nav';
-import { FlatList, StyleSheet, View } from 'react-native';
+import { FlatList, NativeScrollEvent, NativeSyntheticEvent, StyleSheet, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTheme } from '@context/ThemeContext';
 import SearchBar from '@components/ui/SearchBar';
-import { useState, useRef, useMemo } from 'react';
+import { useState, useRef, useMemo, useCallback } from 'react';
 import TooltipChip from '@components/botoes/TooltipChip';
 import { Animated } from 'react-native';
 import Funcionario, { FuncionarioType } from '@components/ui-lists/Funcionario';
@@ -15,19 +15,31 @@ const Funcionarios = () => {
   const [search, setSearch] = useState('');
   const [selectedRole, setSelectedRole] = useState<string | null>(null);
 
-  const scrollY = useRef(new Animated.Value(0)).current;
-
-  const opacity = scrollY.interpolate({
-    inputRange: [0, 100],
-    outputRange: [1, 0],
-    extrapolate: 'clamp',
-  });
-
-  const headerTranslate = scrollY.interpolate({
-    inputRange: [0, 120],
-    outputRange: [0, -120],
-    extrapolate: 'clamp',
-  });
+ 
+   const scrollY = useRef(new Animated.Value(0)).current;
+ 
+   const opacity = useMemo(() => {
+     return scrollY.interpolate({
+       inputRange: [0, 100],
+       outputRange: [1, 0],
+       extrapolate: 'clamp',
+     });
+   }, [scrollY]);
+ 
+   const headerTranslate = useMemo(() => {
+     return scrollY.interpolate({
+       inputRange: [0, 120],
+       outputRange: [0, -120],
+       extrapolate: 'clamp',
+     });
+   }, [scrollY]);
+ 
+   const handleScroll = useCallback(
+     (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+       scrollY.setValue(event.nativeEvent.contentOffset.y);
+     },
+     [scrollY],
+   );
 
   const allData = useMemo<FuncionarioType[]>(
     () => [
@@ -130,11 +142,13 @@ const Funcionarios = () => {
             onPress={() => console.log(item)}
           />
         )}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-          { useNativeDriver: true },
-        )}
+        onScroll={handleScroll}
         scrollEventThrottle={16}
+        onEndReachedThreshold={0.5}
+        initialNumToRender={10}
+        maxToRenderPerBatch={10}
+        windowSize={5}
+        removeClippedSubviews
       />
     </View>
   );

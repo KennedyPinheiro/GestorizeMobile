@@ -1,9 +1,15 @@
 import Nav from '@components/utilities/Nav';
-import { FlatList, StyleSheet, View } from 'react-native';
+import {
+  FlatList,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  StyleSheet,
+  View,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTheme } from '@context/ThemeContext';
 import SearchBar from '@components/ui/SearchBar';
-import { useState, useRef, useMemo } from 'react';
+import { useState, useRef, useMemo, useCallback } from 'react';
 import TooltipChip from '@components/botoes/TooltipChip';
 import { Animated } from 'react-native';
 import Fornecedor from '@components/ui-lists/Fornecedor';
@@ -17,18 +23,28 @@ const Fornecedores = () => {
 
   const scrollY = useRef(new Animated.Value(0)).current;
 
-  const opacity = scrollY.interpolate({
-    inputRange: [0, 100],
-    outputRange: [1, 0],
-    extrapolate: 'clamp',
-  });
+  const opacity = useMemo(() => {
+    return scrollY.interpolate({
+      inputRange: [0, 100],
+      outputRange: [1, 0],
+      extrapolate: 'clamp',
+    });
+  }, [scrollY]);
 
-  const headerTranslate = scrollY.interpolate({
-    inputRange: [0, 120],
-    outputRange: [0, -120],
-    extrapolate: 'clamp',
-  });
+  const headerTranslate = useMemo(() => {
+    return scrollY.interpolate({
+      inputRange: [0, 120],
+      outputRange: [0, -120],
+      extrapolate: 'clamp',
+    });
+  }, [scrollY]);
 
+  const handleScroll = useCallback(
+    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+      scrollY.setValue(event.nativeEvent.contentOffset.y);
+    },
+    [scrollY],
+  );
   const allData = useMemo(
     () => [
       {
@@ -151,10 +167,7 @@ const Fornecedores = () => {
             onPress={() => console.log(item)}
           />
         )}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-          { useNativeDriver: true },
-        )}
+        onScroll={handleScroll}
         scrollEventThrottle={16}
       />
     </View>

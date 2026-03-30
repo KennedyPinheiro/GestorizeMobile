@@ -7,13 +7,11 @@ import { NavButton } from '@components/botoes/nav-buttons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '@context/types';
-import { useAuth } from '@context/AuthContext';
 import { useTheme } from '@context/ThemeContext';
 
 const Homepage = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const { user, signOut } = useAuth();
   const { colors } = useTheme();
 
   return (
@@ -33,42 +31,47 @@ const Homepage = () => {
             <NavButton
               icon="account-group"
               label="Clientes"
-              description="Gerenciar cadastro de clientes"
+              description="Cadastre, edite e acompanhe seus clientes"
               onClick={() => navigation.navigate('Clientes')}
               containerStyle={styles.gridItem}
             />
+
             <NavButton
               icon="cube-outline"
               label="Produtos"
-              description="Catálogo e estoque"
+              description="Gerencie catálogo, preços e estoque"
               onClick={() => navigation.navigate('Produtos')}
               containerStyle={styles.gridItem}
             />
+
             <NavButton
               icon="truck-fast-outline"
               label="Fornecedores"
-              description="Parceiros comerciais"
+              description="Controle parceiros e histórico de compras"
               onClick={() => navigation.navigate('Fornecedores')}
               containerStyle={styles.gridItem}
             />
+
             <NavButton
               icon="file-document-outline"
               label="Orçamentos"
-              description="Criar e gerenciar propostas"
+              description="Crie, organize e acompanhe propostas"
               onClick={() => navigation.navigate('Orcamentos')}
               containerStyle={styles.gridItem}
             />
+
             <NavButton
               icon="account-tie"
               label="Funcionários"
-              description="Equipe interna"
+              description="Gerencie equipe, funções e acessos"
               onClick={() => navigation.navigate('Funcionarios')}
               containerStyle={styles.gridItem}
             />
+
             <NavButton
               icon="chart-bar"
               label="Relatórios"
-              description="Em breve"
+              description="Visualize métricas e desempenhos"
               onClick={() => navigation.navigate('Relatorios')}
               containerStyle={styles.gridItem}
             />
@@ -83,15 +86,17 @@ const Homepage = () => {
           <View style={styles.grid}>
             <NavButton
               icon="cog"
-              label="Funcionários"
-              description="Equipe interna"
-              onClick={() => navigation.navigate('Funcionarios')}
+              label="Configurações"
+              description="Personalize preferências e ajustes do sistema"
+              onClick={() => {}}
               containerStyle={styles.gridItem}
             />
+
             <NavButton
               icon="help-circle"
-              label="Relatórios"
-              description="Em breve"
+              label="Ajuda"
+              description="Suporte, dúvidas frequentes e orientações"
+              onClick={() => {}}
               containerStyle={styles.gridItem}
             />
           </View>

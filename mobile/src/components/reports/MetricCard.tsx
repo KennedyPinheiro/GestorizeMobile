@@ -2,7 +2,6 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTheme } from '@context/ThemeContext';
-import { Animated } from 'react-native';
 
 type MetricCardProps = {
   title: string;
