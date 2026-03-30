@@ -183,7 +183,7 @@ export type RoleType = {
 };
 
 export type RootStackParamList = {
-  Relatorios:undefined
+  Relatorios: undefined;
   Login: undefined;
   ResetPassword: undefined;
   ForgoutPassword: undefined;
@@ -195,114 +195,9 @@ export type RootStackParamList = {
   Fornecedores: { novoFornecedor: boolean } | undefined;
   PessoaFisica: undefined;
   PessoaJuridica: undefined;
-  CadastroProdutos: undefined;
-  CadastroFornecedores: undefined;
-  CadastroFuncionarios: undefined;
-  PerfilProduto: {
-    id: number;
-    nome: string;
-    quantidade: number;
-    descricao?: string;
-    data_validade?: string;
-    data_de_entrada?: string;
-    preco_custo?: string | number;
-    margem_lucro?: string | number;
-    fornecedor_razao_social?: string;
-    categoria_titulo: string;
-    categoria_id: number;
-    fornecedor_id: number;
-    medida_id: number;
-    medida_titulo: string;
-  };
-  PerfilFornecedor: {
-    id: number;
-    razao_social: string;
-    email: string;
-    ramo_de_atividade: string;
-    cnpj: string;
-    nome_responsavel: string;
-    telefone: string;
-    chave_pix: string;
-    rua: string;
-    bairro: string;
-    cidade: string;
-    estado: string;
-    cep: string;
-    numero: string;
-    endereco_id: number;
-  };
-  PerfilPessoaJuridica: {
-    id: number;
-    razao_social: string;
-    email: string;
-    nome_fantasia: string;
-    cnpj: string;
-    nome_do_responsavel: string;
-    cpf_responsavel: string;
-    cargo_do_respresentante: string;
-    telefone: string;
-    rua: string;
-    bairro: string;
-    cidade: string;
-    estado: string;
-    cep: string;
-    numero: string;
-    endereco_id: number;
-  };
-  PerfilPessoaFisica: {
-    id: number;
-    nome: string;
-    email: string;
-    telefone: string;
-    genero: string;
-    estado_civil: string;
-    data_nascimento: string;
-    rg: string;
-    cpf: string;
-    rua: string;
-    bairro: string;
-    cidade: string;
-    estado: string;
-    cep: string;
-    numero: string;
-    endereco_id: number;
-  };
-  PerfilFuncionario: {
-    id: string;
-    nome: string;
-    funcao: string;
-    email: string;
-    data_nascimento: string;
-    genero: string;
-    estado_civil: string;
-    rg: string;
-    cpf: string;
-    telefone: string;
-    rua: string;
-    bairro: string;
-    cidade: string;
-    estado: string;
-    cep: string;
-    numero: string;
-    endereco_id: number;
-  };
-  UserPerfil: {
-    id: string;
-    nome: string;
-    funcao: string;
-    email: string;
-    data_nascimento: string;
-    genero: string;
-    estado_civil: string;
-    rg: string;
-    cpf: string;
-    telefone: string;
-    endereco_id: number;
-    rua: string;
-    bairro: string;
-    cidade: string;
-    estado: string;
-    cep: string;
-    numero: string;
-  };
+
+  NovoFuncionario: undefined;
+  NovoCliente: undefined;
+  NovoProduto: undefined;
+  NovoFornecedor: undefined;
 };

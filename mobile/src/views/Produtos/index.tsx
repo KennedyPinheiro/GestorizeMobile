@@ -8,9 +8,12 @@ import TooltipChip from '@components/botoes/TooltipChip';
 import { Animated } from 'react-native';
 import Produto from '@components/ui-lists/Produto';
 import { NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '@context/types';
 
 const Produtos = () => {
-  const navigation = useNavigation();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { colors } = useTheme();
 
   const [search, setSearch] = useState('');
@@ -115,6 +118,7 @@ const Produtos = () => {
         subtitle={`${filteredData.length} cadastrados`}
         onBackPress={() => navigation.goBack()}
         rightType="add"
+        onAddPress={() => navigation.navigate('NovoProduto')}
       />
 
       <Animated.View
@@ -130,7 +134,7 @@ const Produtos = () => {
         }}
       >
         <SearchBar
-          placehoder="Buscar por nome ou categoria"
+          placeholder="Buscar por nome ou categoria"
           value={search}
           onChangeText={setSearch}
         />

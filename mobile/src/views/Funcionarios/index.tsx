@@ -1,5 +1,11 @@
 import Nav from '@components/utilities/Nav';
-import { FlatList, NativeScrollEvent, NativeSyntheticEvent, StyleSheet, View } from 'react-native';
+import {
+  FlatList,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  StyleSheet,
+  View,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTheme } from '@context/ThemeContext';
 import SearchBar from '@components/ui/SearchBar';
@@ -7,39 +13,41 @@ import { useState, useRef, useMemo, useCallback } from 'react';
 import TooltipChip from '@components/botoes/TooltipChip';
 import { Animated } from 'react-native';
 import Funcionario, { FuncionarioType } from '@components/ui-lists/Funcionario';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '@context/types';
 
 const Funcionarios = () => {
-  const navigation = useNavigation();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { colors } = useTheme();
 
   const [search, setSearch] = useState('');
   const [selectedRole, setSelectedRole] = useState<string | null>(null);
 
- 
-   const scrollY = useRef(new Animated.Value(0)).current;
- 
-   const opacity = useMemo(() => {
-     return scrollY.interpolate({
-       inputRange: [0, 100],
-       outputRange: [1, 0],
-       extrapolate: 'clamp',
-     });
-   }, [scrollY]);
- 
-   const headerTranslate = useMemo(() => {
-     return scrollY.interpolate({
-       inputRange: [0, 120],
-       outputRange: [0, -120],
-       extrapolate: 'clamp',
-     });
-   }, [scrollY]);
- 
-   const handleScroll = useCallback(
-     (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-       scrollY.setValue(event.nativeEvent.contentOffset.y);
-     },
-     [scrollY],
-   );
+  const scrollY = useRef(new Animated.Value(0)).current;
+
+  const opacity = useMemo(() => {
+    return scrollY.interpolate({
+      inputRange: [0, 100],
+      outputRange: [1, 0],
+      extrapolate: 'clamp',
+    });
+  }, [scrollY]);
+
+  const headerTranslate = useMemo(() => {
+    return scrollY.interpolate({
+      inputRange: [0, 120],
+      outputRange: [0, -120],
+      extrapolate: 'clamp',
+    });
+  }, [scrollY]);
+
+  const handleScroll = useCallback(
+    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+      scrollY.setValue(event.nativeEvent.contentOffset.y);
+    },
+    [scrollY],
+  );
 
   const allData = useMemo<FuncionarioType[]>(
     () => [
@@ -83,6 +91,7 @@ const Funcionarios = () => {
         subtitle={`${filteredData.length} cadastrados`}
         onBackPress={() => navigation.goBack()}
         rightType="add"
+        onAddPress={() => navigation.navigate('NovoFuncionario')}
       />
 
       <Animated.View
@@ -98,7 +107,7 @@ const Funcionarios = () => {
         }}
       >
         <SearchBar
-          placehoder="Buscar por nome ou email"
+          placeholder="Buscar por nome ou email"
           value={search}
           onChangeText={setSearch}
         />

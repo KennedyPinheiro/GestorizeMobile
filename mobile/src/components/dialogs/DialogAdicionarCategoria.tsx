@@ -6,7 +6,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import EditableTextCard from '@components/EditableTextCard';
+import EditableTextCard from '@components/InputBasico';
 import Button from '@components/botoes/Button';
 import ErrorSidebarAlert from '@components/sidebars/ErrorSidebarAlert';
 import { CategoriaType } from '@context/types';

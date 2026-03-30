@@ -4,11 +4,11 @@ import { useTheme } from '@context/ThemeContext';
 
 type Props = {
   value?: string;
-  placehoder?: string;
+  placeholder?: string;
   onChangeText?: (text: string) => void;
 };
 
-const SearchBar = ({ value, onChangeText, placehoder }: Props) => {
+const SearchBar = ({ value, onChangeText, placeholder }: Props) => {
   const { colors } = useTheme();
   const isDark = colors.background !== '#ffffff';
 
@@ -28,7 +28,7 @@ const SearchBar = ({ value, onChangeText, placehoder }: Props) => {
       <TextInput
         value={value}
         onChangeText={onChangeText}
-        placeholder={placehoder}
+        placeholder={placeholder}
         placeholderTextColor={placeholderColor}
         style={[styles.input, { color: textColor }]}
       />

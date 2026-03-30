@@ -134,7 +134,7 @@ const Orcamentos = () => {
         }}
       >
         <SearchBar
-          placehoder="Busque pelo título ou cliente"
+          placeholder="Busque pelo título ou cliente"
           value={search}
           onChangeText={setSearch}
         />

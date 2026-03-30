@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -11,25 +11,22 @@ import {
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '@context/types';
-import { useAuth } from '@context/AuthContext';
 import LoginCard from '@components/cards/login-card';
 import { useTheme } from '@context/ThemeContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
-const Login = ({ navigation }: Props) => {
-  const { colors, isDark } = useTheme();
+export const Login: React.FC<Props> = () => {
+  const { isDark } = useTheme();
 
-  const translateYCard = useRef(new Animated.Value(0)).current;
-  const translateYLogo = useRef(new Animated.Value(0)).current;
-  const scaleLogo = useRef(new Animated.Value(1)).current;
+  const [translateYCard] = useState(new Animated.Value(0));
+  const [translateYLogo] = useState(new Animated.Value(0));
+  const [scaleLogo] = useState(new Animated.Value(1));
 
   const headerBackground = isDark ? '#ffffff' : '#0D2B52';
   const isDarkHeader = headerBackground !== '#ffffff';
-
   const textColor = isDarkHeader ? '#ffffff' : '#0f172a';
   const subtitleColor = isDarkHeader ? '#ffffffcc' : '#475569';
-
   const cardBackground = isDark ? '#0b274f' : '#ffffff';
 
   const logoSource = isDarkHeader
@@ -63,7 +60,8 @@ const Login = ({ navigation }: Props) => {
       showSub.remove();
       hideSub.remove();
     };
-  }, []);
+  }, [translateYCard, translateYLogo, scaleLogo]);
+
   const handleLoginAnimation = () => {
     Animated.parallel([
       Animated.timing(translateYCard, {

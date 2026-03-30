@@ -3,35 +3,28 @@ import React from 'react';
 import Toast from 'react-native-toast-message';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Login from '@views/Login';
 import { AuthProvider, useAuth } from '@context/AuthContext';
+import { ThemeProvider, useThemeToggle } from '@context/ThemeContext';
+import { MenuProvider } from '@context/MenuContext';
+import { RootStackParamList } from '@context/types';
+import Login from '@views/Login';
 import Homepage from '@views/Homepage';
 import Clientes from '@views/Clientes/index';
-import CadastroClientePF from '@views/Cadastros/CadastroClientePF';
-import CadastroClientePJ from '@views/Cadastros/CadastroClientePj';
 import Produtos from '@views/Produtos/index';
-import CadastroProdutos from '@views/Cadastros/CadastroProdutos';
 import Fornecedores from '@views/Fornecedores/index';
-import CadastroFornecedores from '@views/Cadastros/CadastroFornecedores';
 import Funcionarios from '@views/Funcionarios/index';
-import CadastroFuncionarios from '@views/Cadastros/CadastroFuncionarios';
-import { RootStackParamList } from '@context/types';
-import PerfilProduto from '@views/perfil/PerfilProduto';
-import PerfilFornecedor from '@views/perfil/PerfilFornecedor';
-import PerfilPessoaFisica from '@views/perfil/PerfilPessoaFisica';
-import PerfilPessoaJuridica from '@views/perfil/PerfilPessoaJuridica';
-import PerfilFuncionario from '@views/perfil/PerfilFuncionario';
+import Orcamentos from '@views/Orcamentos/index';
+import Relatorios from '@views/Relatorios/index';
 import ForgoutPassword from '@views/ForgoutPassword';
 import ResetPassword from '@views/ResetPasswor';
-import UserPerfil from '@views/perfil/UserPerfil';
 import { Provider as PaperProvider } from 'react-native-paper';
-import { ThemeProvider, useThemeToggle } from '@context/ThemeContext';
 import lightTheme from './src/theme/paperTheme';
 import darkTheme from './src/theme/paperThemeDark';
-import Orcamentos from '@views/Orcamentos/index';
-import { MenuProvider } from '@context/MenuContext';
 import toastConfig from '@components/ui/ToastConfig';
-import Relatorios from '@views/Relatorios/index';
+import NovoFuncionario from '@views/Funcionarios/NovoFuncionario';
+import NovoCliente from '@views/Clientes/NovoCliente';
+import NovoFornecedor from '@views/Fornecedores/NovoFornecedor';
+import NovoProduto from '@views/Produtos/NovoProduto';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -58,41 +51,14 @@ const AppNavigator = () => {
             <Stack.Screen name="Clientes" component={Clientes} />
             <Stack.Screen name="Orcamentos" component={Orcamentos} />
             <Stack.Screen name="Funcionarios" component={Funcionarios} />
-            <Stack.Screen name="PessoaFisica" component={CadastroClientePF} />
-            <Stack.Screen name="PerfilProduto" component={PerfilProduto} />
             <Stack.Screen name="Fornecedores" component={Fornecedores} />
             <Stack.Screen name="Produtos" component={Produtos} />
-            <Stack.Screen name='Relatorios' component={Relatorios}/>
-            <Stack.Screen
-              name="PerfilFornecedor"
-              component={PerfilFornecedor}
-            />
-            <Stack.Screen
-              name="PerfilPessoaFisica"
-              component={PerfilPessoaFisica}
-            />
-            <Stack.Screen
-              name="PerfilPessoaJuridica"
-              component={PerfilPessoaJuridica}
-            />
-            <Stack.Screen
-              name="PerfilFuncionario"
-              component={PerfilFuncionario}
-            />
-            <Stack.Screen name="UserPerfil" component={UserPerfil} />
-            <Stack.Screen name="PessoaJuridica" component={CadastroClientePJ} />
-            <Stack.Screen
-              name="CadastroProdutos"
-              component={CadastroProdutos}
-            />
-            <Stack.Screen
-              name="CadastroFornecedores"
-              component={CadastroFornecedores}
-            />
-            <Stack.Screen
-              name="CadastroFuncionarios"
-              component={CadastroFuncionarios}
-            />
+            <Stack.Screen name="Relatorios" component={Relatorios} />
+
+            <Stack.Screen name="NovoFuncionario" component={NovoFuncionario} />
+            <Stack.Screen name="NovoCliente" component={NovoCliente} />
+            <Stack.Screen name="NovoFornecedor" component={NovoFornecedor} />
+            <Stack.Screen name="NovoProduto" component={NovoProduto} />
           </>
         )}
       </Stack.Navigator>

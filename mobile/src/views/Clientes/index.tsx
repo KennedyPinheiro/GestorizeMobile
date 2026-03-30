@@ -9,18 +9,20 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { useTheme } from '@context/ThemeContext';
 import SearchBar from '@components/ui/SearchBar';
-import { useState, useRef, useEffect, useMemo, useCallback } from 'react';
-import {} from 'react-native-paper';
+import { useState, useRef, useMemo, useCallback, useEffect } from 'react';
 import TooltipChip from '@components/botoes/TooltipChip';
 import { Animated } from 'react-native';
 import Cliente, { ClienteType } from '@components/ui-lists/Cliente';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '@context/types';
 
 const Clientes = () => {
-  const navigation = useNavigation();
+  const navigation =
+      useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { colors } = useTheme();
   const [selectedTipo, setSelectedTipo] = useState<'PF' | 'PJ' | null>(null);
   const [search, setSearch] = useState('');
-
+  const [visibleData, setVisibleData] = useState<ClienteType[]>([]);
   const scrollY = useRef(new Animated.Value(0)).current;
 
   const opacity = useMemo(() => {
@@ -58,20 +60,21 @@ const Clientes = () => {
     [],
   );
 
-  const filteredData = allData.filter((item) => {
-    const matchTipo = selectedTipo ? item.tipo === selectedTipo : true;
+  const filteredData = useMemo(() => {
+    return allData.filter((item) => {
+      const matchTipo = selectedTipo ? item.tipo === selectedTipo : true;
+      const matchSearch = search === '' || 
+        item.nome.toLowerCase().includes(search.toLowerCase()) ||
+        item.email.toLowerCase().includes(search.toLowerCase());
 
-    const matchSearch =
-      item.nome.toLowerCase().includes(search.toLowerCase()) ||
-      item.email.toLowerCase().includes(search.toLowerCase());
-
-    return matchTipo && matchSearch;
-  });
-  const [visibleData, setVisibleData] = useState(filteredData.slice(0, 10));
+      return matchTipo && matchSearch;
+    });
+  }, [allData, selectedTipo, search]);
 
   useEffect(() => {
     setVisibleData(filteredData.slice(0, 10));
-  }, [selectedTipo, search]);
+  }, [filteredData]);
+
 
   const loadMore = () => {
     if (visibleData.length >= filteredData.length) return;
@@ -83,16 +86,18 @@ const Clientes = () => {
 
     setVisibleData((prev) => [...prev, ...nextItems]);
   };
+
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <Nav
         title="Clientes"
-        subtitle="100 cadastrados"
+        subtitle={`${filteredData.length} cadastrados`}
         onBackPress={() => navigation.goBack()}
         rightType="add"
+        onAddPress={()=> navigation.navigate('NovoCliente')}
       />
+      
       <Animated.View
-        pointerEvents="box-none"
         style={{
           position: 'absolute',
           marginTop: 12,
@@ -102,10 +107,11 @@ const Clientes = () => {
           transform: [{ translateY: headerTranslate }],
           opacity,
           zIndex: 10,
+          paddingHorizontal: 16, 
         }}
       >
         <SearchBar
-          placehoder="Buque pelo titulo ou cliente"
+          placeholder="Busque pelo nome ou email" 
           value={search}
           onChangeText={setSearch}
         />
@@ -119,7 +125,7 @@ const Clientes = () => {
             horizontal
             showsHorizontalScrollIndicator={false}
             keyExtractor={(item) => item.id}
-            contentContainerStyle={{ paddingHorizontal: 10, gap: 8 }}
+            contentContainerStyle={styles.filtersContent}
             renderItem={({ item }) => {
               const isActive = selectedTipo === item.id;
 
@@ -138,10 +144,12 @@ const Clientes = () => {
           />
         </View>
       </Animated.View>
+
+      {/* FlatList principal */}
       <Animated.FlatList
         data={visibleData}
         keyExtractor={(item) => item.id}
-        contentContainerStyle={{ padding: 10, paddingTop: 135 }}
+        contentContainerStyle={{ padding: 16, paddingTop: 135 }}
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (
           <Cliente
@@ -159,6 +167,15 @@ const Clientes = () => {
         maxToRenderPerBatch={10}
         windowSize={5}
         removeClippedSubviews={true}
+        ListEmptyComponent={
+          <View style={styles.emptyContainer}>
+            <SearchBar 
+              placeholder="Nenhum cliente encontrado" 
+              value={search} 
+              onChangeText={setSearch}
+            />
+          </View>
+        }
       />
     </View>
   );
@@ -171,22 +188,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#ffffff',
   },
-  barraBuscaContainer: {
-    paddingHorizontal: 15,
-    paddingTop: 10,
-  },
-
-  inputBusca: {
-    backgroundColor: '#f2f2f2',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    fontSize: 16,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    color: '#333',
-  },
   filtersContainer: {
     marginTop: 10,
+  },
+  filtersContent: {
+    paddingHorizontal: 0,
+    gap: 8,
+  },
+  emptyContainer: {
+    padding: 20,
+    alignItems: 'center',
   },
 });

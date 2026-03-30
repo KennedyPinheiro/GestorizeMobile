@@ -13,9 +13,12 @@ import { useState, useRef, useMemo, useCallback } from 'react';
 import TooltipChip from '@components/botoes/TooltipChip';
 import { Animated } from 'react-native';
 import Fornecedor from '@components/ui-lists/Fornecedor';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '@context/types';
 
 const Fornecedores = () => {
-  const navigation = useNavigation();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { colors } = useTheme();
 
   const [search, setSearch] = useState('');
@@ -107,6 +110,7 @@ const Fornecedores = () => {
         subtitle={`${filteredData.length} cadastrados`}
         onBackPress={() => navigation.goBack()}
         rightType="add"
+        onAddPress={() => navigation.navigate('NovoFornecedor')}
       />
 
       <Animated.View
@@ -122,7 +126,7 @@ const Fornecedores = () => {
         }}
       >
         <SearchBar
-          placehoder="Buscar por nome, email ou local"
+          placeholder="Buscar por nome, email ou local"
           value={search}
           onChangeText={setSearch}
         />
