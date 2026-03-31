@@ -12,17 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('funcionarios', function (Blueprint $table) {
-            $table->id();
-            $table->string('nome');
-            $table->string('email')->unique();
+            $table->unsignedBigInteger('id')->primary();
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users')
+                ->cascadeOnDelete();
             $table->string('telefone')->nullable();
-            $table->string('password');
             $table->date('data_nascimento')->nullable();
             $table->string('cpf')->nullable();
             $table->string('rg')->nullable();
-            $table->foreignId('role_id')
-                ->constrained('roles')
-                ->cascadeOnDelete();
+
             $table->foreignId('endereco_id')
                 ->nullable()
                 ->constrained('enderecos')
