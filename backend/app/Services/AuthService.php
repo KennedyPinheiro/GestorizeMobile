@@ -58,7 +58,7 @@ class AuthService implements IAuthService
      */
     public function refresh(): array
     {
-        $user = request()->user();
+        $user = auth()->user();
 
         if (!$user) {
             throw new AuthenticationException('Não autenticado');
