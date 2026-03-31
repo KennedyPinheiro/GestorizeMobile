@@ -12,11 +12,6 @@ use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use App\Traits\HasSnowflakeId;
 
-/**
- * @method \Laravel\Sanctum\NewAccessToken createToken(string $name, array $abilities = ['*'])
- * @method \Laravel\Sanctum\PersonalAccessToken|null currentAccessToken()
- * @method \Illuminate\Support\Collection getRoleNames()
- */
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
