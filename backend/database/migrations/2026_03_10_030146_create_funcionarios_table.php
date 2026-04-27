@@ -12,17 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('funcionarios', function (Blueprint $table) {
-            $table->unsignedBigInteger('id')->primary();
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')
-                ->references('id')
-                ->on('users')
-                ->cascadeOnDelete();
+            $table->unsignedBigInteger('id')->primary(); 
+
             $table->string('telefone')->nullable();
             $table->date('data_nascimento')->nullable();
             $table->string('cpf')->nullable();
-            $table->string('rg')->nullable();
-
             $table->foreignId('endereco_id')
                 ->nullable()
                 ->constrained('enderecos')

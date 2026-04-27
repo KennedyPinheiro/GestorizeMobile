@@ -13,7 +13,7 @@ class Funcionario extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
-        'user_id',
+        'id',
         'telefone',
         'data_nascimento',
         'cpf',
@@ -23,6 +23,11 @@ class Funcionario extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'id', 'id');
+    }
+
+    public function endereco()
+    {
+        return $this->belongsTo(Endereco::class);
     }
 }

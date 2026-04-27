@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Kra8\Snowflake\Snowflake;
 use App\Enums\RoleEnum;
+use App\Models\Funcionario;
 
 class TestUsersSeeder extends Seeder
 {
@@ -22,9 +23,12 @@ class TestUsersSeeder extends Seeder
                 'password' => Hash::make('123456'),
             ]
         );
-
         $admin->syncRoles([RoleEnum::ADMIN->value]);
 
+        Funcionario::updateOrCreate(
+            ['id' => $admin->id],
+            [] 
+        );
         $gestor = User::updateOrCreate(
             ['email' => 'gestor@example.com'],
             [
@@ -36,6 +40,11 @@ class TestUsersSeeder extends Seeder
 
         $gestor->syncRoles([RoleEnum::GESTOR->value]);
 
+        Funcionario::updateOrCreate(
+            ['id' => $gestor->id],
+            []
+        );
+
         $funcionario = User::updateOrCreate(
             ['email' => 'funcionario@example.com'],
             [
@@ -46,5 +55,10 @@ class TestUsersSeeder extends Seeder
         );
 
         $funcionario->syncRoles([RoleEnum::FUNCIONARIO->value]);
+
+        Funcionario::updateOrCreate(
+            ['id' => $funcionario->id],
+            []
+        );
     }
 }

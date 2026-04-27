@@ -32,12 +32,7 @@ class AuthService implements IAuthService
 
         return [
             'token' => $token,
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'roles' => $user->getRoleNames(),
-            ],
+            'user' => $user->load('roles'),
         ];
     }
 
@@ -70,7 +65,7 @@ class AuthService implements IAuthService
 
         return [
             'token' => $newToken,
-            'user' => $user->only(['id', 'name', 'email']),
+            'user' => $user->load('roles'),
         ];
     }
 }

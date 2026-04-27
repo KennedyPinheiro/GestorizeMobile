@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\AuthLoginRequest;
 use App\Http\Requests\AuthLogoutRequest;
 use App\Http\Requests\AuthRefreshRequest;
+use App\Http\Resources\UserResource;
 use App\Services\IAuthService;
 use App\Services\ResponseService;
 use Illuminate\Http\JsonResponse;
@@ -16,22 +17,32 @@ class AuthController extends Controller
 
     public function login(AuthLoginRequest $request): JsonResponse
     {
+        $payload = $this->service->login($request->validated());
+
         return ResponseService::success(
-            $this->service->login($request->validated())
+            [
+                'token' => $payload['token'],
+                'user' => UserResource::make($payload['user']),
+            ]
         );
     }
 
     public function logout(AuthLogoutRequest $request): JsonResponse
     {
-        $this->service->logout($request->validated('token'));
+        $this->service->logout();
 
         return ResponseService::success([], 'Logout realizado com sucesso.');
     }
 
     public function refresh(AuthRefreshRequest $request): JsonResponse
     {
+        $payload = $this->service->refresh();
+
         return ResponseService::success(
-            $this->service->refresh($request->validated('token')),
+            [
+                'token' => $payload['token'],
+                'user' => UserResource::make($payload['user']),
+            ],
             'Token atualizado.'
         );
     }

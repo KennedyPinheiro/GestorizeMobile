@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ClienteRequest;
+use App\Http\Resources\ClienteResource;
 use App\Services\ClienteService;
 use App\Services\ResponseService;
 use Illuminate\Http\JsonResponse;
@@ -14,26 +15,26 @@ class ClienteController extends Controller
 
     public function index(): JsonResponse
     {
-        return ResponseService::success($this->service->listar());
+        return ResponseService::success(ClienteResource::collection($this->service->listar()));
     }
 
     public function store(ClienteRequest $request): JsonResponse
     {
         return ResponseService::success(
-            $this->service->criar($request->validated()),
+            ClienteResource::make($this->service->criar($request->validated())),
             code: 201
         );
     }
 
     public function show(int $id): JsonResponse
     {
-        return ResponseService::success($this->service->buscar($id));
+        return ResponseService::success(ClienteResource::make($this->service->buscar($id)));
     }
 
     public function update(ClienteRequest $request, int $id): JsonResponse
     {
         return ResponseService::success(
-            $this->service->atualizar($id, $request->validated())
+            ClienteResource::make($this->service->atualizar($id, $request->validated()))
         );
     }
 

@@ -19,11 +19,9 @@ class DatabaseSeeder extends Seeder
             UnidadesMedidaSeeder::class,
             CategoriasSeeder::class,
             EnderecosSeeder::class,
-            FornecedoresSeeder::class,
             ClientesSeeder::class,
-            FuncionariosSeeder::class,
-            ProdutosSeeder::class,
             TestUsersSeeder::class,
+            PermissionSeeder::class,
         ]);
         // Factory user opcional removido, pois agora temos seeds explícitos.
     }

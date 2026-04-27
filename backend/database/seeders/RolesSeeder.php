@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Role;
 use Illuminate\Database\Seeder;
+use App\Enums\RoleEnum;
 use Kra8\Snowflake\Snowflake;
 
 class RolesSeeder extends Seeder
@@ -12,28 +13,14 @@ class RolesSeeder extends Seeder
     {
         $snowflake = app(Snowflake::class);
 
-        Role::updateOrCreate(
-            ['name' => 'admin'],
-            [
-                'id' => $snowflake->next(),
-                'guard_name' => 'api'
-            ]
-        );
-
-        Role::updateOrCreate(
-            ['name' => 'gestor'],
-            [
-                'id' => $snowflake->next(),
-                'guard_name' => 'api'
-            ]
-        );
-
-        Role::updateOrCreate(
-            ['name' => 'funcionario'],
-            [
-                'id' => $snowflake->next(),
-                'guard_name' => 'api'
-            ]
-        );
+        foreach (RoleEnum::cases() as $roleEnum) {
+            Role::updateOrCreate(
+                ['name' => $roleEnum->value],
+                [
+                    'id' => $snowflake->next(),
+                    'guard_name' => 'api',
+                ]
+            );
+        }
     }
 }

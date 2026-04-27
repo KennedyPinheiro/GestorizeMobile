@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ProdutoResource;
 use App\Services\ProdutoService;
 use App\Http\Requests\ProdutoRequest;
 use App\Services\ResponseService;
@@ -15,14 +16,14 @@ class ProdutoController extends Controller
     public function index(): JsonResponse
     {
         return ResponseService::success(
-            $this->produtoService->listar()
+            ProdutoResource::collection($this->produtoService->listar())
         );
     }
 
     public function store(ProdutoRequest $request): JsonResponse
     {
         return ResponseService::success(
-            $this->produtoService->criar($request->validated()),
+            ProdutoResource::make($this->produtoService->criar($request->validated())),
             code: 201
         );
     }
@@ -30,14 +31,14 @@ class ProdutoController extends Controller
     public function show(int $id): JsonResponse
     {
         return ResponseService::success(
-            $this->produtoService->buscar($id)
+            ProdutoResource::make($this->produtoService->buscar($id))
         );
     }
 
     public function update(ProdutoRequest $request, int $id): JsonResponse
     {
         return ResponseService::success(
-            $this->produtoService->atualizar($id, $request->validated())
+            ProdutoResource::make($this->produtoService->atualizar($id, $request->validated()))
         );
     }
 
