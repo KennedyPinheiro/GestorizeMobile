@@ -183,7 +183,8 @@ export type RoleType = {
 };
 
 export type RootStackParamList = {
-  Relatorios:undefined
+  Relatorios: undefined;
+  Configuracoes: undefined;
   Login: undefined;
   ResetPassword: undefined;
   ForgoutPassword: undefined;
@@ -286,23 +287,25 @@ export type RootStackParamList = {
     numero: string;
     endereco_id: number;
   };
-  UserPerfil: {
-    id: string;
-    nome: string;
-    funcao: string;
-    email: string;
-    data_nascimento: string;
-    genero: string;
-    estado_civil: string;
-    rg: string;
-    cpf: string;
-    telefone: string;
-    endereco_id: number;
-    rua: string;
-    bairro: string;
-    cidade: string;
-    estado: string;
-    cep: string;
-    numero: string;
-  };
+  UserPerfil:
+    | {
+        id: string;
+        nome: string;
+        funcao: string;
+        email: string;
+        data_nascimento: string;
+        genero: string;
+        estado_civil: string;
+        rg: string;
+        cpf: string;
+        telefone: string;
+        endereco_id: number;
+        rua: string;
+        bairro: string;
+        cidade: string;
+        estado: string;
+        cep: string;
+        numero: string;
+      }
+    | undefined;
 };

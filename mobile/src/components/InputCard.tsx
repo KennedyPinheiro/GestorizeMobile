@@ -7,7 +7,11 @@ import {
   KeyboardTypeOptions,
   Dimensions,
   TouchableOpacity,
+  StyleProp,
+  TextStyle,
+  ViewStyle,
 } from 'react-native';
+import type { DimensionValue } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 type Props = {
@@ -20,6 +24,12 @@ type Props = {
   maxLength?: number;
   onFocus?: () => void;
   onBlur?: () => void;
+  width?: DimensionValue;
+  containerStyle?: StyleProp<ViewStyle>;
+  inputStyle?: StyleProp<TextStyle>;
+  labelStyle?: StyleProp<TextStyle>;
+  keyboardType?: KeyboardTypeOptions;
+  placeholderTextColor?: string;
 };
 
 const { height } = Dimensions.get('window');
@@ -32,20 +42,31 @@ const InputCard = ({
   placeholder = '',
   onChangeText,
   maxLength,
+  width = '100%',
+  containerStyle,
+  inputStyle,
+  labelStyle,
+  keyboardType: keyboardTypeProp,
+  placeholderTextColor = '#cccccc9d',
 }: Props) => {
   const [isFocused, setIsFocused] = useState(false);
   const [secureText, setSecureText] = useState(true);
 
   const keyboardType: KeyboardTypeOptions =
-    tipo === 'number' ? 'numeric' : 'default';
+    keyboardTypeProp ?? (tipo === 'number' ? 'numeric' : 'default');
 
   const isPassword = tipo === 'password';
 
   return (
     <View
-      style={[styles.container, onlyView && { backgroundColor: '#B0B0B0' }]}
+      style={[
+        styles.container,
+        { width },
+        onlyView && { backgroundColor: '#B0B0B0' },
+        containerStyle,
+      ]}
     >
-      {!!label && <Text style={styles.label}>{label}</Text>}
+      {!!label && <Text style={[styles.label, labelStyle]}>{label}</Text>}
 
       <View style={styles.inputWrapper}>
         <TextInput
@@ -53,6 +74,7 @@ const InputCard = ({
             styles.input,
             onlyView && { color: '#ddd' },
             isFocused && styles.inputFocused,
+            inputStyle,
           ]}
           keyboardType={keyboardType}
           editable={!onlyView}
@@ -62,7 +84,7 @@ const InputCard = ({
           value={typeof value === 'number' ? value.toString() : value}
           onChangeText={onChangeText}
           placeholder={placeholder}
-          placeholderTextColor="#cccccc9d"
+          placeholderTextColor={placeholderTextColor}
           maxLength={maxLength}
         />
 

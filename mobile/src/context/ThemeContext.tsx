@@ -36,14 +36,19 @@ const ThemeContext = createContext<ThemeContextType>({
 });
 const ThemeToggleContext = createContext<{
   toggle: () => void;
+  compactLists: boolean;
+  setCompactLists: React.Dispatch<React.SetStateAction<boolean>>;
   mode: 'light' | 'dark';
 }>({
   toggle: () => {},
+  compactLists: false,
+  setCompactLists: () => {},
   mode: 'light',
 });
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const [mode, setMode] = useState<'light' | 'dark'>('light');
+  const [compactLists, setCompactLists] = useState(false);
 
   const value = useMemo(() => {
     const light = defaultTheme;
@@ -72,7 +77,9 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const toggle = () => setMode((m) => (m === 'light' ? 'dark' : 'light'));
 
   return (
-    <ThemeToggleContext.Provider value={{ toggle, mode }}>
+    <ThemeToggleContext.Provider
+      value={{ toggle, compactLists, setCompactLists, mode }}
+    >
       <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
     </ThemeToggleContext.Provider>
   );

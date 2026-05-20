@@ -11,8 +11,12 @@ import { useMenu } from '@context/MenuContext';
 
 type props = {
   title?: string;
+  titulo?: string;
   subtitle?: string;
   onBackPress?: () => void;
+  showFornecedorIcon?: boolean;
+  showPessoaFisicaIcon?: boolean;
+  showPessoaJuridicaIcon?: boolean;
 
   rightType?: 'menu' | 'add' | 'download';
   onAddPress?: () => void;
@@ -21,6 +25,7 @@ type props = {
 
 const Nav = ({
   title,
+  titulo,
   subtitle,
   onBackPress,
   rightType = 'add',
@@ -38,6 +43,7 @@ const Nav = ({
   const textColor = isDarkBackground ? '#ffffff' : '#0f172a';
   const subtitleColor = isDarkBackground ? '#ffffffcc' : '#475569';
   const iconColor = isDarkBackground ? '#ffffff' : '#0f172a';
+  const displayTitle = title ?? titulo;
 
   const handleRightPress = () => {
     if (rightType === 'menu') {
@@ -117,7 +123,9 @@ const Nav = ({
           <Ionicons name="chevron-back" size={26} color={iconColor} />
 
           <View style={styles.textWrapper}>
-            <Text style={[styles.title, { color: textColor }]}>{title}</Text>
+            <Text style={[styles.title, { color: textColor }]}>
+              {displayTitle}
+            </Text>
 
             {subtitle && (
               <Text style={[styles.subtitle, { color: subtitleColor }]}>

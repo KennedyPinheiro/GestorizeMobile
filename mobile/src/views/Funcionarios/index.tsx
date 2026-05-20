@@ -82,7 +82,6 @@ const Funcionarios = () => {
         title="Funcionarios"
         subtitle={`${filteredData.length} cadastrados`}
         onBackPress={() => navigation.goBack()}
-        rightType="add"
       />
 
       <Animated.View

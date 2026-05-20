@@ -1,9 +1,9 @@
 import React, { createContext, useContext, useState } from 'react';
 import { SideMenu } from '@components/SideMenu';
-import { useNavigation } from '@react-navigation/native';
+import { NavigationContainerRef } from '@react-navigation/native';
 import { useAuth } from '@context/AuthContext';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '@context/types';
+import { isFuncionarioUser } from '@utils/permissions';
 
 type MenuContextType = {
   open: () => void;
@@ -13,52 +13,72 @@ type MenuContextType = {
 
 const MenuContext = createContext({} as MenuContextType);
 
-export const MenuProvider = ({ children }: { children: React.ReactNode }) => {
+type MenuProviderProps = {
+  children: React.ReactNode;
+  navigationRef: React.RefObject<NavigationContainerRef<RootStackParamList> | null>;
+};
+
+export const MenuProvider = ({ children, navigationRef }: MenuProviderProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const navigation =
-    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const { signOut } = useAuth();
+  const { signOut, user } = useAuth();
+  const isFuncionario = isFuncionarioUser(user);
 
   const handleMenuAction = (action: () => void | Promise<void>) => {
     setIsOpen(false);
     action();
   };
-  const mainMenu = [
+
+  const navigate = <T extends keyof RootStackParamList>(screen: T) => {
+    if (navigationRef.current?.isReady()) {
+      navigationRef.current.navigate(screen as never);
+    }
+  };
+
+  const allMainMenu = [
     {
       icon: 'account-group' as const,
       label: 'Clientes',
-      onPress: () => handleMenuAction(() => navigation.navigate('Clientes')),
+      onPress: () => handleMenuAction(() => navigate('Clientes')),
     },
     {
       icon: 'cube-outline' as const,
       label: 'Produtos',
-      onPress: () => handleMenuAction(() => navigation.navigate('Produtos')),
+      onPress: () => handleMenuAction(() => navigate('Produtos')),
     },
     {
       icon: 'truck-fast-outline' as const,
       label: 'Fornecedores',
-      onPress: () =>
-        handleMenuAction(() => navigation.navigate('Fornecedores')),
+      onPress: () => handleMenuAction(() => navigate('Fornecedores')),
     },
     {
       icon: 'file-document-outline' as const,
       label: 'Orçamentos',
-      onPress: () => handleMenuAction(() => navigation.navigate('Orcamentos')),
+      onPress: () => handleMenuAction(() => navigate('Orcamentos')),
     },
     {
       icon: 'account-tie' as const,
       label: 'Funcionários',
-      onPress: () =>
-        handleMenuAction(() => navigation.navigate('Funcionarios')),
+      onPress: () => handleMenuAction(() => navigate('Funcionarios')),
+    },
+    {
+      icon: 'chart-bar' as const,
+      label: 'Relatórios',
+      onPress: () => handleMenuAction(() => navigate('Relatorios')),
     },
   ];
+
+  const mainMenu = isFuncionario
+    ? allMainMenu.filter(
+        (item) => item.label === 'Clientes' || item.label === 'Orçamentos',
+      )
+    : allMainMenu;
 
   const bottomMenu = [
     {
       icon: 'cog' as const,
       label: 'Configurações',
-      onPress: () => handleMenuAction(() => {}),
+      onPress: () => handleMenuAction(() => navigate('Configuracoes')),
     },
     {
       icon: 'help-circle' as const,

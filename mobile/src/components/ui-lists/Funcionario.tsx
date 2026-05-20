@@ -1,6 +1,6 @@
 import { TouchableOpacity, View, Text, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useTheme } from '@context/ThemeContext';
+import { useTheme, useThemeToggle } from '@context/ThemeContext';
 
 type Props = {
   nome: string;
@@ -17,6 +17,7 @@ export type FuncionarioType = {
 };
 const Funcionario = ({ nome, email, role, onPress }: Props) => {
   const { colors } = useTheme();
+  const { compactLists } = useThemeToggle();
   const isDark = colors.background !== '#ffffff';
 
   const cardBg = isDark ? '#0A4191' : '#ffffff';
@@ -45,6 +46,7 @@ const Funcionario = ({ nome, email, role, onPress }: Props) => {
       <View
         style={[
           styles.card,
+          compactLists && styles.cardCompact,
           {
             backgroundColor: cardBg,
             shadowColor: isDark ? '#ffffff' : '#000000',
@@ -53,10 +55,16 @@ const Funcionario = ({ nome, email, role, onPress }: Props) => {
         ]}
       >
         <View style={styles.left}>
-          <View style={[styles.circle, { backgroundColor: circleColor }]}>
+          <View
+            style={[
+              styles.circle,
+              compactLists && styles.circleCompact,
+              { backgroundColor: circleColor },
+            ]}
+          >
             <Ionicons
               name={iconName}
-              size={50}
+              size={compactLists ? 32 : 50}
               color={isDark ? '#ffffff' : '#062046'}
             />
           </View>
@@ -64,7 +72,16 @@ const Funcionario = ({ nome, email, role, onPress }: Props) => {
           <View>
             {/* NOME + ROLE */}
             <View style={styles.row}>
-              <Text style={[styles.title, { color: textColor }]}>{nome}</Text>
+              <Text
+                numberOfLines={1}
+                style={[
+                  styles.title,
+                  compactLists && styles.titleCompact,
+                  { color: textColor },
+                ]}
+              >
+                {nome}
+              </Text>
 
               <View style={[styles.badge, { backgroundColor: badgeBg }]}>
                 <Text
@@ -79,7 +96,16 @@ const Funcionario = ({ nome, email, role, onPress }: Props) => {
               </View>
             </View>
 
-            <Text style={[styles.subtitle, { color: subText }]}>{email}</Text>
+            <Text
+              numberOfLines={1}
+              style={[
+                styles.subtitle,
+                compactLists && styles.subtitleCompact,
+                { color: subText },
+              ]}
+            >
+              {email}
+            </Text>
           </View>
         </View>
 
@@ -103,6 +129,12 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 5,
   },
+  cardCompact: {
+    borderRadius: 12,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    marginBottom: 8,
+  },
 
   left: {
     flexDirection: 'row',
@@ -116,6 +148,10 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  circleCompact: {
+    width: 44,
+    height: 44,
   },
 
   row: {
@@ -135,9 +171,17 @@ const styles = StyleSheet.create({
     fontWeight: '900',
     marginBottom: 4,
   },
+  titleCompact: {
+    fontSize: 15,
+    marginBottom: 0,
+  },
 
   subtitle: {
     fontSize: 16,
     marginTop: 2,
+  },
+  subtitleCompact: {
+    fontSize: 13,
+    marginTop: 0,
   },
 });

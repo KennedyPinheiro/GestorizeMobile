@@ -2,7 +2,7 @@ import React from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import TipoCliente from '@components/TipoCliente';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { useTheme } from '@context/ThemeContext';
+import { useTheme, useThemeToggle } from '@context/ThemeContext';
 
 type Props = {
   tipo?: 'PF' | 'PJ';
@@ -23,6 +23,7 @@ export type ClienteType = {
 const Cliente = ({ tipo, nome, email, estado, onPress }: Props) => {
   const iconName = tipo === 'PF' ? 'person' : 'business';
   const { colors } = useTheme();
+  const { compactLists } = useThemeToggle();
   const isDark = colors.background !== '#ffffff';
 
   const cardBg = isDark ? '#0A4191' : '#ffffff';
@@ -50,6 +51,7 @@ const Cliente = ({ tipo, nome, email, estado, onPress }: Props) => {
       <View
         style={[
           styles.card,
+          compactLists && styles.cardCompact,
           {
             backgroundColor: cardBg,
             shadowColor: isDark ? '#ffffff' : '#000000',
@@ -58,10 +60,16 @@ const Cliente = ({ tipo, nome, email, estado, onPress }: Props) => {
         ]}
       >
         <View style={styles.left}>
-          <View style={[styles.circle, { backgroundColor: circleColor }]}>
+          <View
+            style={[
+              styles.circle,
+              compactLists && styles.circleCompact,
+              { backgroundColor: circleColor },
+            ]}
+          >
             <Ionicons
               name={iconName}
-              size={50}
+              size={compactLists ? 32 : 50}
               color={isDark ? '#ffffff' : '#062046'}
             />
           </View>
@@ -70,7 +78,16 @@ const Cliente = ({ tipo, nome, email, estado, onPress }: Props) => {
             <View
               style={{ flexDirection: 'row', alignItems: 'center', gap: 16 }}
             >
-              <Text style={[styles.title, { color: textColor }]}>{nome}</Text>
+              <Text
+                numberOfLines={1}
+                style={[
+                  styles.title,
+                  compactLists && styles.titleCompact,
+                  { color: textColor },
+                ]}
+              >
+                {nome}
+              </Text>
 
               {tipo && (
                 <View
@@ -94,11 +111,22 @@ const Cliente = ({ tipo, nome, email, estado, onPress }: Props) => {
               )}
             </View>
 
-            <Text style={[styles.subtitle, { color: subText }]}>
+            <Text
+              numberOfLines={1}
+              style={[
+                styles.subtitle,
+                compactLists && styles.subtitleCompact,
+                { color: subText },
+              ]}
+            >
               Cliente: {email}
             </Text>
 
-            <Text style={[styles.subtitle, { color: subText }]}>{estado}</Text>
+            {!compactLists && (
+              <Text style={[styles.subtitle, { color: subText }]}>
+                {estado}
+              </Text>
+            )}
           </View>
         </View>
 
@@ -122,6 +150,12 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 5,
   },
+  cardCompact: {
+    borderRadius: 12,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    marginBottom: 8,
+  },
   badge: {
     paddingHorizontal: 10,
     paddingVertical: 4,
@@ -140,15 +174,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  circleCompact: {
+    width: 44,
+    height: 44,
+  },
 
   title: {
     fontSize: 18,
     fontWeight: '900',
     marginBottom: 4,
   },
+  titleCompact: {
+    fontSize: 15,
+    marginBottom: 0,
+  },
 
   subtitle: {
     fontSize: 16,
     marginTop: 2,
+  },
+  subtitleCompact: {
+    fontSize: 13,
+    marginTop: 0,
   },
 });

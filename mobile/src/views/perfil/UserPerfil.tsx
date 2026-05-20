@@ -1,355 +1,388 @@
-import Button from '@components/botoes/Button';
-import { useNavigation } from '@react-navigation/native';
+import React, { useMemo, useState } from 'react';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { useRoute, RouteProp } from '@react-navigation/native';
-import { RootStackParamList } from '@context/types';
-import Nav from '@components/utilities/Nav';
-import EditableTextCard from '@components/EditableTextCard';
-import { useState, useEffect } from 'react';
-import PessoaFisicaIcon from '@components/Icons/PessoaFisicaIcon';
-import { supabase } from '@lib/supabase';
+import InputCard from '@components/InputCard';
 import SidebarAlert from '@components/sidebars/Sidebaralert';
+import Nav from '@components/utilities/Nav';
+import { useAuth } from '@context/AuthContext';
+import { RootStackParamList } from '@context/types';
+import { useTheme } from '@context/ThemeContext';
+
+type Navigation = NativeStackNavigationProp<RootStackParamList>;
+type UserProfileRoute = RouteProp<RootStackParamList, 'UserPerfil'>;
+type UserProfileParams = Partial<NonNullable<RootStackParamList['UserPerfil']>>;
+
+type ProfileForm = {
+  nome: string;
+  email: string;
+  genero: string;
+  estado_civil: string;
+  telefone: string;
+  data_nascimento: string;
+  cpf: string;
+  estado: string;
+  cidade: string;
+  rua: string;
+  bairro: string;
+  numero: string;
+  cep: string;
+};
+
+const fallbackForm: ProfileForm = {
+  nome: 'Kennedy Pinheiro',
+  email: 'kennedy@email.com',
+  genero: '',
+  estado_civil: '',
+  telefone: '(00) 00000 - 0000',
+  data_nascimento: '0000 - 00 - 00',
+  cpf: '000.000.000 - 00',
+  estado: '',
+  cidade: 'Example',
+  rua: 'Example',
+  bairro: 'Example',
+  numero: '000',
+  cep: '00000 - 000',
+};
 
 const UserPerfil = () => {
-  const navigation =
-    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const route = useRoute<RouteProp<RootStackParamList, 'UserPerfil'>>();
-  const [showEndereco, setShowEndereco] = useState(false);
+  const navigation = useNavigation<Navigation>();
+  const route = useRoute<UserProfileRoute>();
+  const { user } = useAuth();
+  const { colors, isDark } = useTheme();
   const [alertVisible, setAlertVisible] = useState(false);
-  const [message, setMessage] = useState('Dados atualizados com sucesso!');
 
-  const {
-    id,
-    nome,
-    funcao,
-    email,
-    telefone,
-    genero,
-    estado_civil,
-    data_nascimento,
-    endereco_id,
-    rg,
-    cpf,
-    rua,
-    bairro,
-    cidade,
-    estado,
-    cep,
-    numero,
-  } = route.params;
-
-  const [formData, setFormData] = useState({
-    nome,
-    email,
-    telefone,
-    genero,
-    estado_civil,
-    data_nascimento,
-    rg,
-    cpf,
-    rua,
-    bairro,
-    cidade,
-    estado,
-    cep,
-    numero,
-  });
-
-  const [originalData] = useState({
-    nome,
-    email,
-    telefone,
-    genero,
-    estado_civil,
-    data_nascimento,
-    rg,
-    cpf,
-    rua,
-    bairro,
-    cidade,
-    estado,
-    cep,
-    numero,
-  });
-
-  const [botaoHabilitado, setBotaoHabilitado] = useState(false);
-  const primeiroNome = nome.split(' ')[0];
-  useEffect(() => {
-    const houveMudanca = Object.entries(formData).some(
-      ([campo, valor]) =>
-        valor !== originalData[campo as keyof typeof originalData],
-    );
-    setBotaoHabilitado(houveMudanca);
-  }, [formData, originalData]);
-
-  useEffect(() => {
-    const canal = supabase.channel('user-profile-listener');
-
-    if (id) {
-      canal
-        .on(
-          'postgres_changes',
-          {
-            event: 'UPDATE',
-            schema: 'public',
-            table: 'funcionarios',
-            filter: `id=eq.${id}`,
-          },
-          async (payload) => {
-            const dados = payload.new;
-
-            setFormData((prev) => ({
-              ...prev,
-              telefone: dados.telefone ?? prev.telefone,
-              genero: dados.genero ?? prev.genero,
-              estado_civil: dados.estado_civil ?? prev.estado_civil,
-              data_nascimento: dados.data_nascimento ?? prev.data_nascimento,
-              rg: dados.rg ?? prev.rg,
-              cpf: dados.cpf ?? prev.cpf,
-            }));
-          },
-        )
-        .on(
-          'postgres_changes',
-          {
-            event: 'UPDATE',
-            schema: 'public',
-            table: 'endereco',
-            filter: `id=eq.${endereco_id}`,
-          },
-          async (payload) => {
-            const dados = payload.new;
-
-            setFormData((prev) => ({
-              ...prev,
-              rua: dados.rua ?? prev.rua,
-              bairro: dados.bairro ?? prev.bairro,
-              cidade: dados.cidade ?? prev.cidade,
-              estado: dados.estado ?? prev.estado,
-              numero: dados.numero ?? prev.numero,
-              cep: dados.cep ?? prev.cep,
-            }));
-          },
-        );
-
-      canal.subscribe();
-    }
-
-    return () => {
-      supabase.removeChannel(canal);
+  const initialForm = useMemo<ProfileForm>(() => {
+    const params = (route.params ?? {}) as UserProfileParams;
+    return {
+      nome: params.nome ?? user?.nome ?? user?.name ?? fallbackForm.nome,
+      email: params.email ?? user?.email ?? fallbackForm.email,
+      genero: params.genero ?? user?.genero ?? fallbackForm.genero,
+      estado_civil:
+        params.estado_civil ?? user?.estado_civil ?? fallbackForm.estado_civil,
+      telefone: params.telefone ?? user?.telefone ?? fallbackForm.telefone,
+      data_nascimento:
+        params.data_nascimento ??
+        user?.data_nascimento ??
+        fallbackForm.data_nascimento,
+      cpf: params.cpf ?? user?.cpf ?? fallbackForm.cpf,
+      estado: params.estado ?? user?.estado ?? fallbackForm.estado,
+      cidade: params.cidade ?? user?.cidade ?? fallbackForm.cidade,
+      rua: params.rua ?? user?.rua ?? fallbackForm.rua,
+      bairro: params.bairro ?? user?.bairro ?? fallbackForm.bairro,
+      numero: params.numero ?? user?.numero ?? fallbackForm.numero,
+      cep: params.cep ?? user?.cep ?? fallbackForm.cep,
     };
-  }, [id, endereco_id]);
+  }, [route.params, user]);
 
-  const updateCampoUsuario = async (
-    campo: string,
-    valor: string,
-    funcionarioId: string,
-    enderecoId?: number,
-  ) => {
-    const campoTable =
-      campo === 'nome' || campo === 'email' ? 'users' : 'funcionarios';
-    const { error } = await supabase
-      .from(campoTable)
-      .update({ [campo]: valor, ultima_atualizacao: new Date() })
-      .eq('id', campoTable === 'users' ? funcionarioId : enderecoId);
+  const [formData, setFormData] = useState(initialForm);
 
-    if (error) {
-      console.error(
-        `Erro ao atualizar ${campo} na tabela ${campoTable}:`,
-        error.message,
-      );
-    }
+  const hasChanges = useMemo(
+    () =>
+      Object.entries(formData).some(
+        ([field, value]) => value !== initialForm[field as keyof ProfileForm],
+      ),
+    [formData, initialForm],
+  );
+
+  const theme = useMemo(
+    () => ({
+      background: isDark ? '#062046' : '#f4f7fb',
+      fieldBg: isDark ? '#1f3e68' : '#ffffff',
+      fieldBorder: isDark ? '#315982' : '#d9e2ef',
+      fieldLabel: isDark ? '#b5c7df' : '#64748b',
+      fieldText: isDark ? '#ffffff' : '#0f172a',
+      divider: isDark ? '#6f86a6' : '#cad6e7',
+      saveBg: hasChanges ? colors.primary : '#8f8f8f',
+      saveText: isDark && hasChanges ? '#062046' : '#ffffff',
+    }),
+    [colors.primary, hasChanges, isDark],
+  );
+
+  const params = (route.params ?? {}) as UserProfileParams;
+  const role = params.funcao ?? user?.funcao ?? user?.role ?? 'Cargo example';
+
+  const updateField = (field: keyof ProfileForm, value: string) => {
+    setFormData((current) => ({ ...current, [field]: value }));
   };
 
-  const handleChange = (campo: string, valor: string) => {
-    setFormData((prev) => ({ ...prev, [campo]: valor }));
+  const handleSave = () => {
+    setAlertVisible(true);
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <KeyboardAvoidingView
+      style={[styles.screen, { backgroundColor: theme.background }]}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
       <SidebarAlert
-        message={message}
+        message="Perfil atualizado com sucesso!"
         visible={alertVisible}
         type="success"
         onClose={() => setAlertVisible(false)}
       />
+
       <Nav
-        titulo={primeiroNome}
+        title="Funcionarios"
+        subtitle={role}
         onBackPress={() => navigation.goBack()}
-        showPessoaFisicaIcon
+        rightType="menu"
       />
-      <ScrollView style={styles.container}>
-        <View style={{ alignItems: 'center', marginTop: 60 }}>
-          <PessoaFisicaIcon color="#000" style={styles.userIcon} />
-          <Text style={styles.nome}>{formData.nome}</Text>
-          <Text style={styles.email}>{funcao}</Text>
+
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={styles.content}
+      >
+        <View style={styles.identity}>
+          <View style={[styles.avatar, { borderColor: theme.divider }]}>
+            <MaterialCommunityIcons
+              name="account-outline"
+              size={64}
+              color={theme.fieldText}
+            />
+          </View>
+          <Text style={[styles.identityName, { color: theme.fieldText }]}>
+            {formData.nome.toUpperCase()}
+          </Text>
+          <Text style={[styles.identityEmail, { color: theme.fieldLabel }]}>
+            {formData.email}
+          </Text>
         </View>
-        <View style={styles.divider} />
-        <EditableTextCard
+
+        <View style={[styles.divider, { backgroundColor: theme.divider }]} />
+
+        <ProfileField
           label="Nome Completo"
           value={formData.nome}
-          onChangeText={(text) => handleChange('nome', text)}
+          onChangeText={(value) => updateField('nome', value)}
+          theme={theme}
         />
-        <EditableTextCard
+        <ProfileField
           label="Email"
           value={formData.email}
-          onChangeText={(text) => handleChange('email', text)}
+          onChangeText={(value) => updateField('email', value)}
+          keyboardType="email-address"
+          theme={theme}
         />
+
         <View style={styles.row}>
-          <EditableTextCard
+          <ProfileField
             label="Gênero"
             value={formData.genero}
-            width="48%"
-            onChangeText={(text) => handleChange('genero', text)}
+            onChangeText={(value) => updateField('genero', value)}
+            theme={theme}
+            width="49%"
           />
-          <EditableTextCard
+          <ProfileField
             label="Estado Civil"
             value={formData.estado_civil}
-            width="48%"
-            onChangeText={(text) => handleChange('estado_civil', text)}
+            onChangeText={(value) => updateField('estado_civil', value)}
+            theme={theme}
+            width="49%"
           />
         </View>
-        <EditableTextCard
+
+        <ProfileField
           label="Telefone"
           value={formData.telefone}
-          onChangeText={(text) => handleChange('telefone', text)}
+          onChangeText={(value) => updateField('telefone', value)}
+          keyboardType="phone-pad"
+          theme={theme}
         />
-        <EditableTextCard
-          label="Data Nascimento"
+        <ProfileField
+          label="Data de nascimento"
           value={formData.data_nascimento}
-          onChangeText={(text) => handleChange('data_nascimento', text)}
+          onChangeText={(value) => updateField('data_nascimento', value)}
+          theme={theme}
         />
-        <EditableTextCard
-          label="Registro Geral (RG)"
-          value={formData.rg}
-          onChangeText={(text) => handleChange('rg', text)}
-        />
-        <EditableTextCard
-          label="Cadastro Pessoa Fisica (CPF)"
+        <ProfileField
+          label="CPF"
           value={formData.cpf}
-          onChangeText={(text) => handleChange('cpf', text)}
+          onChangeText={(value) => updateField('cpf', value)}
+          keyboardType="number-pad"
+          theme={theme}
         />
-        {!showEndereco ? (
-          <View style={{ marginBottom: 30 }}>
-            <Button
-              variant="outlined"
-              type="dialog"
-              title="Endereço"
-              onPress={() => setShowEndereco(true)}
-            />
-          </View>
-        ) : (
-          <View style={{ marginBottom: 30 }}>
-            <EditableTextCard
-              label="Logradouro"
-              value={formData.rua}
-              onChangeText={(text) => handleChange('rua', text)}
-            />
-            <EditableTextCard
-              label="Bairro"
-              value={formData.bairro}
-              onChangeText={(text) => handleChange('bairro', text)}
-            />
-            <View style={styles.row}>
-              <EditableTextCard
-                label="Número"
-                value={formData.numero}
-                width="48%"
-                onChangeText={(text) => handleChange('numero', text)}
-              />
-              <EditableTextCard
-                label="CEP"
-                value={formData.cep}
-                width="48%"
-                onChangeText={(text) => handleChange('cep', text)}
-              />
-            </View>
-            <EditableTextCard
-              label="Cidade"
-              value={formData.cidade}
-              onChangeText={(text) => handleChange('cidade', text)}
-            />
-            <EditableTextCard
-              label="Estado"
-              value={formData.estado}
-              onChangeText={(text) => handleChange('estado', text)}
-            />
-            <Button
-              variant="outlined"
-              type="dialog"
-              title="Fechar"
-              onPress={() => setShowEndereco(false)}
-            />
-          </View>
-        )}
-        <View style={{ marginBottom: 40, paddingHorizontal: 30 }}>
-          <View style={{ flex: 1, paddingHorizontal: 50 }}>
-            <Button
-              title="Salvar"
-              type="dialog"
-              disabled={!botaoHabilitado}
-              onPress={async () => {
-                const campos = Object.entries(formData);
-                const promises = [];
+        <ProfileField
+          label="ESTADO"
+          value={formData.estado}
+          onChangeText={(value) => updateField('estado', value)}
+          theme={theme}
+          uppercaseLabel
+        />
+        <ProfileField
+          label="Cidade"
+          value={formData.cidade}
+          onChangeText={(value) => updateField('cidade', value)}
+          theme={theme}
+        />
+        <ProfileField
+          label="Logradouro"
+          value={formData.rua}
+          onChangeText={(value) => updateField('rua', value)}
+          theme={theme}
+        />
+        <ProfileField
+          label="Bairro"
+          value={formData.bairro}
+          onChangeText={(value) => updateField('bairro', value)}
+          theme={theme}
+        />
 
-                for (const [campo, valor] of campos) {
-                  if (String(valor).trim() !== 'Não informado') {
-                    promises.push(
-                      updateCampoUsuario(campo, String(valor), id, endereco_id),
-                    );
-                  }
-                }
-
-                await Promise.all(promises);
-
-                setBotaoHabilitado(false);
-                setAlertVisible(true);
-              }}
-            />
-          </View>
+        <View style={styles.row}>
+          <ProfileField
+            label="Número"
+            value={formData.numero}
+            onChangeText={(value) => updateField('numero', value)}
+            keyboardType="number-pad"
+            theme={theme}
+            width="49%"
+          />
+          <ProfileField
+            label="Cep"
+            value={formData.cep}
+            onChangeText={(value) => updateField('cep', value)}
+            keyboardType="number-pad"
+            theme={theme}
+            width="49%"
+          />
         </View>
+
+        <Pressable
+          onPress={handleSave}
+          disabled={!hasChanges}
+          style={[styles.saveButton, { backgroundColor: theme.saveBg }]}
+        >
+          <Text style={[styles.saveText, { color: theme.saveText }]}>
+            Salvar
+          </Text>
+        </Pressable>
       </ScrollView>
-    </View>
+    </KeyboardAvoidingView>
+  );
+};
+
+type ProfileFieldProps = {
+  label: string;
+  value: string;
+  onChangeText: (value: string) => void;
+  theme: {
+    fieldBg: string;
+    fieldBorder: string;
+    fieldLabel: string;
+    fieldText: string;
+  };
+  keyboardType?: 'default' | 'email-address' | 'number-pad' | 'phone-pad';
+  uppercaseLabel?: boolean;
+  width?: `${number}%`;
+};
+
+const ProfileField = ({
+  label,
+  value,
+  onChangeText,
+  theme,
+  keyboardType = 'default',
+  uppercaseLabel,
+  width = '100%',
+}: ProfileFieldProps) => {
+  return (
+    <InputCard
+      label={uppercaseLabel ? label.toUpperCase() : label}
+      value={value}
+      onChangeText={onChangeText}
+      keyboardType={keyboardType}
+      width={width}
+      placeholder={label}
+      placeholderTextColor={theme.fieldLabel}
+      containerStyle={[
+        styles.inputCard,
+        {
+          backgroundColor: theme.fieldBg,
+          borderColor: theme.fieldBorder,
+        },
+      ]}
+      labelStyle={[styles.inputLabel, { color: theme.fieldLabel }]}
+      inputStyle={[styles.inputValue, { color: theme.fieldText }]}
+    />
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  screen: {
     flex: 1,
-    backgroundColor: '#ffffff',
-    padding: 20,
   },
-  card: {
-    paddingHorizontal: 20,
-    paddingVertical: 15,
-    flexDirection: 'column',
-    gap: 7,
-    margin: 3,
+  content: {
+    paddingHorizontal: 14,
+    paddingTop: 32,
+    paddingBottom: 28,
+  },
+  identity: {
+    alignItems: 'center',
+  },
+  avatar: {
+    width: 118,
+    height: 118,
+    borderRadius: 59,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 14,
+  },
+  identityName: {
+    fontSize: 17,
+    fontWeight: '900',
+  },
+  identityEmail: {
+    fontSize: 14,
+    fontWeight: '700',
+    marginTop: 4,
   },
   divider: {
-    borderBottomColor: '#000',
-    borderBottomWidth: 1,
-    marginVertical: 10,
-  },
-  userIcon: {
-    transform: [{ scale: 3 }],
-    marginBottom: 60,
-  },
-  nome: {
-    fontSize: 25,
-    fontWeight: '800',
-  },
-  email: {
-    color: '#5e5e5e',
-    fontSize: 20,
-    marginBottom: 10,
+    height: 2,
+    marginTop: 30,
+    marginBottom: 18,
   },
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingHorizontal: 2,
-    gap: 10,
+    gap: 8,
+  },
+  inputCard: {
+    minHeight: 74,
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingHorizontal: 14,
+    marginBottom: 12,
+  },
+  inputLabel: {
+    fontSize: 14,
+    fontWeight: '800',
+  },
+  inputValue: {
+    fontSize: 19,
+    fontWeight: '900',
+  },
+  saveButton: {
+    height: 48,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginHorizontal: 16,
+    marginTop: 6,
+  },
+  saveText: {
+    fontSize: 16,
+    fontWeight: '900',
   },
 });
 

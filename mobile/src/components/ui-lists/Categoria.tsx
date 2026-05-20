@@ -1,4 +1,5 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { useThemeToggle } from '@context/ThemeContext';
 
 type Props = {
   titulo: string;
@@ -8,6 +9,8 @@ type Props = {
 };
 
 const Categoria = ({ titulo, descricao, onPress, selected = false }: Props) => {
+  const { compactLists } = useThemeToggle();
+
   const formatDescricao = (descricao?: string) => {
     if (!descricao) return '';
     return descricao.length > 30
@@ -17,10 +20,20 @@ const Categoria = ({ titulo, descricao, onPress, selected = false }: Props) => {
 
   return (
     <TouchableOpacity onPress={onPress}>
-      <View style={[styles.container, selected && styles.containerSelecionado]}>
+      <View
+        style={[
+          styles.container,
+          compactLists && styles.containerCompact,
+          selected && styles.containerSelecionado,
+        ]}
+      >
         <View style={styles.textContainer}>
-          <Text style={styles.titulo}>{titulo}</Text>
-          <Text style={styles.descricao}>{formatDescricao(descricao)}</Text>
+          <Text style={[styles.titulo, compactLists && styles.tituloCompact]}>
+            {titulo}
+          </Text>
+          {!compactLists && (
+            <Text style={styles.descricao}>{formatDescricao(descricao)}</Text>
+          )}
         </View>
       </View>
     </TouchableOpacity>
@@ -41,6 +54,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#062046',
   },
+  containerCompact: {
+    padding: 8,
+    marginVertical: 5,
+  },
   containerSelecionado: {
     borderColor: 'lime',
     backgroundColor: '#3b5aa1',
@@ -53,6 +70,9 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
     fontSize: 25,
+  },
+  tituloCompact: {
+    fontSize: 17,
   },
   descricao: {
     color: '#fff',

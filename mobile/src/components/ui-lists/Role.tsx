@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { RoleType } from '@context/types';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useThemeToggle } from '@context/ThemeContext';
 
 type Props = {
   titulo: string;
@@ -10,14 +10,27 @@ type Props = {
 };
 
 const Role = ({ titulo, descricao, onPress }: Props) => {
+  const { compactLists } = useThemeToggle();
+
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress}>
+    <TouchableOpacity
+      style={[styles.container, compactLists && styles.containerCompact]}
+      onPress={onPress}
+    >
       <View style={styles.iconContainer}>
-        <MaterialCommunityIcons name="account-lock" size={24} color="#ffffff" />
+        <MaterialCommunityIcons
+          name="account-lock"
+          size={compactLists ? 20 : 24}
+          color="#ffffff"
+        />
       </View>
       <View style={styles.textContainer}>
-        <Text style={styles.titulo}>{titulo}</Text>
-        {descricao ? <Text style={styles.descricao}>{descricao}</Text> : null}
+        <Text style={[styles.titulo, compactLists && styles.tituloCompact]}>
+          {titulo}
+        </Text>
+        {descricao && !compactLists ? (
+          <Text style={styles.descricao}>{descricao}</Text>
+        ) : null}
       </View>
     </TouchableOpacity>
   );
@@ -37,6 +50,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#062046',
   },
+  containerCompact: {
+    padding: 8,
+    marginVertical: 4,
+  },
   iconContainer: {
     color: '#fff',
     marginRight: 12,
@@ -49,6 +66,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: '#ffffff',
+  },
+  tituloCompact: {
+    fontSize: 14,
   },
   descricao: {
     color: '#fff',

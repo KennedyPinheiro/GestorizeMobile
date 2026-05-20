@@ -8,11 +8,15 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '@context/types';
 import { useTheme } from '@context/ThemeContext';
+import { useAuth } from '@context/AuthContext';
+import { isFuncionarioUser } from '@utils/permissions';
 
 const Homepage = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { colors } = useTheme();
+  const { user } = useAuth();
+  const isFuncionario = isFuncionarioUser(user);
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -36,21 +40,25 @@ const Homepage = () => {
               containerStyle={styles.gridItem}
             />
 
-            <NavButton
-              icon="cube-outline"
-              label="Produtos"
-              description="Gerencie catálogo, preços e estoque"
-              onClick={() => navigation.navigate('Produtos')}
-              containerStyle={styles.gridItem}
-            />
+            {!isFuncionario && (
+              <>
+                <NavButton
+                  icon="cube-outline"
+                  label="Produtos"
+                  description="Gerencie catálogo, preços e estoque"
+                  onClick={() => navigation.navigate('Produtos')}
+                  containerStyle={styles.gridItem}
+                />
 
-            <NavButton
-              icon="truck-fast-outline"
-              label="Fornecedores"
-              description="Controle parceiros e histórico de compras"
-              onClick={() => navigation.navigate('Fornecedores')}
-              containerStyle={styles.gridItem}
-            />
+                <NavButton
+                  icon="truck-fast-outline"
+                  label="Fornecedores"
+                  description="Controle parceiros e histórico de compras"
+                  onClick={() => navigation.navigate('Fornecedores')}
+                  containerStyle={styles.gridItem}
+                />
+              </>
+            )}
 
             <NavButton
               icon="file-document-outline"
@@ -60,21 +68,25 @@ const Homepage = () => {
               containerStyle={styles.gridItem}
             />
 
-            <NavButton
-              icon="account-tie"
-              label="Funcionários"
-              description="Gerencie equipe, funções e acessos"
-              onClick={() => navigation.navigate('Funcionarios')}
-              containerStyle={styles.gridItem}
-            />
+            {!isFuncionario && (
+              <>
+                <NavButton
+                  icon="account-tie"
+                  label="Funcionários"
+                  description="Gerencie equipe, funções e acessos"
+                  onClick={() => navigation.navigate('Funcionarios')}
+                  containerStyle={styles.gridItem}
+                />
 
-            <NavButton
-              icon="chart-bar"
-              label="Relatórios"
-              description="Visualize métricas e desempenhos"
-              onClick={() => navigation.navigate('Relatorios')}
-              containerStyle={styles.gridItem}
-            />
+                <NavButton
+                  icon="chart-bar"
+                  label="Relatórios"
+                  description="Visualize métricas e desempenhos"
+                  onClick={() => navigation.navigate('Relatorios')}
+                  containerStyle={styles.gridItem}
+                />
+              </>
+            )}
           </View>
 
           <Text
@@ -88,7 +100,7 @@ const Homepage = () => {
               icon="cog"
               label="Configurações"
               description="Personalize preferências e ajustes do sistema"
-              onClick={() => {}}
+              onClick={() => navigation.navigate('Configuracoes')}
               containerStyle={styles.gridItem}
             />
 
@@ -102,7 +114,7 @@ const Homepage = () => {
           </View>
         </View>
 
-        <StatusBar style={colors.background === '#ffffff' ? 'light' : 'dark'} />
+        <StatusBar style={colors.background === '#ffffff' ? 'dark' : 'light'} />
       </ScrollView>
     </View>
   );
@@ -131,11 +143,12 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     flexWrap: 'wrap',
-    columnGap: 18,
-    rowGap: 47,
+    columnGap: 12,
+    rowGap: 18,
   },
   gridItem: {
-    width: '48%',
+    flexBasis: '47%',
+    flexGrow: 1,
   },
   cardsWrapper: {
     marginTop: 16,

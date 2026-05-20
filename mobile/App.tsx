@@ -1,7 +1,10 @@
 import 'react-native-url-polyfill/auto';
 import React from 'react';
 import Toast from 'react-native-toast-message';
-import { NavigationContainer } from '@react-navigation/native';
+import {
+  createNavigationContainerRef,
+  NavigationContainer,
+} from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from '@views/Login';
 import { AuthProvider, useAuth } from '@context/AuthContext';
@@ -32,8 +35,10 @@ import Orcamentos from '@views/Orcamentos/index';
 import { MenuProvider } from '@context/MenuContext';
 import toastConfig from '@components/ui/ToastConfig';
 import Relatorios from '@views/Relatorios/index';
+import Configuracoes from '@views/Configuracoes';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
+const navigationRef = createNavigationContainerRef<RootStackParamList>();
 
 const AppNavigator = () => {
   const { token, loading } = useAuth();
@@ -41,7 +46,7 @@ const AppNavigator = () => {
   if (loading) return null;
 
   return (
-    <MenuProvider>
+    <MenuProvider navigationRef={navigationRef}>
       <Stack.Navigator
         key={token ? 'app-stack' : 'auth-stack'}
         screenOptions={{ headerShown: false }}
@@ -62,7 +67,8 @@ const AppNavigator = () => {
             <Stack.Screen name="PerfilProduto" component={PerfilProduto} />
             <Stack.Screen name="Fornecedores" component={Fornecedores} />
             <Stack.Screen name="Produtos" component={Produtos} />
-            <Stack.Screen name='Relatorios' component={Relatorios}/>
+            <Stack.Screen name="Relatorios" component={Relatorios} />
+            <Stack.Screen name="Configuracoes" component={Configuracoes} />
             <Stack.Screen
               name="PerfilFornecedor"
               component={PerfilFornecedor}
@@ -110,7 +116,7 @@ const App = () => (
   <AuthProvider>
     <ThemeProvider>
       <PaperThemedProvider>
-        <NavigationContainer>
+        <NavigationContainer ref={navigationRef}>
           <AppNavigator />
         </NavigationContainer>
         <Toast config={toastConfig} />
