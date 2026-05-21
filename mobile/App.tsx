@@ -36,14 +36,19 @@ import { MenuProvider } from '@context/MenuContext';
 import toastConfig from '@components/ui/ToastConfig';
 import Relatorios from '@views/Relatorios/index';
 import Configuracoes from '@views/Configuracoes';
+import { canAccessRoute } from '@utils/permissions';
+import Ajuda from '@views/Ajuda';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const navigationRef = createNavigationContainerRef<RootStackParamList>();
 
 const AppNavigator = () => {
-  const { token, loading } = useAuth();
+  const { token, loading, user } = useAuth();
 
   if (loading) return null;
+
+  const canAccess = (routeName: keyof RootStackParamList) =>
+    canAccessRoute(user, routeName);
 
   return (
     <MenuProvider navigationRef={navigationRef}>
@@ -62,17 +67,9 @@ const AppNavigator = () => {
             <Stack.Screen name="Homepage" component={Homepage} />
             <Stack.Screen name="Clientes" component={Clientes} />
             <Stack.Screen name="Orcamentos" component={Orcamentos} />
-            <Stack.Screen name="Funcionarios" component={Funcionarios} />
             <Stack.Screen name="PessoaFisica" component={CadastroClientePF} />
-            <Stack.Screen name="PerfilProduto" component={PerfilProduto} />
-            <Stack.Screen name="Fornecedores" component={Fornecedores} />
-            <Stack.Screen name="Produtos" component={Produtos} />
-            <Stack.Screen name="Relatorios" component={Relatorios} />
             <Stack.Screen name="Configuracoes" component={Configuracoes} />
-            <Stack.Screen
-              name="PerfilFornecedor"
-              component={PerfilFornecedor}
-            />
+            <Stack.Screen name="Ajuda" component={Ajuda} />
             <Stack.Screen
               name="PerfilPessoaFisica"
               component={PerfilPessoaFisica}
@@ -81,24 +78,50 @@ const AppNavigator = () => {
               name="PerfilPessoaJuridica"
               component={PerfilPessoaJuridica}
             />
-            <Stack.Screen
-              name="PerfilFuncionario"
-              component={PerfilFuncionario}
-            />
             <Stack.Screen name="UserPerfil" component={UserPerfil} />
             <Stack.Screen name="PessoaJuridica" component={CadastroClientePJ} />
-            <Stack.Screen
-              name="CadastroProdutos"
-              component={CadastroProdutos}
-            />
-            <Stack.Screen
-              name="CadastroFornecedores"
-              component={CadastroFornecedores}
-            />
-            <Stack.Screen
-              name="CadastroFuncionarios"
-              component={CadastroFuncionarios}
-            />
+            {canAccess('Produtos') && (
+              <>
+                <Stack.Screen name="Produtos" component={Produtos} />
+                <Stack.Screen
+                  name="CadastroProdutos"
+                  component={CadastroProdutos}
+                />
+                <Stack.Screen
+                  name="PerfilProduto"
+                  component={PerfilProduto}
+                />
+              </>
+            )}
+            {canAccess('Fornecedores') && (
+              <>
+                <Stack.Screen name="Fornecedores" component={Fornecedores} />
+                <Stack.Screen
+                  name="CadastroFornecedores"
+                  component={CadastroFornecedores}
+                />
+                <Stack.Screen
+                  name="PerfilFornecedor"
+                  component={PerfilFornecedor}
+                />
+              </>
+            )}
+            {canAccess('Funcionarios') && (
+              <>
+                <Stack.Screen name="Funcionarios" component={Funcionarios} />
+                <Stack.Screen
+                  name="CadastroFuncionarios"
+                  component={CadastroFuncionarios}
+                />
+                <Stack.Screen
+                  name="PerfilFuncionario"
+                  component={PerfilFuncionario}
+                />
+              </>
+            )}
+            {canAccess('Relatorios') && (
+              <Stack.Screen name="Relatorios" component={Relatorios} />
+            )}
           </>
         )}
       </Stack.Navigator>

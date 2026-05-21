@@ -1,10 +1,41 @@
 import { authStorage, api } from '@configs/axios';
 import auth from '@configs/auth';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LoginData, RefreshData } from '@context/requestTypes';
 import { ResponseType } from '@context/types';
+import { secureStore } from '@utils/secureStore';
 
 const unwrap = (responseData: any) => responseData?.data ?? responseData;
+
+const normalizeRoles = (roles: any): string[] => {
+  if (Array.isArray(roles)) {
+    return roles.map((role) => String(role)).filter(Boolean);
+  }
+
+  if (typeof roles === 'string' && roles.trim()) {
+    return [roles.trim()];
+  }
+
+  return [];
+};
+
+const normalizeAuthPayload = (payload: any): LoginData => {
+  if (!payload?.token || !payload?.user) {
+    throw new Error('Resposta de autenticação inválida.');
+  }
+
+  const user = payload.user;
+
+  return {
+    token: String(payload.token),
+    user: {
+      ...user,
+      id: String(user.id),
+      nome: user.nome ?? user.name ?? '',
+      email: user.email ?? '',
+      roles: normalizeRoles(user.roles),
+    },
+  };
+};
 
 export async function postLogin(
   email: string,
@@ -15,19 +46,16 @@ export async function postLogin(
     password,
   });
 
-  return data.data;
+  return normalizeAuthPayload(unwrap(data));
 }
 
 export const postRefreshToken = async (): Promise<RefreshData> => {
   const { data } = await api.post<ResponseType<RefreshData>>(
     auth.refreshEndpoint,
   );
-  const payload = data.data;
+  const payload = normalizeAuthPayload(unwrap(data));
   await authStorage.set(payload.token);
-  await AsyncStorage.setItem(
-    auth.userDataKeyName,
-    JSON.stringify(payload.user),
-  );
+  await secureStore.set(auth.userDataKeyName, JSON.stringify(payload.user));
 
   return payload;
 };
@@ -35,5 +63,5 @@ export const postRefreshToken = async (): Promise<RefreshData> => {
 export const postLogout = async (): Promise<void> => {
   await api.post(auth.logoutEndpoint);
   await authStorage.set(null);
-  await AsyncStorage.removeItem(auth.userDataKeyName);
+  await secureStore.remove(auth.userDataKeyName);
 };

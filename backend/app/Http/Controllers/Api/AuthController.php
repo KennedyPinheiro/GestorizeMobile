@@ -23,7 +23,7 @@ class AuthController extends Controller
 
     public function logout(AuthLogoutRequest $request): JsonResponse
     {
-        $this->service->logout($request->validated('token'));
+        $this->service->logout();
 
         return ResponseService::success([], 'Logout realizado com sucesso.');
     }
@@ -31,7 +31,7 @@ class AuthController extends Controller
     public function refresh(AuthRefreshRequest $request): JsonResponse
     {
         return ResponseService::success(
-            $this->service->refresh($request->validated('token')),
+            $this->service->refresh(),
             'Token atualizado.'
         );
     }

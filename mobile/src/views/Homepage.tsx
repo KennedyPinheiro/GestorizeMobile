@@ -9,14 +9,52 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '@context/types';
 import { useTheme } from '@context/ThemeContext';
 import { useAuth } from '@context/AuthContext';
-import { isFuncionarioUser } from '@utils/permissions';
+import { canAccessRoute } from '@utils/permissions';
 
 const Homepage = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { colors } = useTheme();
   const { user } = useAuth();
-  const isFuncionario = isFuncionarioUser(user);
+
+  const quickActions = [
+    {
+      route: 'Clientes' as const,
+      icon: 'account-group' as const,
+      label: 'Clientes',
+      description: 'Cadastre, edite e acompanhe seus clientes',
+    },
+    {
+      route: 'Produtos' as const,
+      icon: 'cube-outline' as const,
+      label: 'Produtos',
+      description: 'Gerencie catálogo, preços e estoque',
+    },
+    {
+      route: 'Fornecedores' as const,
+      icon: 'truck-fast-outline' as const,
+      label: 'Fornecedores',
+      description: 'Controle parceiros e histórico de compras',
+    },
+    {
+      route: 'Orcamentos' as const,
+      icon: 'file-document-outline' as const,
+      label: 'Orçamentos',
+      description: 'Crie, organize e acompanhe propostas',
+    },
+    {
+      route: 'Funcionarios' as const,
+      icon: 'account-tie' as const,
+      label: 'Funcionários',
+      description: 'Gerencie equipe, funções e acessos',
+    },
+    {
+      route: 'Relatorios' as const,
+      icon: 'chart-bar' as const,
+      label: 'Relatórios',
+      description: 'Visualize métricas e desempenhos',
+    },
+  ].filter((item) => canAccessRoute(user, item.route));
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -32,61 +70,16 @@ const Homepage = () => {
             Acesso Rápido
           </Text>
           <View style={styles.grid}>
-            <NavButton
-              icon="account-group"
-              label="Clientes"
-              description="Cadastre, edite e acompanhe seus clientes"
-              onClick={() => navigation.navigate('Clientes')}
-              containerStyle={styles.gridItem}
-            />
-
-            {!isFuncionario && (
-              <>
-                <NavButton
-                  icon="cube-outline"
-                  label="Produtos"
-                  description="Gerencie catálogo, preços e estoque"
-                  onClick={() => navigation.navigate('Produtos')}
-                  containerStyle={styles.gridItem}
-                />
-
-                <NavButton
-                  icon="truck-fast-outline"
-                  label="Fornecedores"
-                  description="Controle parceiros e histórico de compras"
-                  onClick={() => navigation.navigate('Fornecedores')}
-                  containerStyle={styles.gridItem}
-                />
-              </>
-            )}
-
-            <NavButton
-              icon="file-document-outline"
-              label="Orçamentos"
-              description="Crie, organize e acompanhe propostas"
-              onClick={() => navigation.navigate('Orcamentos')}
-              containerStyle={styles.gridItem}
-            />
-
-            {!isFuncionario && (
-              <>
-                <NavButton
-                  icon="account-tie"
-                  label="Funcionários"
-                  description="Gerencie equipe, funções e acessos"
-                  onClick={() => navigation.navigate('Funcionarios')}
-                  containerStyle={styles.gridItem}
-                />
-
-                <NavButton
-                  icon="chart-bar"
-                  label="Relatórios"
-                  description="Visualize métricas e desempenhos"
-                  onClick={() => navigation.navigate('Relatorios')}
-                  containerStyle={styles.gridItem}
-                />
-              </>
-            )}
+            {quickActions.map((item) => (
+              <NavButton
+                key={item.route}
+                icon={item.icon}
+                label={item.label}
+                description={item.description}
+                onClick={() => navigation.navigate(item.route)}
+                containerStyle={styles.gridItem}
+              />
+            ))}
           </View>
 
           <Text
@@ -108,7 +101,7 @@ const Homepage = () => {
               icon="help-circle"
               label="Ajuda"
               description="Suporte, dúvidas frequentes e orientações"
-              onClick={() => {}}
+              onClick={() => navigation.navigate('Ajuda')}
               containerStyle={styles.gridItem}
             />
           </View>

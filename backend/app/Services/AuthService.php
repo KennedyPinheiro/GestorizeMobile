@@ -4,10 +4,7 @@ namespace App\Services;
 
 use App\Models\User;
 use Illuminate\Auth\AuthenticationException;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 class AuthService implements IAuthService
@@ -32,12 +29,7 @@ class AuthService implements IAuthService
 
         return [
             'token' => $token,
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'roles' => $user->getRoleNames(),
-            ],
+            'user' => $this->userPayload($user),
         ];
     }
 
@@ -48,13 +40,11 @@ class AuthService implements IAuthService
             throw new AuthenticationException('Não autenticado');
         }
 
-        $user->currentAccessToken()->delete();
+        $user->currentAccessToken()?->delete();
     }
 
     /**
-     * 
-     *
-     * @return array{token:string,user:array{id:int,name:string,email:string}}
+     * @return array{token:string,user:array{id:int,name:string,email:string,roles:mixed}}
      */
     public function refresh(): array
     {
@@ -64,13 +54,23 @@ class AuthService implements IAuthService
             throw new AuthenticationException('Não autenticado');
         }
 
-        $user->currentAccessToken()->delete();
+        $user->currentAccessToken()?->delete();
 
         $newToken = $user->createToken('api-token')->plainTextToken;
 
         return [
             'token' => $newToken,
-            'user' => $user->only(['id', 'name', 'email']),
+            'user' => $this->userPayload($user),
+        ];
+    }
+
+    private function userPayload(User $user): array
+    {
+        return [
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'roles' => $user->getRoleNames(),
         ];
     }
 }

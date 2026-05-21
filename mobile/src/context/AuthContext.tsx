@@ -1,10 +1,16 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import { postLogin, postLogout } from '../api/apiAuth';
 import Toast from 'react-native-toast-message';
 import authConfig from '../configs/auth';
 import { secureStore } from '../utils/secureStore';
-import { setAuthToken } from 'src/services/api';
 import { formatErrorMessage } from '@core/utils/format';
+import { setUnauthorizedHandler } from '@configs/axios';
 
 type AuthContextType = {
   token: string | null;
@@ -27,19 +33,38 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const clearStoredAuth = useCallback(async () => {
+    setToken(null);
+    setUser(null);
+    await secureStore.remove(authConfig.storageTokenKeyName);
+    await secureStore.remove(authConfig.userDataKeyName);
+  }, []);
+
   useEffect(() => {
     const loadStoredAuth = async () => {
       const storedToken = await secureStore.get(authConfig.storageTokenKeyName);
       const storedUser = await secureStore.get(authConfig.userDataKeyName);
 
       if (storedToken) setToken(storedToken);
-      if (storedUser) setUser(JSON.parse(storedUser));
+      if (storedUser) {
+        try {
+          setUser(JSON.parse(storedUser));
+        } catch {
+          await secureStore.remove(authConfig.userDataKeyName);
+        }
+      }
 
       setLoading(false);
     };
 
     loadStoredAuth();
   }, []);
+
+  useEffect(() => {
+    setUnauthorizedHandler(clearStoredAuth);
+
+    return () => setUnauthorizedHandler(null);
+  }, [clearStoredAuth]);
 
   const signIn = async (email: string, password: string) => {
     setLoading(true);
@@ -73,17 +98,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       await postLogout();
     } catch (e) {
+      const status = (e as any)?.response?.status;
+      if (status === 401 || status === 419) {
+        await clearStoredAuth();
+        return;
+      }
+
       Toast.show({
         type: 'error',
         text1: 'Erro ao sair',
         text2: formatErrorMessage(e, 'Erro ao sair:'),
       });
     } finally {
-      setToken(null);
-      setUser(null);
-      setAuthToken(null);
-      await secureStore.remove(authConfig.storageTokenKeyName);
-      await secureStore.remove(authConfig.userDataKeyName);
+      await clearStoredAuth();
     }
   };
 

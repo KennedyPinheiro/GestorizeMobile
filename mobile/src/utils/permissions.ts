@@ -1,3 +1,5 @@
+import type { RootStackParamList } from '@context/types';
+
 const normalizeRole = (role?: string | null) =>
   role
     ?.normalize('NFD')
@@ -23,4 +25,26 @@ export const isFuncionarioUser = (user: any) => {
   return candidates.some(
     (role) => normalizeRole(roleToString(role)) === 'funcionario',
   );
+};
+
+const funcionarioRoutes = new Set<keyof RootStackParamList>([
+  'Homepage',
+  'Clientes',
+  'Orcamentos',
+  'PessoaFisica',
+  'PessoaJuridica',
+  'PerfilPessoaFisica',
+  'PerfilPessoaJuridica',
+  'UserPerfil',
+  'Configuracoes',
+  'Ajuda',
+]);
+
+export const canAccessRoute = (
+  user: any,
+  routeName: keyof RootStackParamList,
+) => {
+  if (!isFuncionarioUser(user)) return true;
+
+  return funcionarioRoutes.has(routeName);
 };

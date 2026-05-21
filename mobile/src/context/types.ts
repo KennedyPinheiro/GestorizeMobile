@@ -185,6 +185,7 @@ export type RoleType = {
 export type RootStackParamList = {
   Relatorios: undefined;
   Configuracoes: undefined;
+  Ajuda: undefined;
   Login: undefined;
   ResetPassword: undefined;
   ForgoutPassword: undefined;

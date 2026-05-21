@@ -2,6 +2,14 @@ import axios from 'axios';
 import auth from './auth';
 import { secureStore } from '@utils/secureStore';
 
+let unauthorizedHandler: (() => void | Promise<void>) | null = null;
+
+export const setUnauthorizedHandler = (
+  handler: (() => void | Promise<void>) | null,
+) => {
+  unauthorizedHandler = handler;
+};
+
 export const authStorage = {
   async get(): Promise<string | null> {
     return secureStore.get(auth.storageTokenKeyName);
@@ -34,6 +42,7 @@ api.interceptors.response.use(
   async (error) => {
     if (error.response?.status === 401) {
       await authStorage.set(null);
+      await unauthorizedHandler?.();
     }
     return Promise.reject(error);
   },

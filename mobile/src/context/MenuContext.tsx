@@ -3,7 +3,8 @@ import { SideMenu } from '@components/SideMenu';
 import { NavigationContainerRef } from '@react-navigation/native';
 import { useAuth } from '@context/AuthContext';
 import { RootStackParamList } from '@context/types';
-import { isFuncionarioUser } from '@utils/permissions';
+import { canAccessRoute } from '@utils/permissions';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 type MenuContextType = {
   open: () => void;
@@ -22,7 +23,6 @@ export const MenuProvider = ({ children, navigationRef }: MenuProviderProps) => 
   const [isOpen, setIsOpen] = useState(false);
 
   const { signOut, user } = useAuth();
-  const isFuncionario = isFuncionarioUser(user);
 
   const handleMenuAction = (action: () => void | Promise<void>) => {
     setIsOpen(false);
@@ -35,44 +35,51 @@ export const MenuProvider = ({ children, navigationRef }: MenuProviderProps) => 
     }
   };
 
-  const allMainMenu = [
+  const allMainMenu: Array<{
+    route: keyof RootStackParamList;
+    icon: keyof typeof MaterialCommunityIcons.glyphMap;
+    label: string;
+    onPress: () => void;
+  }> = [
     {
+      route: 'Clientes',
       icon: 'account-group' as const,
       label: 'Clientes',
       onPress: () => handleMenuAction(() => navigate('Clientes')),
     },
     {
+      route: 'Produtos',
       icon: 'cube-outline' as const,
       label: 'Produtos',
       onPress: () => handleMenuAction(() => navigate('Produtos')),
     },
     {
+      route: 'Fornecedores',
       icon: 'truck-fast-outline' as const,
       label: 'Fornecedores',
       onPress: () => handleMenuAction(() => navigate('Fornecedores')),
     },
     {
+      route: 'Orcamentos',
       icon: 'file-document-outline' as const,
       label: 'Orçamentos',
       onPress: () => handleMenuAction(() => navigate('Orcamentos')),
     },
     {
+      route: 'Funcionarios',
       icon: 'account-tie' as const,
       label: 'Funcionários',
       onPress: () => handleMenuAction(() => navigate('Funcionarios')),
     },
     {
+      route: 'Relatorios',
       icon: 'chart-bar' as const,
       label: 'Relatórios',
       onPress: () => handleMenuAction(() => navigate('Relatorios')),
     },
   ];
 
-  const mainMenu = isFuncionario
-    ? allMainMenu.filter(
-        (item) => item.label === 'Clientes' || item.label === 'Orçamentos',
-      )
-    : allMainMenu;
+  const mainMenu = allMainMenu.filter((item) => canAccessRoute(user, item.route));
 
   const bottomMenu = [
     {
@@ -83,7 +90,7 @@ export const MenuProvider = ({ children, navigationRef }: MenuProviderProps) => 
     {
       icon: 'help-circle' as const,
       label: 'Ajuda',
-      onPress: () => handleMenuAction(() => {}),
+      onPress: () => handleMenuAction(() => navigate('Ajuda')),
     },
     {
       icon: 'logout' as const,
