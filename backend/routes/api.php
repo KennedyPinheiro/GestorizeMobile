@@ -13,8 +13,40 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('refresh', [AuthController::class, 'refresh']);
 
-    Route::apiResource('produtos', ProdutoController::class);
-    Route::apiResource('clientes', ClienteController::class);
-    Route::apiResource('fornecedores', FornecedorController::class);
-    Route::apiResource('orcamentos', OrcamentoController::class);
+    Route::prefix('produtos')->group(function () {
+        Route::get('/', [ProdutoController::class, 'index']);
+        Route::post('/', [ProdutoController::class, 'store']);
+        Route::get('/{id}', [ProdutoController::class, 'show']);
+        Route::put('/{id}', [ProdutoController::class, 'update']);
+        Route::delete('/{id}', [ProdutoController::class, 'destroy']);
+    });
+    Route::prefix('clientes')->group(function () {
+        Route::get('/', [ClienteController::class, 'index']);
+        Route::post('/', [ClienteController::class, 'store']);
+        Route::get('/{id}', [ClienteController::class, 'show']);
+        Route::put('/{id}', [ClienteController::class, 'update']);
+        Route::delete('/{id}', [ClienteController::class, 'destroy']);
+    });
+    Route::prefix('fornecedores')->group(function () {
+        Route::get('/', [FornecedorController::class, 'index']);
+        Route::post('/', [FornecedorController::class, 'store']);
+        Route::get('/{id}', [FornecedorController::class, 'show']);
+        Route::put('/{id}', [FornecedorController::class, 'update']);
+        Route::delete('/{id}', [FornecedorController::class, 'destroy']);
+    });
+    Route::prefix('orcamentos')->group(function () {
+        Route::get('/', [OrcamentoController::class, 'index']);
+        Route::post('/', [OrcamentoController::class, 'store']);
+        Route::get('/{id}', [OrcamentoController::class, 'show']);
+        Route::put('/{id}', [OrcamentoController::class, 'update']);
+        Route::delete('/{id}', [OrcamentoController::class, 'destroy']);
+    });
+
+    Route::prefix('users')->group(function () {
+        Route::get('/', [AuthController::class, 'index']);
+        Route::post('/', [AuthController::class, 'store']);
+        Route::get('/{id}', [AuthController::class, 'show']);
+        Route::put('/{id}', [AuthController::class, 'update']);
+        Route::delete('/{id}', [AuthController::class, 'destroy']);
+    });
 });
