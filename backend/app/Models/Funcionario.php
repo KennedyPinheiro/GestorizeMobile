@@ -25,4 +25,9 @@ class Funcionario extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function endereco()
+    {
+        return $this->belongsTo(Endereco::class);
+    }
 }

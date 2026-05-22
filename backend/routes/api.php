@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ClienteController;
 use App\Http\Controllers\Api\FornecedorController;
 use App\Http\Controllers\Api\OrcamentoController;
+use App\Http\Controllers\Api\UserController;
 
 Route::post('login', [AuthController::class, 'login']);
 
@@ -43,10 +44,10 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::prefix('users')->group(function () {
-        Route::get('/', [AuthController::class, 'index']);
-        Route::post('/', [AuthController::class, 'store']);
-        Route::get('/{id}', [AuthController::class, 'show']);
-        Route::put('/{id}', [AuthController::class, 'update']);
-        Route::delete('/{id}', [AuthController::class, 'destroy']);
+        Route::get('/', [UserController::class, 'index']);
+        Route::post('/', [UserController::class, 'store']);
+        Route::get('/{user}', [UserController::class, 'show']);
+        Route::put('/{user}', [UserController::class, 'update']);
+        Route::delete('/{user}', [UserController::class, 'destroy']);
     });
 });
