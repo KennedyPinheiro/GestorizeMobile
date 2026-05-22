@@ -18,9 +18,6 @@ return new class extends Migration
                 ->constrained('clientes')
                 ->cascadeOnDelete();
 
-            $table->foreignId('funcionario_id')
-                ->constrained('funcionarios')
-                ->cascadeOnDelete();
 
             $table->decimal('valor_total', 10, 2)->default(0);
 

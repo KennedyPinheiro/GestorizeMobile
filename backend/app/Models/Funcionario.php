@@ -2,16 +2,12 @@
 
 namespace App\Models;
 
-use App\Traits\HasSnowflakeId;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 
 class Funcionario extends Model
 {
-    use HasSnowflakeId;
-
-    public $incrementing = false;
-    protected $keyType = 'string';
-
+    use HasUuids;
     protected $fillable = [
         'user_id',
         'telefone',
