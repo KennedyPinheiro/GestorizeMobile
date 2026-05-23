@@ -12,25 +12,25 @@ class RolesSeeder extends Seeder
     {
         $snowflake = app(Snowflake::class);
 
-        Role::updateOrCreate(
-            ['name' => 'admin'],
+        Role::create(
             [
+                'name' => 'admin',
                 'id' => $snowflake->next(),
                 'guard_name' => 'api'
             ]
         );
 
-        Role::updateOrCreate(
-            ['name' => 'gestor'],
+        Role::create(
             [
+                'name' => 'gestor',
                 'id' => $snowflake->next(),
                 'guard_name' => 'api'
             ]
         );
 
-        Role::updateOrCreate(
-            ['name' => 'funcionario'],
+        Role::create(
             [
+                'name' => 'funcionario',
                 'id' => $snowflake->next(),
                 'guard_name' => 'api'
             ]

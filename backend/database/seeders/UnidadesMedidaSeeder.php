@@ -2,22 +2,49 @@
 
 namespace Database\Seeders;
 
+use App\Models\UnidadeMedida;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class UnidadesMedidaSeeder extends Seeder
 {
     public function run()
     {
-        DB::table('unidades_medida')->insert([
-            ['nome' => 'Unidade', 'sigla' => 'UN'],
-            ['nome' => 'Quilograma', 'sigla' => 'KG'],
-            ['nome' => 'Grama', 'sigla' => 'G'],
-            ['nome' => 'Litro', 'sigla' => 'L'],
-            ['nome' => 'Mililitro', 'sigla' => 'ML'],
-            ['nome' => 'Metro', 'sigla' => 'M'],
-            ['nome' => 'Caixa', 'sigla' => 'CX'],
-            ['nome' => 'Pacote', 'sigla' => 'PCT']
+        UnidadeMedida::create([
+            'nome' => 'Unidade',
+            'sigla' => 'UN'
+        ]);
+
+        UnidadeMedida::create([
+            'nome' => 'Quilograma',
+            'sigla' => 'KG'
+        ]);
+        UnidadeMedida::create([
+            'nome' => 'Grama',
+            'sigla' => 'G'
+        ]);
+
+        UnidadeMedida::create([
+            'nome' => 'Litro',
+            'sigla' => 'L'
+        ]);
+        UnidadeMedida::create([
+            'nome' => 'Mililitro',
+            'sigla' => 'ML'
+        ]);
+
+        UnidadeMedida::create([
+            'nome' => 'Metro',
+            'sigla' => 'M'
+        ]);
+
+        UnidadeMedida::create([
+            'nome' => 'Caixa',
+            'sigla' => 'CX'
+        ]);
+        
+        UnidadeMedida::create([
+            'nome' => 'Pacote',
+            'sigla' => 'PKG'
         ]);
     }
 }

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Funcionario extends Model
 {
     use HasUuids;
+    
     protected $fillable = [
         'user_id',
         'telefone',

@@ -20,7 +20,6 @@ class DatabaseSeeder extends Seeder
             CategoriasSeeder::class,
             EnderecosSeeder::class,
             FornecedoresSeeder::class,
-            ClientesSeeder::class,
             ProdutosSeeder::class,
             TestUsersSeeder::class,
         ]);

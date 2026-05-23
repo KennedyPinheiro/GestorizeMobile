@@ -12,17 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('orcamentos', function (Blueprint $table) {
-            $table->id();
-
-            $table->foreignId('cliente_id')
-                ->constrained('clientes')
+            $table->uuid('id')->primary();
+            $table->uuid('cliente_id');
+            $table->foreign('cliente_id')
+                ->references('id')->on('clientes')
                 ->cascadeOnDelete();
-
-
             $table->decimal('valor_total', 10, 2)->default(0);
-
             $table->date('data_orcamento');
-
             $table->timestamps();
         });
     }

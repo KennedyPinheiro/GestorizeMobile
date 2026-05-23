@@ -23,9 +23,10 @@ return new class extends Migration
             $table->string('cpf')->nullable();
             $table->string('rg')->nullable();
 
-            $table->foreignId('endereco_id')
-                ->nullable()
-                ->constrained('enderecos')
+            $table->uuid('endereco_id')->nullable();
+            $table->foreign('endereco_id')
+                 ->references('id') 
+                ->on('enderecos')
                 ->nullOnDelete();
 
             $table->timestamps();

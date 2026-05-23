@@ -12,21 +12,19 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('orcamento_produtos', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary(); 
 
-            $table->foreignId('orcamento_id')
+            $table->foreignUuid('orcamento_id') 
                 ->constrained('orcamentos')
                 ->cascadeOnDelete();
 
-            $table->foreignId('produto_id')
+            $table->foreignUuid('produto_id')   
                 ->constrained('produtos')
                 ->cascadeOnDelete();
 
             $table->integer('quantidade');
-
             $table->decimal('preco_unitario', 10, 2);
             $table->decimal('subtotal', 10, 2);
-
             $table->timestamps();
         });
     }

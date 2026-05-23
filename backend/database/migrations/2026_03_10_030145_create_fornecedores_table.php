@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('fornecedores', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('nome');
             $table->string('cnpj')->unique();
             $table->string('email')->nullable();
@@ -20,9 +20,10 @@ return new class extends Migration
             $table->string('ramo_atividade')->nullable();
             $table->string('nome_responsavel')->nullable();
             $table->string('chave_pix')->nullable();
-            $table->foreignId('endereco_id')
-                ->nullable()
-                ->constrained('enderecos')
+            $table->uuid('endereco_id')->nullable();
+            $table->foreign('endereco_id')
+                 ->references('id') 
+                ->on('enderecos')
                 ->nullOnDelete();
             $table->timestamps();
         });

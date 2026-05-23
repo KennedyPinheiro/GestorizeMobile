@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 
 class OrcamentoItem extends Model
 {
+    use HasUuids;
+
     protected $table = 'orcamento_produtos';
 
     protected $fillable = [

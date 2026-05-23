@@ -13,13 +13,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('categoria_produto', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
 
-            $table->foreignId('produto_id')
+            $table->foreignUuid('produto_id')
                 ->constrained('produtos')
                 ->cascadeOnDelete();
 
-            $table->foreignId('categoria_id')
+            $table->foreignUuid('categoria_id')
                 ->constrained('categorias')
                 ->cascadeOnDelete();
 

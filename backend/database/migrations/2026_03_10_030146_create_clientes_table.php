@@ -12,14 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('clientes', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('nome');
             $table->enum('tipo', ['pf', 'pj']);
             $table->string('telefone')->nullable();
             $table->string('email')->nullable();
-            $table->foreignId('endereco_id')
-                ->nullable()
-                ->constrained('enderecos')
+            $table->uuid('endereco_id')->nullable();
+            $table->foreign('endereco_id')
+                 ->references('id') 
+                ->on('enderecos')
                 ->nullOnDelete();
             $table->timestamps();
         });

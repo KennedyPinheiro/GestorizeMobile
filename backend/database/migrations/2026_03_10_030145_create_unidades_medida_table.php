@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-       Schema::create('unidades_medida', function (Blueprint $table) {
-    $table->id();
-    $table->string('nome');     
-    $table->string('sigla');     
-    $table->timestamps();
-});
+        Schema::create('unidades_medida', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->string('nome');
+            $table->string('sigla');
+            $table->timestamps();
+        });
     }
 
     /**

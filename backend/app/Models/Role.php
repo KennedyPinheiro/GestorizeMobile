@@ -2,20 +2,17 @@
 
 namespace App\Models;
 
-use App\Traits\HasSnowflakeId;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Spatie\Permission\Models\Role as SpatieRole;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Kra8\Snowflake\Snowflake;
 
 class Role extends SpatieRole
 {
-    use HasFactory , HasSnowflakeId;
+    use HasFactory, HasUuids;
 
     protected $fillable = [
         'id',
         'name',
         'guard_name',
     ];
-
-   
 }
