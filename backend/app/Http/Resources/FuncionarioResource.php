@@ -13,7 +13,6 @@ class FuncionarioResource extends JsonResource
             'telefone'         => $this->telefone,
             'data_nascimento'  => $this->data_nascimento,
             'cpf'              => $this->cpf,
-            'rg'               => $this->rg,
             'endereco'         => new EnderecoResource($this->whenLoaded('endereco')),
         ];
     }

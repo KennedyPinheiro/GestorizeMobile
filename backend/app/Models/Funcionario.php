@@ -14,7 +14,6 @@ class Funcionario extends Model
         'telefone',
         'data_nascimento',
         'cpf',
-        'rg',
         'endereco_id'
     ];
 

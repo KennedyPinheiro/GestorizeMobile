@@ -21,7 +21,6 @@ class CreateUserRequest extends FormRequest
             'funcionario.telefone'        => ['nullable', 'string', 'max:20'],
             'funcionario.data_nascimento' => ['nullable', 'date'],
             'funcionario.cpf'             => ['nullable', 'string', 'size:11'],
-            'funcionario.rg'              => ['nullable', 'string', 'max:20'],
             'endereco.cep'                => ['required', 'string', 'size:9'],
             'endereco.logradouro'         => ['required', 'string', 'max:255'],
             'endereco.numero'             => ['required', 'string', 'max:20'],

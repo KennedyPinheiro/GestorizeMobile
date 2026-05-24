@@ -21,12 +21,9 @@ class UpdateUserRequest extends FormRequest
             'email'                       => ['sometimes', 'email', Rule::unique('users', 'email')->ignore($userId)],
             'password'                    => ['sometimes', 'string', 'min:8', 'confirmed'],
             'role'                        => ['sometimes', 'string', 'exists:roles,name'],
-
             'funcionario.telefone'        => ['sometimes', 'nullable', 'string', 'max:20'],
             'funcionario.data_nascimento' => ['sometimes', 'nullable', 'date'],
             'funcionario.cpf'             => ['sometimes', 'nullable', 'string', 'size:11'],
-            'funcionario.rg'              => ['sometimes', 'nullable', 'string', 'max:20'],
-
             'endereco.cep'                => ['sometimes', 'string', 'size:9'],
             'endereco.logradouro'         => ['sometimes', 'string', 'max:255'],
             'endereco.numero'             => ['sometimes', 'string', 'max:20'],

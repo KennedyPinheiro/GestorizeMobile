@@ -21,8 +21,6 @@ return new class extends Migration
             $table->string('telefone')->nullable();
             $table->date('data_nascimento')->nullable();
             $table->string('cpf')->nullable();
-            $table->string('rg')->nullable();
-
             $table->uuid('endereco_id')->nullable();
             $table->foreign('endereco_id')
                  ->references('id') 

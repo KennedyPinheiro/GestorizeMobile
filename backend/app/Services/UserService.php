@@ -26,7 +26,6 @@ class UserService
                 'telefone'         => $dados['funcionario']['telefone'] ?? null,
                 'data_nascimento'  => $dados['funcionario']['data_nascimento'] ?? null,
                 'cpf'              => $dados['funcionario']['cpf'] ?? null,
-                'rg'               => $dados['funcionario']['rg'] ?? null,
                 'endereco_id'      => $endereco->id,
             ]);
 
