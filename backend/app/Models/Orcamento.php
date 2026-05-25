@@ -5,14 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Orcamento extends Model
 {
-    use HasUuids;
+    use HasUuids , HasFactory;
 
     protected $fillable = [
         'cliente_id',
-        'funcionario_id',
         'valor_total',
         'data_orcamento',
     ];

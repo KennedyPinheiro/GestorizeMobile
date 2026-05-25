@@ -12,6 +12,5 @@ class Categoria extends Model
 
     protected $fillable = [
         'nome',
-        'descricao',
     ];
 }
