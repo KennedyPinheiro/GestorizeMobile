@@ -31,6 +31,8 @@ class UpdateUserRequest extends FormRequest
             'endereco.bairro'             => ['sometimes', 'string', 'max:255'],
             'endereco.cidade'             => ['sometimes', 'string', 'max:255'],
             'endereco.estado'             => ['sometimes', 'string', 'size:2'],
+            'permissions'   => ['sometimes', 'array'],
+            'permissions.*' => ['string', 'exists:permissions,name'],
         ];
     }
 }

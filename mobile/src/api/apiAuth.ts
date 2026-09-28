@@ -27,12 +27,14 @@ const normalizeAuthPayload = (payload: any): LoginData => {
 
   return {
     token: String(payload.token),
+
     user: {
       ...user,
       id: String(user.id),
       nome: user.nome ?? user.name ?? '',
       email: user.email ?? '',
       roles: normalizeRoles(user.roles),
+      permissions: normalizeRoles(user.permissions),
     },
   };
 };

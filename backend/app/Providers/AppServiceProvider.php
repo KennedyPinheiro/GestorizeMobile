@@ -4,11 +4,9 @@ namespace App\Providers;
 
 use App\Builders\ResponseBuilder;
 use App\Builders\UploadBuilder;
-use Dedoc\Scramble\Scramble;
-use Dedoc\Scramble\Support\Generator\OpenApi;
-use Dedoc\Scramble\Support\Generator\SecurityScheme;
-use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Gate;
+use App\Enums\RoleEnum;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,10 +19,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton('api-upload', function () {
             return new UploadBuilder();
         });
+
+        Gate::before(fn($user) => $user->hasRole(RoleEnum::ADMIN->value) ? true : null);
     }
 
-    public function boot(): void
-    {
-       
-    }
+    public function boot(): void {}
 }

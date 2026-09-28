@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AcessoController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ProdutoController;
 use App\Http\Controllers\Api\AuthController;
@@ -10,24 +11,32 @@ use App\Http\Controllers\Api\UserController;
 
 Route::post('login', [AuthController::class, 'login']);
 
-Route::middleware('auth:sanctum')->group(function () {
-    Route::post('logout', [AuthController::class, 'logout']);
-    Route::post('refresh', [AuthController::class, 'refresh']);
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('logout', [AuthController::class, 'logout']);
+        Route::post('refresh', [AuthController::class, 'refresh']);
 
-    Route::prefix('produtos')->group(function () {
-        Route::get('/', [ProdutoController::class, 'index']);
-        Route::post('/', [ProdutoController::class, 'store']);
-        Route::get('/{id}', [ProdutoController::class, 'show']);
-        Route::put('/{id}', [ProdutoController::class, 'update']);
-        Route::delete('/{id}', [ProdutoController::class, 'destroy']);
-    });
-    Route::prefix('clientes')->group(function () {
-        Route::get('/', [ClienteController::class, 'index']);
-        Route::post('/', [ClienteController::class, 'store']);
-        Route::get('/{id}', [ClienteController::class, 'show']);
-        Route::put('/{id}', [ClienteController::class, 'update']);
-        Route::delete('/{id}', [ClienteController::class, 'destroy']);
-    });
+        Route::prefix('acessos')->middleware('permission:acessos.gerenciar')->group(function () {
+            Route::get('papeis', [AcessoController::class, 'papeis']);
+            Route::get('permissoes', [AcessoController::class, 'permissoes']);
+            
+            Route::put('papeis/{role}/permissoes', [AcessoController::class, 'definirDoPapel']);
+            Route::put('users/{user}/permissoes', [AcessoController::class, 'definirDoUsuario']);
+        });
+
+        Route::prefix('clientes')->group(function () {
+            Route::get('/',        [ClienteController::class, 'index'])->middleware('permission:clientes.ver');
+            Route::post('/',       [ClienteController::class, 'store'])->middleware('permission:clientes.criar');
+            Route::get('/{id}',    [ClienteController::class, 'show'])->middleware('permission:clientes.ver');
+            Route::put('/{id}',    [ClienteController::class, 'update'])->middleware('permission:clientes.editar');
+            Route::delete('/{id}', [ClienteController::class, 'destroy'])->middleware('permission:clientes.excluir');
+        });
+        Route::prefix('produtos')->group(function () {
+            Route::get('/', [ProdutoController::class, 'index'])->middleware('permission:produtos.ver');
+            Route::post('/', [ProdutoController::class, 'store'])->middleware('permission:produtos.criar');
+            Route::get('/{id}', [ProdutoController::class, 'show'])->middleware('permission:produtos.ver');
+            Route::put('/{id}', [ProdutoController::class, 'update'])->middleware('permission:produtos.editar');
+            Route::delete('/{id}', [ProdutoController::class, 'destroy'])->middleware('permission:produtos.excluir');
+        });
     Route::prefix('fornecedores')->group(function () {
         Route::get('/', [FornecedorController::class, 'index']);
         Route::post('/', [FornecedorController::class, 'store']);
