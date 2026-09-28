@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Permission;
 use App\Models\User;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Support\Facades\Hash;
@@ -67,10 +68,13 @@ class AuthService implements IAuthService
     private function userPayload(User $user): array
     {
         return [
-            'id' => $user->id,
-            'name' => $user->name,
-            'email' => $user->email,
-            'roles' => $user->getRoleNames(),
+            'id'          => $user->id,
+            'name'        => $user->name,
+            'email'       => $user->email,
+            'roles'       => $user->getRoleNames(),
+            'permissions' => $user->isAdmin()
+                ? Permission::pluck('name')
+                : $user->getAllPermissions()->pluck('name'),
         ];
     }
 }

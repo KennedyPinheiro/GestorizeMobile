@@ -21,6 +21,14 @@ class UserService
                 'password' => Hash::make($dados['password']),
             ]);
 
+
+            if (isset($dados['role'])) {
+                $user->syncRoles([$dados['role']]);
+            }
+            if (isset($dados['permissions'])) {
+                $user->syncPermissions($dados['permissions']);
+            }
+
             Funcionario::create([
                 'user_id'          => $user->id,
                 'telefone'         => $dados['funcionario']['telefone'] ?? null,
@@ -54,6 +62,13 @@ class UserService
                 'name'  => $dados['name']  ?? $user->name,
                 'email' => $dados['email'] ?? $user->email,
             ]);
+
+            if (isset($dados['role'])) {
+                $user->syncRoles([$dados['role']]);
+            }
+            if (isset($dados['permissions'])) {          
+                $user->syncPermissions($dados['permissions']);
+            }
 
             if (isset($dados['password'])) {
                 $user->update(['password' => Hash::make($dados['password'])]);

@@ -3,6 +3,7 @@ export type UserType = {
   nome: string;
   email: string;
   roles: string[];
+  permissions: string[];
 };
 
 export type ErrorResponseType = {

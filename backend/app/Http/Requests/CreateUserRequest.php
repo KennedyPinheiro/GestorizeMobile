@@ -28,6 +28,8 @@ class CreateUserRequest extends FormRequest
             'endereco.bairro'             => ['required', 'string', 'max:255'],
             'endereco.cidade'             => ['required', 'string', 'max:255'],
             'endereco.estado'             => ['required', 'string', 'size:2'],
+            'permissions'   => ['sometimes', 'array'],
+            'permissions.*' => ['string', 'exists:permissions,name'],
         ];
     }
 }

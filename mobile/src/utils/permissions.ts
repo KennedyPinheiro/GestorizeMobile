@@ -1,50 +1,25 @@
 import type { RootStackParamList } from '@context/types';
+import type { UserType } from '@context/types';
 
-const normalizeRole = (role?: string | null) =>
-  role
-    ?.normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .trim()
-    .toLowerCase();
-
-const roleToString = (role: any) => {
-  if (typeof role === 'string') return role;
-  return role?.nome ?? role?.name ?? role?.role ?? role?.funcao ?? '';
+export const can = (
+  user: UserType | null,
+  permission: string,
+): boolean => {
+  return !!user?.permissions?.includes(permission);
 };
-
-export const isFuncionarioUser = (user: any) => {
-  const roles = Array.isArray(user?.roles) ? user.roles : [];
-  const candidates = [
-    ...roles,
-    user?.role,
-    user?.funcao,
-    user?.cargo,
-    user?.tipo,
-  ].filter(Boolean);
-
-  return candidates.some(
-    (role) => normalizeRole(roleToString(role)) === 'funcionario',
-  );
+const routePermission: Partial<Record<keyof RootStackParamList, string>> = {
+  Clientes: 'clientes.ver',
+  Produtos: 'produtos.ver',
+  Fornecedores: 'fornecedores.ver',
+  Orcamentos: 'orcamentos.ver',
+  Funcionarios: 'users.ver',
+  Relatorios: 'relatorios.ver',
 };
-
-const funcionarioRoutes = new Set<keyof RootStackParamList>([
-  'Homepage',
-  'Clientes',
-  'Orcamentos',
-  'PessoaFisica',
-  'PessoaJuridica',
-  'PerfilPessoaFisica',
-  'PerfilPessoaJuridica',
-  'UserPerfil',
-  'Configuracoes',
-  'Ajuda',
-]);
 
 export const canAccessRoute = (
-  user: any,
+  user: UserType | null,
   routeName: keyof RootStackParamList,
 ) => {
-  if (!isFuncionarioUser(user)) return true;
-
-  return funcionarioRoutes.has(routeName);
+  const required = routePermission[routeName];
+  return required ? can(user, required) : true;
 };
