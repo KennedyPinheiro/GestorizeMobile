@@ -20,7 +20,7 @@ export const authStorage = {
 };
 
 export const api = axios.create({
-  baseURL: 'http://192.168.21.81:8000/api',
+  baseURL: 'http://192.168.9.103:8000/api',
   timeout: 15000,
   headers: {
     'Content-Type': 'application/json',

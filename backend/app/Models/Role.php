@@ -8,11 +8,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Role extends SpatieRole
 {
-    use HasFactory, HasUuids;
+    use HasFactory , HasUuids;
 
     protected $fillable = [
         'id',
         'name',
         'guard_name',
     ];
+
+   
 }
