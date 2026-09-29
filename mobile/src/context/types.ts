@@ -210,8 +210,7 @@ export type RootStackParamList = {
   Clientes: { novoCliente: boolean } | undefined;
   Produtos: { novoProduto: boolean } | undefined;
   Fornecedores: { novoFornecedor: boolean } | undefined;
-  PessoaFisica: undefined;
-  PessoaJuridica: undefined;
+  NovoCliente:undefined;
   CadastroProdutos: undefined;
   CadastroFornecedores: undefined;
   CadastroFuncionarios: undefined;

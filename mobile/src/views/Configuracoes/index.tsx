@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Pressable,
   ScrollView,
@@ -13,6 +13,7 @@ import Nav from '@components/utilities/Nav';
 import { useAuth } from '@context/AuthContext';
 import { RootStackParamList } from '@context/types';
 import { useTheme, useThemeToggle } from '@context/ThemeContext';
+import Avatar from '@components/Avatar';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Configuracoes'>;
 
@@ -21,17 +22,6 @@ const Configuracoes = ({ navigation }: Props) => {
   const { compactLists, mode, setCompactLists, toggle } = useThemeToggle();
   const { user, signOut } = useAuth();
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
-
-  const userInitials = useMemo(() => {
-    const name = user?.nome ?? user?.name ?? 'Usuario';
-    return name
-      .split(' ')
-      .filter(Boolean)
-      .slice(0, 2)
-      .map((part: string) => part[0])
-      .join('')
-      .toUpperCase();
-  }, [user]);
 
   const switchTrackColor = {
     false: isDark ? '#27446f' : '#cbd5e1',
@@ -62,23 +52,23 @@ const Configuracoes = ({ navigation }: Props) => {
         <View
           style={[
             styles.profile,
-            { backgroundColor: colors.surface, borderColor: colors.border },
+            {
+              backgroundColor: colors.surface,
+              borderColor: colors.border,
+            },
           ]}
         >
-          <View style={[styles.avatar, { backgroundColor: colors.primary }]}>
-            <Text
-              style={[
-                styles.avatarText,
-                { color: isDark ? '#062046' : '#ffffff' },
-              ]}
-            >
-              {userInitials || 'U'}
-            </Text>
-          </View>
+          <Avatar
+            nome={user?.nome ?? user?.name ?? 'Usuário'}
+            imageUri={user?.avatar ?? null}
+            size={56}
+          />
+
           <View style={styles.profileText}>
             <Text style={[styles.profileName, { color: colors.text }]}>
               {user?.nome ?? user?.name ?? 'Usuário'}
             </Text>
+
             <Text style={[styles.profileEmail, { color: colors.muted }]}>
               {user?.email ?? 'Conta ativa'}
             </Text>

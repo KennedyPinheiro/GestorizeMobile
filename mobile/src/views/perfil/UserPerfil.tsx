@@ -17,6 +17,7 @@ import Nav from '@components/utilities/Nav';
 import { useAuth } from '@context/AuthContext';
 import { RootStackParamList } from '@context/types';
 import { useTheme } from '@context/ThemeContext';
+import Avatar from '@components/Avatar';
 
 type Navigation = NativeStackNavigationProp<RootStackParamList>;
 type UserProfileRoute = RouteProp<RootStackParamList, 'UserPerfil'>;
@@ -60,6 +61,7 @@ const UserPerfil = () => {
   const { user } = useAuth();
   const { colors, isDark } = useTheme();
   const [alertVisible, setAlertVisible] = useState(false);
+  const [avatar, setAvatar] = useState<string | null>(null);
 
   const initialForm = useMemo<ProfileForm>(() => {
     const params = (route.params ?? {}) as UserProfileParams;
@@ -144,13 +146,12 @@ const UserPerfil = () => {
         contentContainerStyle={styles.content}
       >
         <View style={styles.identity}>
-          <View style={[styles.avatar, { borderColor: theme.divider }]}>
-            <MaterialCommunityIcons
-              name="account-outline"
-              size={64}
-              color={theme.fieldText}
-            />
-          </View>
+          <Avatar
+            nome={formData.nome}
+            imageUri={avatar}
+            size={118}
+            onImageSelected={setAvatar}
+          />
           <Text style={[styles.identityName, { color: theme.fieldText }]}>
             {formData.nome.toUpperCase()}
           </Text>
@@ -329,15 +330,7 @@ const styles = StyleSheet.create({
   identity: {
     alignItems: 'center',
   },
-  avatar: {
-    width: 118,
-    height: 118,
-    borderRadius: 59,
-    borderWidth: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 14,
-  },
+  
   identityName: {
     fontSize: 17,
     fontWeight: '900',

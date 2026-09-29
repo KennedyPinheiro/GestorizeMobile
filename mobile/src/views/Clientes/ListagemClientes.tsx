@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback,  useMemo, useRef, useState } from 'react'
 import {
   Animated,
   FlatList,
@@ -8,7 +8,7 @@ import {
   View,
 } from 'react-native';
 
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Nav from '@components/utilities/Nav';
 import SearchBar from '@components/ui/SearchBar';
@@ -59,9 +59,11 @@ const Clientes = () => {
     }
   }, []);
 
-  useEffect(() => {
-    carregarClientes();
-  }, [carregarClientes]);
+  useFocusEffect(
+    useCallback(() => {
+      carregarClientes();
+    }, [carregarClientes]),
+  );
 
   const filteredData = useMemo(() => {
     const normalizedSearch = search.trim().toLowerCase();
@@ -119,6 +121,7 @@ const Clientes = () => {
         subtitle={`${clientes.length} cadastrados`}
         onBackPress={() => navigation.goBack()}
         rightType="add"
+        onAddPress={() => navigation.navigate("NovoCliente")}
       />
 
       <Animated.View

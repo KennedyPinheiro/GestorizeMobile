@@ -17,6 +17,7 @@
     "@react-navigation/native-stack": "^7.15.1",
     "axios": "^1.13.6",
     "expo": "^57.0.26",
+    "expo-image-picker": "~57.0.20",
     "expo-linking": "~57.0.11",
     "expo-secure-store": "~57.0.4",
     "expo-status-bar": "~57.0.1",
@@ -44,7 +45,7 @@
     "@typescript-eslint/parser": "^8.57.2",
     "babel-plugin-module-resolver": "^5.0.2",
     "babel-preset-expo": "~57.0.0",
-    "typescript": "~6.0.3"
+    "typescript": "^5.9.3"
   },
   "private": true
 }

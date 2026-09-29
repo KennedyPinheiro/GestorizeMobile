@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   StyleSheet,
   Text,
   TextInput,
   View,
-  KeyboardTypeOptions,
+  KeyboardTypeOptions,  
   Dimensions,
   TouchableOpacity,
   StyleProp,

@@ -31,11 +31,9 @@ const Cliente = ({
   const { compactLists } = useThemeToggle();
 
   const isDark = colors.background !== '#ffffff';
-
   const cardBg = isDark ? '#0A4191' : '#ffffff';
   const textColor = isDark ? '#ffffff' : '#0f172a';
   const subText = isDark ? '#cbd5e1' : '#6b7280';
-
   const circleColor = isDark
     ? '#09377B'
     : 'rgba(6, 32, 70, 0.22)';
