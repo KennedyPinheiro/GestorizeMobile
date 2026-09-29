@@ -1,10 +1,10 @@
-export type UserType = {
-  id: string;
-  nome: string;
-  email: string;
-  roles: string[];
-  permissions: string[];
-};
+
+export type Avatar = {
+  name: string;
+  image: string | null;
+  size: number;
+  onPress: () => void;
+}
 
 export type ErrorResponseType = {
   success?: boolean;
@@ -45,16 +45,30 @@ export type ResponseMetaType = {
   total: number;
   last_page: number;
 };
-export type StringfiedDate = string;
 
-export type ClienteType = {
-  pessoa_fisica: PessoaFisicaType;
-  pessoa_juridica: PessoaJuridicatype;
-  tipo: 'PF' | 'PJ';
+export type UserType = {
+  id: string;
+  nome: string;
+  email: string;
+  roles: string[];
+  permissions: string[];
 };
 
+export type StringfiedDate = string;
+
+
+export type ClienteType = {
+  id: string;
+  nome: string;
+  tipo: 'pf' | 'pj';
+  telefone: string;
+  email: string;
+  endereco_id: string;
+  created_at: string;
+  updated_at: string;
+};
 export type PessoaFisicaType = {
-  id: number;
+  id: string;
   nome: string;
   email: string;
   telefone: string;
@@ -63,11 +77,11 @@ export type PessoaFisicaType = {
   data_nascimento: string;
   rg: string;
   cpf: string;
-  endereco_id: number;
+  endereco_id: string;
 };
 
-export type PessoaJuridicatype = {
-  id: number;
+export type PessoaJuridicaType = {
+  id: string;
   razao_social: string;
   email: string;
   nome_fantasia: string;
@@ -75,7 +89,7 @@ export type PessoaJuridicatype = {
   nome_do_responsavel: string;
   cpf_responsavel: string;
   cargo_do_representante: string;
-  endereco_id: number;
+  endereco_id: string;
   telefone: string;
 };
 
@@ -290,24 +304,24 @@ export type RootStackParamList = {
     endereco_id: number;
   };
   UserPerfil:
-    | {
-        id: string;
-        nome: string;
-        funcao: string;
-        email: string;
-        data_nascimento: string;
-        genero: string;
-        estado_civil: string;
-        rg: string;
-        cpf: string;
-        telefone: string;
-        endereco_id: number;
-        rua: string;
-        bairro: string;
-        cidade: string;
-        estado: string;
-        cep: string;
-        numero: string;
-      }
-    | undefined;
+  | {
+    id: string;
+    nome: string;
+    funcao: string;
+    email: string;
+    data_nascimento: string;
+    genero: string;
+    estado_civil: string;
+    rg: string;
+    cpf: string;
+    telefone: string;
+    endereco_id: number;
+    rua: string;
+    bairro: string;
+    cidade: string;
+    estado: string;
+    cep: string;
+    numero: string;
+  }
+  | undefined;
 };
