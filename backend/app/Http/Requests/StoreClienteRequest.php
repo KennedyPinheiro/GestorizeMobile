@@ -78,11 +78,11 @@ class StoreClienteRequest extends FormRequest
     public function rules(): array
     {
         return [
-           
-            'nome' => ['required','string','max:255',],
-            'tipo' => ['required','string',Rule::in(['pf', 'pj']),],
-            'email' => ['nullable','email','max:255','unique:clientes,email',],
-            'telefone' => ['nullable','string','max:20',],
+
+            'nome' => ['required', 'string', 'max:255',],
+            'tipo' => ['required', 'string', Rule::in(['pf', 'pj']),],
+            'email' => ['nullable', 'email', 'max:255', 'unique:clientes,email',],
+            'telefone' => ['nullable', 'string', 'max:20',],
 
             /*
             |--------------------------------------------------------------------------
@@ -90,11 +90,11 @@ class StoreClienteRequest extends FormRequest
             |--------------------------------------------------------------------------
             */
 
-            'endereco' => ['required','array',],
-            'endereco.cep' => ['required','string','size:8',],
-            'endereco.logradouro' => ['required','string','max:255',],
-            'endereco.numero' => ['required','string','max:20',],
-            'endereco.complemento' => ['nullable','string','max:100',],
+            'endereco' => ['required', 'array',],
+            'endereco.cep' => ['required', 'string', 'size:8',],
+            'endereco.logradouro' => ['required', 'string', 'max:255',],
+            'endereco.numero' => ['required', 'string', 'max:20',],
+            'endereco.complemento' => ['nullable', 'string', 'max:100',],
 
             'endereco.bairro' => [
                 'required',
@@ -133,17 +133,10 @@ class StoreClienteRequest extends FormRequest
                 'max:20',
             ],
 
-            'pf.cpf' => [ 'required_if:tipo,pf', 'string', 'size:11', 'unique:clientes_pf,cpf',],
-            'pf.data_nascimento' => ['required_if:tipo,pf','date','before:today',],
-
-            'pj' => ['required_if:tipo,pj','array',],
-
-            'pj.cnpj' => [
-                'required_if:tipo,pj',
-                'string',
-                'size:14',
-                'unique:clientes_pj,cnpj',
-            ],
+            'pf.cpf' => ['required_if:tipo,pf', 'string', 'size:11', 'unique:clientes_pf,cpf',],
+            'pf.data_nascimento' => ['required_if:tipo,pf', 'date', 'before:today',],
+            'pj' => ['required_if:tipo,pj', 'array',],
+            'pj.cnpj' => ['required_if:tipo,pj', 'string', 'size:14', 'unique:clientes_pj,cnpj',],
 
             'pj.razao_social' => [
                 'required_if:tipo,pj',
