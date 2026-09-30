@@ -95,24 +95,9 @@ class StoreClienteRequest extends FormRequest
             'endereco.logradouro' => ['required', 'string', 'max:255',],
             'endereco.numero' => ['required', 'string', 'max:20',],
             'endereco.complemento' => ['nullable', 'string', 'max:100',],
-
-            'endereco.bairro' => [
-                'required',
-                'string',
-                'max:100',
-            ],
-
-            'endereco.cidade' => [
-                'required',
-                'string',
-                'max:100',
-            ],
-
-            'endereco.estado' => [
-                'required',
-                'string',
-                'size:2',
-            ],
+            'endereco.bairro' => ['required','string','max:100',],
+            'endereco.cidade' => ['required','string','max:100',],
+            'endereco.estado' => ['required','string','size:2',],
 
             /*
             |--------------------------------------------------------------------------
