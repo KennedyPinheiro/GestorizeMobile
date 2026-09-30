@@ -10,14 +10,9 @@ import Login from '@views/Login';
 import { AuthProvider, useAuth } from '@context/AuthContext';
 import Homepage from '@views/Homepage';
 import Clientes from '@views/Clientes/index';
-import CadastroClientePF from '@views/Cadastros/CadastroClientePF';
-import CadastroClientePJ from '@views/Cadastros/CadastroClientePj';
 import Produtos from '@views/Produtos/index';
-import CadastroProdutos from '@views/Cadastros/CadastroProdutos';
 import Fornecedores from '@views/Fornecedores/index';
-import CadastroFornecedores from '@views/Cadastros/CadastroFornecedores';
 import Funcionarios from '@views/Funcionarios/index';
-import CadastroFuncionarios from '@views/Cadastros/CadastroFuncionarios';
 import { RootStackParamList } from '@context/types';
 import PerfilProduto from '@views/perfil/PerfilProduto';
 import PerfilFornecedor from '@views/perfil/PerfilFornecedor';
@@ -38,6 +33,7 @@ import Relatorios from '@views/Relatorios/index';
 import Configuracoes from '@views/Configuracoes';
 import { canAccessRoute } from '@utils/permissions';
 import Ajuda from '@views/Ajuda';
+import NovoCliente from '@views/Clientes/NovoCliente';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const navigationRef = createNavigationContainerRef<RootStackParamList>();
@@ -66,8 +62,8 @@ const AppNavigator = () => {
           <>
             <Stack.Screen name="Homepage" component={Homepage} />
             <Stack.Screen name="Clientes" component={Clientes} />
+            <Stack.Screen name="NovoCliente" component={NovoCliente} />
             <Stack.Screen name="Orcamentos" component={Orcamentos} />
-            <Stack.Screen name="PessoaFisica" component={CadastroClientePF} />
             <Stack.Screen name="Configuracoes" component={Configuracoes} />
             <Stack.Screen name="Ajuda" component={Ajuda} />
             <Stack.Screen
@@ -79,14 +75,10 @@ const AppNavigator = () => {
               component={PerfilPessoaJuridica}
             />
             <Stack.Screen name="UserPerfil" component={UserPerfil} />
-            <Stack.Screen name="PessoaJuridica" component={CadastroClientePJ} />
             {canAccess('Produtos') && (
               <>
                 <Stack.Screen name="Produtos" component={Produtos} />
-                <Stack.Screen
-                  name="CadastroProdutos"
-                  component={CadastroProdutos}
-                />
+
                 <Stack.Screen
                   name="PerfilProduto"
                   component={PerfilProduto}
@@ -96,10 +88,7 @@ const AppNavigator = () => {
             {canAccess('Fornecedores') && (
               <>
                 <Stack.Screen name="Fornecedores" component={Fornecedores} />
-                <Stack.Screen
-                  name="CadastroFornecedores"
-                  component={CadastroFornecedores}
-                />
+
                 <Stack.Screen
                   name="PerfilFornecedor"
                   component={PerfilFornecedor}
@@ -109,10 +98,7 @@ const AppNavigator = () => {
             {canAccess('Funcionarios') && (
               <>
                 <Stack.Screen name="Funcionarios" component={Funcionarios} />
-                <Stack.Screen
-                  name="CadastroFuncionarios"
-                  component={CadastroFuncionarios}
-                />
+
                 <Stack.Screen
                   name="PerfilFuncionario"
                   component={PerfilFuncionario}

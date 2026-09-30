@@ -1,4 +1,8 @@
-import axios from 'axios';
+import axios, {
+  AxiosInstance,
+  InternalAxiosRequestConfig,
+} from 'axios';
+
 import auth from './auth';
 import { secureStore } from '@utils/secureStore';
 
@@ -14,38 +18,75 @@ export const authStorage = {
   async get(): Promise<string | null> {
     return secureStore.get(auth.storageTokenKeyName);
   },
+
   async set(token: string | null): Promise<void> {
-    await secureStore.set(auth.storageTokenKeyName, token);
+    await secureStore.set(
+      auth.storageTokenKeyName,
+      token,
+    );
   },
 };
 
-export const api = axios.create({
-  baseURL: 'http://192.168.9.103:8000/api',
-  timeout: 15000,
-  headers: {
+type AxiosOpts = {
+  contentType?:
+    | 'application/json'
+    | 'multipart/form-data'
+    | 'formData'
+    | string;
+
+  timeoutMs?: number;
+};
+
+export const getAxios = ({
+  contentType,
+  timeoutMs,
+}: AxiosOpts = {}): AxiosInstance => {
+  const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     Accept: 'application/json',
-  },
-});
+  };
 
-api.interceptors.request.use(async (config) => {
-  const token = await authStorage.get();
-  if (token) {
-    config.headers = config.headers ?? {};
-    config.headers.Authorization = `Bearer ${token}`;
+  if (contentType) {
+    headers['Content-Type'] =
+      contentType === 'formData'
+        ? 'multipart/form-data'
+        : contentType;
   }
-  return config;
-});
 
-api.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    if (error.response?.status === 401) {
-      await authStorage.set(null);
-      await unauthorizedHandler?.();
-    }
-    return Promise.reject(error);
-  },
-);
+  const instance = axios.create({
+    baseURL: 'http://192.168.21.143:8000/api',
+    timeout: timeoutMs ?? 15000,
+    headers,
+  });
+
+  instance.interceptors.request.use(
+    async (config: InternalAxiosRequestConfig) => {
+      const token = await authStorage.get();
+
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+
+      return config;
+    },
+  );
+
+  instance.interceptors.response.use(
+    (response) => response,
+
+    async (error) => {
+      if (error.response?.status === 401) {
+        await authStorage.set(null);
+        await unauthorizedHandler?.();
+      }
+
+      return Promise.reject(error);
+    },
+  );
+
+  return instance;
+};
+
+export const api = getAxios();
 
 export default api;

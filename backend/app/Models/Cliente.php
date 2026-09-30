@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Cliente extends Model
 {
@@ -17,6 +19,23 @@ class Cliente extends Model
         'telefone',
         'endereco_id',
     ];
+
+    protected $hidden = [
+        'imagem',
+    ];
+
+    protected $appends = [
+        'avatar_url',
+    ];
+
+    protected function avatarUrl(): Attribute
+    {
+        return Attribute::get(
+            fn() => $this->imagem
+                ? Storage::disk('public')->url($this->imagem)
+                : null
+        );
+    }
 
     public function orcamentos()
     {
