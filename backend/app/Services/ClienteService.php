@@ -39,14 +39,54 @@ class ClienteService
         return Cliente::findOrFail($id);
     }
 
-    public function atualizar(int $id, array $dados): Cliente
+    public function atualizar(string $id, array $dados): Cliente
     {
-        $cliente = Cliente::findOrFail($id);
-        $cliente->update($dados);
+        return DB::transaction(function () use ($id, $dados) {
+            $cliente = Cliente::findOrFail($id);
 
-        return $cliente;
+            $cliente->update([
+                'nome'     => $dados['nome'] ?? $cliente->nome,
+                'email'    => $dados['email'] ?? $cliente->email,
+                'telefone' => $dados['telefone'] ?? $cliente->telefone,
+                'imagem'   => $dados['imagem'] ?? $cliente->imagem,
+            ]);
+            if (isset($dados['endereco'])) {
+                if ($cliente->endereco_id) {
+                    $endereco = Endereco::find($cliente->endereco_id);
+
+                    if ($endereco) {
+                        $endereco->update($dados['endereco']);
+                    }
+                } else {
+                    $endereco = Endereco::create($dados['endereco']);
+
+                    $cliente->update([
+                        'endereco_id' => $endereco->id,
+                    ]);
+                }
+            }
+
+            if ($cliente->tipo === 'pf' && isset($dados['pf'])) {
+                $cliente->dadosPf()->updateOrCreate(
+                    ['cliente_id' => $cliente->id],
+                    $dados['pf']
+                );
+            }
+
+            if ($cliente->tipo === 'pj' && isset($dados['pj'])) {
+                $cliente->dadosPj()->updateOrCreate(
+                    ['cliente_id' => $cliente->id],
+                    $dados['pj']
+                );
+            }
+
+            return $cliente->load([
+                'dadosPf',
+                'dadosPj',
+            ]);
+        });
     }
-
+    
     public function deletar(int $id): array
     {
         $cliente = Cliente::findOrFail($id);

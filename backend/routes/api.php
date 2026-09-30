@@ -27,7 +27,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/',        [ClienteController::class, 'index'])->middleware('permission:clientes.ver');
         Route::post('/',       [ClienteController::class, 'store'])->middleware('permission:clientes.criar');
         Route::get('/{id}',    [ClienteController::class, 'show'])->middleware('permission:clientes.ver');
-        Route::put('/{id}',    [ClienteController::class, 'update'])->middleware('permission:clientes.editar');
+        Route::put('/{id}',    [ClienteController::class, 'atualizar'])->middleware('permission:clientes.editar');
         Route::delete('/{id}', [ClienteController::class, 'destroy'])->middleware('permission:clientes.excluir');
 
         Route::post('/{id}/imagem',  [ClienteController::class, 'atualizarimagem'])->middleware('permission:clientes.editar');

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ClienteImagemRequest;
 use App\Http\Requests\ClienteRequest;
 use App\Http\Requests\StoreClienteRequest;
+use App\Http\Requests\UpdateClienteRequest;
 use App\Services\ClienteImagemService;
 use App\Services\ClienteService;
 use App\Services\ResponseService;
@@ -45,16 +46,20 @@ class ClienteController extends Controller
         );
     }
 
-    public function update(
-        ClienteRequest $request,
+    public function atualizar(
+        UpdateClienteRequest $request,
         string $id
-    ): JsonResponse {
-        return ResponseService::success(
-            $this->service->atualizar(
-                $id,
-                $request->validated()
-            )
+    ) {
+        $cliente = $this->service->atualizar(
+            $id,
+            $request->validated()
         );
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Cliente atualizado com sucesso.',
+            'data' => $cliente,
+        ]);
     }
 
     public function destroy(string $id): JsonResponse
