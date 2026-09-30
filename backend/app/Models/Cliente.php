@@ -37,6 +37,11 @@ class Cliente extends Model
         );
     }
 
+    public function endereco()
+    {
+        return $this->belongsTo(Endereco::class);
+    }
+
     public function orcamentos()
     {
         return $this->hasMany(Orcamento::class);

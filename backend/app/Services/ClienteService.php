@@ -10,7 +10,11 @@ class ClienteService
 {
     public function listar()
     {
-        return Cliente::all();
+        return Cliente::with([
+            'endereco',
+            'dadosPf',
+            'dadosPj',
+        ])->paginate(20);
     }
 
     public function criar(array $dados): Cliente
@@ -36,7 +40,11 @@ class ClienteService
 
     public function buscar(string $id): Cliente
     {
-        return Cliente::findOrFail($id);
+        return Cliente::with([
+            'endereco',
+            'dadosPf',
+            'dadosPj',
+        ])->findOrFail($id);
     }
 
     public function atualizar(string $id, array $dados): Cliente
@@ -86,7 +94,7 @@ class ClienteService
             ]);
         });
     }
-    
+
     public function deletar(int $id): array
     {
         $cliente = Cliente::findOrFail($id);
