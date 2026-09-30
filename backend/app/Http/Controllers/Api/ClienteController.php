@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ClienteImagemRequest;
-use App\Http\Requests\ClienteRequest;
 use App\Http\Requests\StoreClienteRequest;
 use App\Http\Requests\UpdateClienteRequest;
+use App\Http\Resources\ClienteResource;
 use App\Services\ClienteImagemService;
 use App\Services\ClienteService;
 use App\Services\ResponseService;
@@ -22,11 +22,13 @@ class ClienteController extends Controller
     public function index(): JsonResponse
     {
         return ResponseService::success(
-            $this->service->listar()
+            ClienteResource::collection(
+                $this->service->listar()
+            )
         );
     }
 
-    public function store(StoreClienteRequest $request)
+    public function store(StoreClienteRequest $request): JsonResponse
     {
         $cliente = $this->service->criar(
             $request->validated()
@@ -35,21 +37,23 @@ class ClienteController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Cliente criado com sucesso',
-            'data' => $cliente,
+            'data' => new ClienteResource($cliente),
         ], 201);
     }
 
     public function show(string $id): JsonResponse
     {
         return ResponseService::success(
-            $this->service->buscar($id)
+            new ClienteResource(
+                $this->service->buscar($id)
+            )
         );
     }
 
     public function atualizar(
         UpdateClienteRequest $request,
         string $id
-    ) {
+    ): JsonResponse {
         $cliente = $this->service->atualizar(
             $id,
             $request->validated()
@@ -58,7 +62,7 @@ class ClienteController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Cliente atualizado com sucesso.',
-            'data' => $cliente,
+            'data' => new ClienteResource($cliente),
         ]);
     }
 
