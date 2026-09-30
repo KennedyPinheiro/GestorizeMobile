@@ -60,14 +60,16 @@ export type StringfiedDate = string;
 export type ClienteType = {
   id: string;
   nome: string;
-  tipo: 'pf' | 'pj';
-  telefone: string;
-  avatar_url: string | null;    
-  email: string;
-  endereco_id: string;
-  created_at: string;
-  updated_at: string;
+  tipo: "pf" | "pj";
+  email: string | null;
+  telefone: string | null;
+  avatar_url: string | null;
+  endereco: EnderecoType | null;
+  pf: PessoaFisicaType | null;
+  pj: PessoaJuridicaType | null;
 };
+
+
 export type PessoaFisicaType = {
   id: string;
   nome: string;
@@ -120,21 +122,14 @@ export type FuncionarioTipo = {
 };
 
 export type EnderecoType = {
-  rua: string;
+  id: string;
+  cep: string;
+  logradouro: string;
+  numero: string;
+  complemento: string | null;
   bairro: string;
   cidade: string;
   estado: string;
-  numero: string;
-  cep: string;
-};
-export type EnderecoTipo = {
-  id: number;
-  rua: string;
-  bairro: string;
-  cidade: string;
-  estado: string;
-  numero: string;
-  cep: string;
 };
 
 export type FornecedorType = {
@@ -211,7 +206,12 @@ export type RootStackParamList = {
   Clientes: { novoCliente: boolean } | undefined;
   Produtos: { novoProduto: boolean } | undefined;
   Fornecedores: { novoFornecedor: boolean } | undefined;
-  NovoCliente: undefined;
+  NovoCliente:
+  | {
+    modo: "criar" | "visualizar" | "editar";
+    clienteId?: string;
+  }
+  | undefined;
   CadastroProdutos: undefined;
   CadastroFornecedores: undefined;
   CadastroFuncionarios: undefined;

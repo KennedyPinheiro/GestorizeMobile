@@ -1,4 +1,4 @@
-import { useCallback,  useMemo, useRef, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 import {
   Animated,
   FlatList,
@@ -76,7 +76,7 @@ const Clientes = () => {
       const matchSearch =
         !normalizedSearch ||
         item.nome.toLowerCase().includes(normalizedSearch) ||
-        item.email.toLowerCase().includes(normalizedSearch);
+        item?.email?.toLowerCase().includes(normalizedSearch);
 
       return matchTipo && matchSearch;
     });
@@ -121,7 +121,9 @@ const Clientes = () => {
         subtitle={`${clientes.length} cadastrados`}
         onBackPress={() => navigation.goBack()}
         rightType="add"
-        onAddPress={() => navigation.navigate("NovoCliente")}
+        onAddPress={() => navigation.navigate("NovoCliente", {
+          modo: "criar",
+        })}
       />
 
       <Animated.View
@@ -174,6 +176,9 @@ const Clientes = () => {
             tipo={item.tipo.toUpperCase() as 'PF' | 'PJ'}
             nome={item.nome}
             email={item.email}
+            onPress={() => navigation.navigate("NovoCliente", {
+              modo: "editar",
+            })}
           />
         )}
         onScroll={handleScroll}

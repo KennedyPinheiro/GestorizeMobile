@@ -13,7 +13,7 @@ import { useTheme, useThemeToggle } from '@context/ThemeContext';
 type Props = {
   tipo: 'PF' | 'PJ';
   nome: string;
-  email: string;
+  email: string | null;
   estado?: string;
   onPress?: () => void;
 };

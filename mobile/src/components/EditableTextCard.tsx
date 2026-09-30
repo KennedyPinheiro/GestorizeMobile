@@ -17,6 +17,7 @@ type Props = {
   onChangeText?: (text: string) => void;
   width?: DimensionValue;
   placeholder?: string;
+  editable?: boolean;
 };
 
 const EditableTextCard = ({
@@ -26,6 +27,7 @@ const EditableTextCard = ({
   onChangeText,
   width = '100%',
   placeholder = '',
+  editable = true,
 }: Props) => {
   const [isEditing, setIsEditing] = useState(false);
   const [internalValue, setInternalValue] = useState(value);
@@ -66,7 +68,11 @@ const EditableTextCard = ({
         ) : (
           <TouchableOpacity
             style={[styles.flex, isPassword && { flex: 1 }]}
-            onPress={() => setIsEditing(true)}
+            onPress={() => {
+              if (editable) {
+                setIsEditing(true);
+              }
+            }}
           >
             <Text
               style={[

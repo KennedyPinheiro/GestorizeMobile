@@ -1,9 +1,12 @@
-import Avatar from '@components/Avatar';
-import Nav from '@components/utilities/Nav';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useState } from 'react';
+import Avatar from "@components/Avatar";
+import Nav from "@components/utilities/Nav";
+import EditableTextCard from "@components/EditableTextCard";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { z } from "zod";
 import {
+    ActivityIndicator,
     KeyboardAvoidingView,
     Platform,
     ScrollView,
@@ -11,64 +14,252 @@ import {
     Text,
     TouchableOpacity,
     View,
-} from 'react-native';
+} from "react-native";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect, useState } from "react";
+import { RootStackParamList } from "@context/types";
+import { useTheme } from "@context/ThemeContext";
+import { clienteSchema } from "src/schemas/ClienteSchema";
+import { createCliente, getCliente, updateCliente } from "@api/apiClientes";
+import Toast from "react-native-toast-message";
 
-import { RootStackParamList } from '@context/types';
-import { useTheme } from '@context/ThemeContext';
-import EditableTextCard from '@components/EditableTextCard';
+
+
 
 type Navigation = NativeStackNavigationProp<RootStackParamList>;
 
-type TipoCliente = 'PF' | 'PJ';
+type FormData = z.infer<typeof clienteSchema>;
+
+type Route = NativeStackScreenProps<
+    RootStackParamList,
+    "NovoCliente"
+>["route"];
 
 export default function NovoCliente() {
     const navigation = useNavigation<Navigation>();
+    const route = useRoute<Route>();
     const { colors } = useTheme();
-    const [tipoCliente, setTipoCliente] = useState<TipoCliente>('PF');
+    const modoInicial = route.params?.modo ?? "criar";
+    const clienteId = route.params?.clienteId;
+    const [modo, setModo] = useState<
+        "criar" | "visualizar" | "editar"
+    >(modoInicial);
+
     const [avatar, setAvatar] = useState<string | null>(null);
-    const [nome, setNome] = useState('');
-    const [email, setEmail] = useState('');
-    const [telefone, setTelefone] = useState('');
-    const [cpf, setCpf] = useState('');
-    const [rg, setRg] = useState('');
-    const [dataNascimento, setDataNascimento] = useState('');
-    const [genero, setGenero] = useState('');
-    const [estadoCivil, setEstadoCivil] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [saving, setSaving] = useState(false);
+    const isCriar = modo === "criar";
+    const isVisualizar = modo === "visualizar";
+    const isEditar = modo === "editar";
 
-    const [cnpj, setCnpj] = useState('');
-    const [razaoSocial, setRazaoSocial] = useState('');
-    const [nomeFantasia, setNomeFantasia] = useState('');
-    const [nomeResponsavel, setNomeResponsavel] = useState('');
-    const [cpfResponsavel, setCpfResponsavel] = useState('');
-    const [cargoResponsavel, setCargoResponsavel] = useState('');
+    const {
+        control,
+        handleSubmit,
+        reset,
+        formState: {
+            errors,
+            isDirty,
+            isValid,
+        },
+    } = useForm<FormData>({
+        resolver: zodResolver(clienteSchema),
+        mode: "onChange",
+        defaultValues: {
+            tipo: "pf",
+            nome: "",
+            email: null,
+            telefone: null,
+            endereco: {
+                cep: "",
+                logradouro: "",
+                numero: "",
+                complemento: null,
+                bairro: "",
+                cidade: "",
+                estado: "",
+            },
 
-    // Endereço
-    const [cep, setCep] = useState('');
-    const [rua, setRua] = useState('');
-    const [numero, setNumero] = useState('');
-    const [bairro, setBairro] = useState('');
-    const [cidade, setCidade] = useState('');
-    const [estado, setEstado] = useState('');
+            pf: {
+                genero: null,
+                rg: "",
+                cpf: "",
+                data_nascimento: "",
+            },
 
-    const isPF = tipoCliente === 'PF';
+            pj: undefined,
+        },
+    });
+    useEffect(() => {
+        if (!clienteId) {
+            return;
+        }
+        if (modo === "criar") {
+            return;
+        }
+        const carregarCliente = async () => {
+            try {
+                setLoading(true);
+
+                const response = await getCliente(clienteId);
+                const cliente = response.data;
+                if (cliente.tipo === "pf") {
+                    reset({
+                        tipo: "pf",
+                        nome: cliente.nome,
+                        email: cliente.email,
+                        telefone: cliente.telefone,
+                        endereco: {
+                            cep: cliente.endereco?.cep ?? "",
+                            logradouro: cliente.endereco?.logradouro ?? "",
+                            numero: cliente.endereco?.numero ?? "",
+                            complemento: cliente.endereco?.complemento ?? null,
+                            bairro: cliente.endereco?.bairro ?? "",
+                            cidade: cliente.endereco?.cidade ?? "",
+                            estado: cliente.endereco?.estado ?? "",
+                        },
+
+                        pf: {
+                            genero: cliente.pf?.genero ?? null,
+                            rg: cliente.pf?.rg ?? "",
+                            cpf: cliente.pf?.cpf ?? "",
+                            data_nascimento: cliente.pf?.data_nascimento ?? "",
+                        },
+
+                        pj: undefined,
+                    });
+                } else {
+                    reset({
+                        tipo: "pj",
+
+                        nome: cliente.nome,
+                        email: cliente.email,
+                        telefone: cliente.telefone,
+
+                        endereco: {
+                            cep: cliente.endereco?.cep ?? "",
+                            logradouro: cliente.endereco?.logradouro ?? "",
+                            numero: cliente.endereco?.numero ?? "",
+                            complemento: cliente.endereco?.complemento ?? null,
+                            bairro: cliente.endereco?.bairro ?? "",
+                            cidade: cliente.endereco?.cidade ?? "",
+                            estado: cliente.endereco?.estado ?? "",
+                        },
+
+                        pf: undefined,
+
+                        pj: {
+                            cnpj: cliente.pj?.cnpj ?? "",
+                            razao_social: cliente.pj?.razao_social ?? "",
+                            nome_fantasia: cliente.pj?.nome_fantasia ?? null,
+                            nome_responsavel: cliente.pj?.nome_do_responsavel ?? "",
+                            cpf_responsavel: cliente.pj?.cpf_responsavel ?? "",
+                            cargo_responsavel: cliente.pj?.nome_do_responsavel ?? null,
+                        },
+                    });
+                }
+
+                setAvatar(cliente.avatar_url ?? null);
+            } catch (error) {
+                Toast.error(
+                    "Erro ao carregar cliente:",
+                    error
+                );
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        carregarCliente();
+    }, [clienteId, modo, reset]);
+    const onSubmit = async (data: FormData) => {
+        if (isVisualizar) {
+            return;
+        }
+
+        try {
+            setSaving(true);
+            if (isCriar) {
+                await createCliente(data);
+                navigation.goBack();
+                return;
+            }
+
+            if (isEditar && clienteId) {
+                await updateCliente(clienteId, data);
+                reset(data);
+                setModo("visualizar");
+            }
+        } catch (error) {
+            Toast.error(
+                "Erro ao salvar cliente:",
+                error
+            );
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    const entrarEmEdicao = () => {
+        setModo("editar");
+    };
+
+    const isPF = (() => {
+        return true;
+    })();
+
+    if (loading) {
+        return (
+            <View
+                style={[
+                    styles.container,
+                    {
+                        backgroundColor: colors.background,
+                        justifyContent: "center",
+                        alignItems: "center",
+                    },
+                ]}
+            >
+                <ActivityIndicator size="large" />
+                <Text
+                    style={{ color: colors.text, marginTop: 12, }}>
+                    Carregando cliente...
+                </Text>
+            </View>
+        );
+    }
 
     return (
         <View
             style={[
-                styles.container,
-                { backgroundColor: colors.background },
-            ]}
+                styles.container, { backgroundColor: colors.background, },]}
         >
             <Nav
-                title="Novo Cliente"
-                subtitle={isPF ? 'Pessoa Física' : 'Pessoa Jurídica'}
-                onBackPress={() => navigation.goBack()}
+                title={
+                    isCriar
+                        ? "Novo Cliente"
+                        : isVisualizar
+                            ? "Cliente"
+                            : "Editar Cliente"
+                }
+                subtitle={
+                    isPF
+                        ? "Pessoa Física"
+                        : "Pessoa Jurídica"
+                }
+                onBackPress={() =>
+                    navigation.goBack()
+                }
                 rightType="menu"
             />
 
             <KeyboardAvoidingView
                 style={styles.flex}
-                behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+                behavior={
+                    Platform.OS === "ios"
+                        ? "padding"
+                        : undefined
+                }
             >
                 <ScrollView
                     showsVerticalScrollIndicator={false}
@@ -77,315 +268,467 @@ export default function NovoCliente() {
                 >
                     <View style={styles.avatarContainer}>
                         <Avatar
-                            nome={isPF ? nome : nomeFantasia || razaoSocial}
+                            nome="Cliente"
                             imageUri={avatar}
                             size={120}
-                            onImageSelected={setAvatar}
+                            onImageSelected={
+                                isVisualizar
+                                    ? () => { }
+                                    : setAvatar
+                            }
                         />
 
-                        <Text
-                            style={[
-                                styles.avatarLabel,
-                                { color: colors.text },
-                            ]}
-                        >
+                        <Text style={[styles.avatarLabel, { color: colors.text, },]}>
                             Foto do cliente
                         </Text>
                     </View>
-
                     <View style={styles.section}>
-                        <Text
-                            style={[
-                                styles.sectionTitle,
-                                { color: colors.text },
-                            ]}
-                        >
+                        <Text style={[styles.sectionTitle, { color: colors.text, },]}>
                             Tipo de cliente
                         </Text>
 
-                        <View style={styles.tipoContainer}>
-                            <TouchableOpacity
-                                activeOpacity={0.8}
-                                style={[
-                                    styles.tipoButton,
-                                    {
-                                        backgroundColor:
-                                            isPF ? '#062046' : colors.surface,
+                        <View
+                            style={styles.tipoContainer}
+                        >
+                            <Controller
+                                control={control}
+                                name="tipo"
+                                render={({
+                                    field: {
+                                        value,
+                                        onChange,
                                     },
-                                ]}
-                                onPress={() => setTipoCliente('PF')}
-                            >
-                                <Text
-                                    style={[
-                                        styles.tipoText,
-                                        {
-                                            color: isPF ? '#fff' : colors.text,
-                                        },
-                                    ]}
-                                >
-                                    Pessoa Física
-                                </Text>
-                            </TouchableOpacity>
+                                }) => (
+                                    <>
+                                        <TouchableOpacity
+                                            disabled={!isCriar
+                                            }
+                                            activeOpacity={0.8}
+                                            style={[
+                                                styles.tipoButton, { backgroundColor: value === "pf" ? "#062046" : colors.surface, },]}
+                                            onPress={() => onChange("pf")}
+                                        >
+                                            <Text
+                                                style={[styles.tipoText, { color: value === "pf" ? "#fff" : colors.text, },]}>
+                                                Pessoa Física
+                                            </Text>
+                                        </TouchableOpacity>
 
-                            <TouchableOpacity
-                                activeOpacity={0.8}
-                                style={[
-                                    styles.tipoButton,
-                                    {
-                                        backgroundColor:
-                                            !isPF ? '#062046' : colors.surface,
-                                    },
-                                ]}
-                                onPress={() => setTipoCliente('PJ')}
-                            >
-                                <Text
-                                    style={[
-                                        styles.tipoText,
-                                        {
-                                            color: !isPF ? '#fff' : colors.text,
-                                        },
-                                    ]}
-                                >
-                                    Pessoa Jurídica
-                                </Text>
-                            </TouchableOpacity>
+                                        <TouchableOpacity
+                                            disabled={!isCriar}
+                                            activeOpacity={0.8}
+                                            style={[styles.tipoButton, { backgroundColor: value === "pj" ? "#062046" : colors.surface, },]}
+                                            onPress={() => onChange("pj")}
+                                        >
+                                            <Text
+                                                style={[
+                                                    styles.tipoText,
+                                                    {
+                                                        color:
+                                                            value ===
+                                                                "pj"
+                                                                ? "#fff"
+                                                                : colors.text,
+                                                    },
+                                                ]}
+                                            >
+                                                Pessoa Jurídica
+                                            </Text>
+                                        </TouchableOpacity>
+                                    </>
+                                )}
+                            />
                         </View>
                     </View>
+
+                    {/* DADOS PRINCIPAIS */}
 
                     <View style={styles.section}>
                         <Text
                             style={[
                                 styles.sectionTitle,
-                                { color: colors.text },
+                                {
+                                    color: colors.text,
+                                },
                             ]}
                         >
                             Dados principais
                         </Text>
 
-                        {isPF ? (
-                            <>
+                        <Controller
+                            control={control}
+                            name="nome"
+                            render={({
+                                field: {
+                                    value,
+                                    onChange,
+                                },
+                            }) => (
                                 <EditableTextCard
                                     label="Nome completo"
                                     placeholder="Digite o nome completo"
-                                    value={nome}
-                                    onChangeText={setNome}
+                                    value={value}
+                                    onChangeText={
+                                        onChange
+                                    }
+                                    editable={
+                                        !isVisualizar
+                                    }
                                 />
+                            )}
+                        />
 
+                        <Controller
+                            control={control}
+                            name="email"
+                            render={({
+                                field: {
+                                    value,
+                                    onChange,
+                                },
+                            }) => (
+                                <EditableTextCard
+                                    label="E-mail"
+                                    placeholder="Digite o e-mail"
+                                    value={value ?? ""}
+                                    onChangeText={
+                                        onChange
+                                    }
+                                    editable={
+                                        !isVisualizar
+                                    }
+                                />
+                            )}
+                        />
+
+                        <Controller
+                            control={control}
+                            name="telefone"
+                            render={({
+                                field: {
+                                    value,
+                                    onChange,
+                                },
+                            }) => (
+                                <EditableTextCard
+                                    label="Telefone"
+                                    placeholder="Digite o telefone"
+                                    value={value ?? ""}
+                                    tipo="number"
+                                    onChangeText={
+                                        onChange
+                                    }
+                                    editable={
+                                        !isVisualizar
+                                    }
+                                />
+                            )}
+                        />
+
+                        {/* PF */}
+
+                        <Controller
+                            control={control}
+                            name="pf.cpf"
+                            render={({
+                                field: {
+                                    value,
+                                    onChange,
+                                },
+                            }) => (
                                 <EditableTextCard
                                     label="CPF"
                                     placeholder="Digite o CPF"
-                                    value={cpf}
+                                    value={value ?? ""}
                                     tipo="number"
-                                    onChangeText={setCpf}
+                                    onChangeText={
+                                        onChange
+                                    }
+                                    editable={
+                                        !isVisualizar
+                                    }
                                 />
+                            )}
+                        />
 
+                        <Controller
+                            control={control}
+                            name="pf.rg"
+                            render={({
+                                field: {
+                                    value,
+                                    onChange,
+                                },
+                            }) => (
                                 <EditableTextCard
                                     label="RG"
                                     placeholder="Digite o RG"
-                                    value={rg}
+                                    value={value ?? ""}
                                     tipo="number"
-                                    onChangeText={setRg}
+                                    onChangeText={
+                                        onChange
+                                    }
+                                    editable={
+                                        !isVisualizar
+                                    }
                                 />
+                            )}
+                        />
 
+                        <Controller
+                            control={control}
+                            name="pf.data_nascimento"
+                            render={({
+                                field: {
+                                    value,
+                                    onChange,
+                                },
+                            }) => (
                                 <EditableTextCard
                                     label="Data de nascimento"
                                     placeholder="DD/MM/AAAA"
-                                    value={dataNascimento}
-                                    onChangeText={setDataNascimento}
+                                    value={
+                                        value ?? ""
+                                    }
+                                    onChangeText={
+                                        onChange
+                                    }
+                                    editable={
+                                        !isVisualizar
+                                    }
                                 />
+                            )}
+                        />
 
+                        <Controller
+                            control={control}
+                            name="pf.genero"
+                            render={({
+                                field: {
+                                    value,
+                                    onChange,
+                                },
+                            }) => (
                                 <EditableTextCard
                                     label="Gênero"
                                     placeholder="Digite o gênero"
-                                    value={genero}
-                                    onChangeText={setGenero}
+                                    value={value ?? ""}
+                                    onChangeText={
+                                        onChange
+                                    }
+                                    editable={
+                                        !isVisualizar
+                                    }
                                 />
-
-                                <EditableTextCard
-                                    label="Estado civil"
-                                    placeholder="Digite o estado civil"
-                                    value={estadoCivil}
-                                    onChangeText={setEstadoCivil}
-                                />
-                            </>
-                        ) : (
-                            <>
-                                <EditableTextCard
-                                    label="Razão social"
-                                    placeholder="Digite a razão social"
-                                    value={razaoSocial}
-                                    onChangeText={setRazaoSocial}
-                                />
-
-                                <EditableTextCard
-                                    label="Nome fantasia"
-                                    placeholder="Digite o nome fantasia"
-                                    value={nomeFantasia}
-                                    onChangeText={setNomeFantasia}
-                                />
-
-                                <EditableTextCard
-                                    label="CNPJ"
-                                    placeholder="Digite o CNPJ"
-                                    value={cnpj}
-                                    tipo="number"
-                                    onChangeText={setCnpj}
-                                />
-
-                                <EditableTextCard
-                                    label="Responsável"
-                                    placeholder="Nome do responsável"
-                                    value={nomeResponsavel}
-                                    onChangeText={setNomeResponsavel}
-                                />
-
-                                <EditableTextCard
-                                    label="CPF do responsável"
-                                    placeholder="CPF do responsável"
-                                    value={cpfResponsavel}
-                                    tipo="number"
-                                    onChangeText={setCpfResponsavel}
-                                />
-
-                                <EditableTextCard
-                                    label="Cargo do responsável"
-                                    placeholder="Cargo do responsável"
-                                    value={cargoResponsavel}
-                                    onChangeText={setCargoResponsavel}
-                                />
-                            </>
-                        )}
+                            )}
+                        />
                     </View>
+
+                    {/* ENDEREÇO */}
 
                     <View style={styles.section}>
                         <Text
                             style={[
                                 styles.sectionTitle,
-                                { color: colors.text },
-                            ]}
-                        >
-                            Contato
-                        </Text>
-
-                        <EditableTextCard
-                            label="E-mail"
-                            placeholder="Digite o e-mail"
-                            value={email}
-                            onChangeText={setEmail}
-                        />
-
-                        <EditableTextCard
-                            label="Telefone"
-                            placeholder="Digite o telefone"
-                            value={telefone}
-                            tipo="number"
-                            onChangeText={setTelefone}
-                        />
-                    </View>
-
-                    <View style={styles.section}>
-                        <Text
-                            style={[
-                                styles.sectionTitle,
-                                { color: colors.text },
+                                {
+                                    color: colors.text,
+                                },
                             ]}
                         >
                             Endereço
                         </Text>
 
-                        <EditableTextCard
-                            label="CEP"
-                            placeholder="Digite o CEP"
-                            value={cep}
-                            tipo="number"
-                            onChangeText={setCep}
+                        <Controller
+                            control={control}
+                            name="endereco.cep"
+                            render={({
+                                field: {
+                                    value,
+                                    onChange,
+                                },
+                            }) => (
+                                <EditableTextCard
+                                    label="CEP"
+                                    placeholder="Digite o CEP"
+                                    value={value}
+                                    tipo="number"
+                                    onChangeText={
+                                        onChange
+                                    }
+                                    editable={
+                                        !isVisualizar
+                                    }
+                                />
+                            )}
                         />
 
-                        <EditableTextCard
-                            label="Rua"
-                            placeholder="Digite a rua"
-                            value={rua}
-                            onChangeText={setRua}
+                        <Controller
+                            control={control}
+                            name="endereco.logradouro"
+                            render={({
+                                field: {
+                                    value,
+                                    onChange,
+                                },
+                            }) => (
+                                <EditableTextCard
+                                    label="Logradouro"
+                                    placeholder="Digite o logradouro"
+                                    value={value}
+                                    onChangeText={
+                                        onChange
+                                    }
+                                    editable={
+                                        !isVisualizar
+                                    }
+                                />
+                            )}
                         />
 
                         <View style={styles.row}>
-                            <EditableTextCard
-                                label="Número"
-                                placeholder="Número"
-                                value={numero}
-                                tipo="number"
-                                width="48%"
-                                onChangeText={setNumero}
+                            <Controller
+                                control={control}
+                                name="endereco.numero"
+                                render={({
+                                    field: {
+                                        value,
+                                        onChange,
+                                    },
+                                }) => (
+                                    <EditableTextCard
+                                        label="Número"
+                                        placeholder="Número"
+                                        value={value}
+                                        tipo="number"
+                                        width="48%"
+                                        onChangeText={
+                                            onChange
+                                        }
+                                        editable={
+                                            !isVisualizar
+                                        }
+                                    />
+                                )}
                             />
 
-                            <EditableTextCard
-                                label="Bairro"
-                                placeholder="Bairro"
-                                value={bairro}
-                                width="48%"
-                                onChangeText={setBairro}
+                            <Controller
+                                control={control}
+                                name="endereco.bairro"
+                                render={({
+                                    field: {
+                                        value,
+                                        onChange,
+                                    },
+                                }) => (
+                                    <EditableTextCard
+                                        label="Bairro"
+                                        placeholder="Bairro"
+                                        value={value}
+                                        width="48%"
+                                        onChangeText={
+                                            onChange
+                                        }
+                                        editable={
+                                            !isVisualizar
+                                        }
+                                    />
+                                )}
                             />
                         </View>
 
-                        <EditableTextCard
-                            label="Cidade"
-                            placeholder="Digite a cidade"
-                            value={cidade}
-                            onChangeText={setCidade}
+                        <Controller
+                            control={control}
+                            name="endereco.cidade"
+                            render={({
+                                field: {
+                                    value,
+                                    onChange,
+                                },
+                            }) => (
+                                <EditableTextCard
+                                    label="Cidade"
+                                    placeholder="Digite a cidade"
+                                    value={value}
+                                    onChangeText={
+                                        onChange
+                                    }
+                                    editable={
+                                        !isVisualizar
+                                    }
+                                />
+                            )}
                         />
 
-                        <EditableTextCard
-                            label="Estado"
-                            placeholder="Digite o estado"
-                            value={estado}
-                            onChangeText={setEstado}
+                        <Controller
+                            control={control}
+                            name="endereco.estado"
+                            render={({
+                                field: {
+                                    value,
+                                    onChange,
+                                },
+                            }) => (
+                                <EditableTextCard
+                                    label="Estado"
+                                    placeholder="UF"
+                                    value={value}
+                                    onChangeText={
+                                        onChange
+                                    }
+                                    editable={
+                                        !isVisualizar
+                                    }
+                                />
+                            )}
                         />
                     </View>
 
 
-                    <TouchableOpacity
-                        activeOpacity={0.8}
-                        style={styles.saveButton}
-                        onPress={() => {
-                            console.log({
-                                tipo: tipoCliente,
-                                avatar,
-                                nome,
-                                email,
-                                telefone,
-
-                                ...(isPF
-                                    ? {
-                                        cpf,
-                                        rg,
-                                        data_nascimento: dataNascimento,
-                                        genero,
-                                        estado_civil: estadoCivil,
-                                    }
-                                    : {
-                                        cnpj,
-                                        razao_social: razaoSocial,
-                                        nome_fantasia: nomeFantasia,
-                                        nome_responsavel: nomeResponsavel,
-                                        cpf_responsavel: cpfResponsavel,
-                                        cargo_responsavel: cargoResponsavel,
-                                    }),
-
-                                endereco: {
-                                    cep,
-                                    rua,
-                                    numero,
-                                    bairro,
-                                    cidade,
-                                    estado,
+                    {isVisualizar ? (
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            style={styles.saveButton}
+                            onPress={
+                                entrarEmEdicao
+                            }
+                        >
+                            <Text
+                                style={
+                                    styles.saveButtonText
+                                }
+                            >
+                                Editar cliente
+                            </Text>
+                        </TouchableOpacity>
+                    ) : (
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            disabled={
+                                !isDirty ||
+                                !isValid ||
+                                saving
+                            }
+                            style={[
+                                styles.saveButton,
+                                {
+                                    opacity:
+                                        !isDirty ||
+                                            !isValid ||
+                                            saving
+                                            ? 0.5
+                                            : 1,
                                 },
-                            });
-                        }}
-                    >
-                        <Text style={styles.saveButtonText}>
-                            Cadastrar cliente
-                        </Text>
-                    </TouchableOpacity>
+                            ]}
+                            onPress={handleSubmit(onSubmit)}>
+                            {saving ? (<ActivityIndicator color="#fff"
+                            />
+                            ) : (
+                                <Text style={styles.saveButtonText}>
+                                    {isCriar ? "Cadastrar cliente" : "Salvar alterações"}
+                                </Text>
+                            )}
+                        </TouchableOpacity>
+                    )}
                 </ScrollView>
             </KeyboardAvoidingView>
         </View>
@@ -407,7 +750,7 @@ const styles = StyleSheet.create({
     },
 
     avatarContainer: {
-        alignItems: 'center',
+        alignItems: "center",
         marginTop: 20,
         marginBottom: 25,
     },
@@ -415,7 +758,7 @@ const styles = StyleSheet.create({
     avatarLabel: {
         marginTop: 10,
         fontSize: 14,
-        fontWeight: '600',
+        fontWeight: "600",
     },
 
     section: {
@@ -424,12 +767,12 @@ const styles = StyleSheet.create({
 
     sectionTitle: {
         fontSize: 19,
-        fontWeight: '800',
+        fontWeight: "800",
         marginBottom: 5,
     },
 
     tipoContainer: {
-        flexDirection: 'row',
+        flexDirection: "row",
         gap: 10,
         marginBottom: 10,
     },
@@ -438,32 +781,32 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingVertical: 14,
         borderRadius: 14,
-        alignItems: 'center',
+        alignItems: "center",
         borderWidth: 1,
-        borderColor: '#062046',
+        borderColor: "#062046",
     },
 
     tipoText: {
         fontSize: 15,
-        fontWeight: '700',
+        fontWeight: "700",
     },
 
     row: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
+        flexDirection: "row",
+        justifyContent: "space-between",
     },
 
     saveButton: {
-        backgroundColor: '#062046',
+        backgroundColor: "#062046",
         borderRadius: 15,
         paddingVertical: 17,
-        alignItems: 'center',
+        alignItems: "center",
         marginTop: 10,
     },
 
     saveButtonText: {
-        color: '#fff',
+        color: "#fff",
         fontSize: 17,
-        fontWeight: '800',
+        fontWeight: "800",
     },
 });
