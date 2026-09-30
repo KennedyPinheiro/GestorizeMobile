@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Models\Cliente;
+use App\Models\Endereco;
+use Illuminate\Support\Facades\DB;
 
 class ClienteService
 {
@@ -13,10 +15,26 @@ class ClienteService
 
     public function criar(array $dados): Cliente
     {
-        return Cliente::create($dados);
+        return DB::transaction(function () use ($dados) {
+            $endereco = isset($dados['endereco']) ? Endereco::create($dados['endereco']) : null;
+
+            $cliente = Cliente::create([
+                'nome'        => $dados['nome'],
+                'tipo'        => $dados['tipo'],
+                'email'       => $dados['email'] ?? null,
+                'telefone'    => $dados['telefone'] ?? null,
+                'endereco_id' => $endereco?->id,
+            ]);
+
+            $dados['tipo'] === 'pf'
+                ? $cliente->dadosPf()->create($dados['pf'])
+                : $cliente->dadosPj()->create($dados['pj']);
+
+            return $cliente->load(['dadosPf', 'dadosPj']);
+        });
     }
 
-    public function buscar(int $id): Cliente
+    public function buscar(string $id): Cliente
     {
         return Cliente::findOrFail($id);
     }

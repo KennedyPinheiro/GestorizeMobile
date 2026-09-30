@@ -62,6 +62,7 @@ export type ClienteType = {
   nome: string;
   tipo: 'pf' | 'pj';
   telefone: string;
+  avatar_url: string | null;    
   email: string;
   endereco_id: string;
   created_at: string;
@@ -210,7 +211,7 @@ export type RootStackParamList = {
   Clientes: { novoCliente: boolean } | undefined;
   Produtos: { novoProduto: boolean } | undefined;
   Fornecedores: { novoFornecedor: boolean } | undefined;
-  NovoCliente:undefined;
+  NovoCliente: undefined;
   CadastroProdutos: undefined;
   CadastroFornecedores: undefined;
   CadastroFuncionarios: undefined;
