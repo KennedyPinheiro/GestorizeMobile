@@ -133,18 +133,8 @@ class StoreClienteRequest extends FormRequest
                 'max:20',
             ],
 
-            'pf.cpf' => [
-                'required_if:tipo,pf',
-                'string',
-                'size:11',
-                'unique:clientes_pf,cpf',
-            ],
-
-            'pf.data_nascimento' => [
-                'required_if:tipo,pf',
-                'date',
-                'before:today',
-            ],
+            'pf.cpf' => [ 'required_if:tipo,pf', 'string', 'size:11', 'unique:clientes_pf,cpf',],
+            'pf.data_nascimento' => ['required_if:tipo,pf','date','before:today',],
 
             'pj' => ['required_if:tipo,pj','array',],
 
