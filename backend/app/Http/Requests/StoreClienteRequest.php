@@ -95,9 +95,9 @@ class StoreClienteRequest extends FormRequest
             'endereco.logradouro' => ['required', 'string', 'max:255',],
             'endereco.numero' => ['required', 'string', 'max:20',],
             'endereco.complemento' => ['nullable', 'string', 'max:100',],
-            'endereco.bairro' => ['required','string','max:100',],
-            'endereco.cidade' => ['required','string','max:100',],
-            'endereco.estado' => ['required','string','size:2',],
+            'endereco.bairro' => ['required', 'string', 'max:100',],
+            'endereco.cidade' => ['required', 'string', 'max:100',],
+            'endereco.estado' => ['required', 'string', 'size:2',],
 
             /*
             |--------------------------------------------------------------------------
@@ -106,52 +106,17 @@ class StoreClienteRequest extends FormRequest
             */
 
             'pf' => ['required_if:tipo,pf', 'array',],
-            'pf.genero' => [
-                'nullable',
-                'string',
-                'max:30',
-            ],
-
-            'pf.rg' => [
-                'required_if:tipo,pf',
-                'string',
-                'max:20',
-            ],
-
+            'pf.genero' => ['nullable', 'string', 'max:30',],
+            'pf.rg' => ['required_if:tipo,pf','string','max:20',],
             'pf.cpf' => ['required_if:tipo,pf', 'string', 'size:11', 'unique:clientes_pf,cpf',],
             'pf.data_nascimento' => ['required_if:tipo,pf', 'date', 'before:today',],
             'pj' => ['required_if:tipo,pj', 'array',],
             'pj.cnpj' => ['required_if:tipo,pj', 'string', 'size:14', 'unique:clientes_pj,cnpj',],
-
-            'pj.razao_social' => [
-                'required_if:tipo,pj',
-                'string',
-                'max:255',
-            ],
-
-            'pj.nome_fantasia' => [
-                'nullable',
-                'string',
-                'max:255',
-            ],
-
-            'pj.nome_responsavel' => [
-                'required_if:tipo,pj',
-                'string',
-                'max:255',
-            ],
-
-            'pj.cpf_responsavel' => [
-                'required_if:tipo,pj',
-                'string',
-                'size:11',
-            ],
-
-            'pj.cargo_responsavel' => [
-                'nullable',
-                'string',
-                'max:100',
-            ],
+            'pj.razao_social' => ['required_if:tipo,pj','string','max:255',],
+            'pj.nome_fantasia' => ['nullable','string','max:255',],
+            'pj.nome_responsavel' => ['required_if:tipo,pj','string','max:255',],
+            'pj.cpf_responsavel' => ['required_if:tipo,pj','string','size:11',],
+            'pj.cargo_responsavel' => ['nullable','string','max:100',],
         ];
     }
 
@@ -159,19 +124,16 @@ class StoreClienteRequest extends FormRequest
     {
         return [
             'tipo.in' => 'validation.cliente_tipo.in',
-
             'pf.required_if' => 'validation.cliente_pf.required_if',
             'pf.cpf.required_if' => 'validation.cpf.required_if',
             'pf.cpf.size' => 'validation.cpf.size',
             'pf.cpf.unique' => 'validation.cpf.unique',
             'pf.data_nascimento.before' => 'validation.data_nascimento.before',
-
             'pj.required_if' => 'validation.cliente_pj.required_if',
             'pj.cnpj.required_if' => 'validation.cnpj.required_if',
             'pj.cnpj.size' => 'validation.cnpj.size',
             'pj.cnpj.unique' => 'validation.cnpj.unique',
             'pj.cpf_responsavel.size' => 'validation.cpf_responsavel.size',
-
             'endereco.cep.size' => 'validation.cep.size',
             'endereco.estado.size' => 'validation.uf.size',
         ];
