@@ -516,24 +516,15 @@ export default function NovoCliente() {
                                     onChangeText={
                                         onChange
                                     }
-                                    editable={
-                                        !isVisualizar
+                                    editable={!isVisualizar
                                     }
                                 />
                             )}
                         />
                     </View>
 
-                    {/* ENDEREÇO */}
-
                     <View style={styles.section}>
-                        <Text
-                            style={[
-                                styles.sectionTitle,
-                                {
-                                    color: colors.text,
-                                },
-                            ]}
+                        <Text style={[styles.sectionTitle,{color: colors.text,},]}
                         >
                             Endereço
                         </Text>
@@ -555,9 +546,7 @@ export default function NovoCliente() {
                                     onChangeText={
                                         onChange
                                     }
-                                    editable={
-                                        !isVisualizar
-                                    }
+                                    editable={!isVisualizar}
                                 />
                             )}
                         />
@@ -578,9 +567,7 @@ export default function NovoCliente() {
                                     onChangeText={
                                         onChange
                                     }
-                                    editable={
-                                        !isVisualizar
-                                    }
+                                    editable={!isVisualizar }
                                 />
                             )}
                         />
@@ -604,9 +591,7 @@ export default function NovoCliente() {
                                         onChangeText={
                                             onChange
                                         }
-                                        editable={
-                                            !isVisualizar
-                                        }
+                                        editable={!isVisualizar}
                                     />
                                 )}
                             />
@@ -628,9 +613,7 @@ export default function NovoCliente() {
                                         onChangeText={
                                             onChange
                                         }
-                                        editable={
-                                            !isVisualizar
-                                        }
+                                        editable={!isVisualizar}
                                     />
                                 )}
                             />
@@ -692,10 +675,7 @@ export default function NovoCliente() {
                                 entrarEmEdicao
                             }
                         >
-                            <Text
-                                style={
-                                    styles.saveButtonText
-                                }
+                            <Text style={styles.saveButtonText}
                             >
                                 Editar cliente
                             </Text>
