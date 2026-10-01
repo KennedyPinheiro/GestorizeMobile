@@ -418,15 +418,10 @@ export default function NovoCliente() {
                                     onChangeText={
                                         onChange
                                     }
-                                    editable={
-                                        !isVisualizar
-                                    }
+                                    editable={!isVisualizar}
                                 />
                             )}
                         />
-
-                        {/* PF */}
-
                         <Controller
                             control={control}
                             name="pf.cpf"
@@ -444,9 +439,7 @@ export default function NovoCliente() {
                                     onChangeText={
                                         onChange
                                     }
-                                    editable={
-                                        !isVisualizar
-                                    }
+                                    editable={!isVisualizar}
                                 />
                             )}
                         />
