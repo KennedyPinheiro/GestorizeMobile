@@ -340,17 +340,9 @@ export default function NovoCliente() {
                             />
                         </View>
                     </View>
-
-                    {/* DADOS PRINCIPAIS */}
-
                     <View style={styles.section}>
                         <Text
-                            style={[
-                                styles.sectionTitle,
-                                {
-                                    color: colors.text,
-                                },
-                            ]}
+                            style={[styles.sectionTitle,{color: colors.text,},]}
                         >
                             Dados principais
                         </Text>
@@ -371,9 +363,7 @@ export default function NovoCliente() {
                                     onChangeText={
                                         onChange
                                     }
-                                    editable={
-                                        !isVisualizar
-                                    }
+                                    editable={!isVisualizar}
                                 />
                             )}
                         />
@@ -394,9 +384,7 @@ export default function NovoCliente() {
                                     onChangeText={
                                         onChange
                                     }
-                                    editable={
-                                        !isVisualizar
-                                    }
+                                    editable={!isVisualizar}
                                 />
                             )}
                         />
