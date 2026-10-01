@@ -43,9 +43,7 @@ const Clientes = () => {
   );
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
-
   const scrollY = useRef(new Animated.Value(0)).current;
-
   const carregarClientes = useCallback(async () => {
     try {
       setLoading(true);
