@@ -320,17 +320,7 @@ export default function NovoCliente() {
                                             style={[styles.tipoButton, { backgroundColor: value === "pj" ? "#062046" : colors.surface, },]}
                                             onPress={() => onChange("pj")}
                                         >
-                                            <Text
-                                                style={[
-                                                    styles.tipoText,
-                                                    {
-                                                        color:
-                                                            value ===
-                                                                "pj"
-                                                                ? "#fff"
-                                                                : colors.text,
-                                                    },
-                                                ]}
+                                            <Text style={[styles.tipoText, { color: value === "pj" ? "#fff" : colors.text, },]}
                                             >
                                                 Pessoa Jurídica
                                             </Text>
@@ -341,8 +331,7 @@ export default function NovoCliente() {
                         </View>
                     </View>
                     <View style={styles.section}>
-                        <Text
-                            style={[styles.sectionTitle,{color: colors.text,},]}
+                        <Text style={[styles.sectionTitle, { color: colors.text, },]}
                         >
                             Dados principais
                         </Text>
@@ -488,7 +477,7 @@ export default function NovoCliente() {
                                     value={value ?? ""}
                                     onChangeText={
                                         onChange
-                                    } 
+                                    }
                                     editable={!isVisualizar}
                                 />
                             )}
@@ -496,7 +485,7 @@ export default function NovoCliente() {
                     </View>
 
                     <View style={styles.section}>
-                        <Text style={[styles.sectionTitle,{color: colors.text,},]}
+                        <Text style={[styles.sectionTitle, { color: colors.text, },]}
                         >
                             Endereço
                         </Text>
@@ -539,7 +528,7 @@ export default function NovoCliente() {
                                     onChangeText={
                                         onChange
                                     }
-                                    editable={!isVisualizar }
+                                    editable={!isVisualizar}
                                 />
                             )}
                         />
