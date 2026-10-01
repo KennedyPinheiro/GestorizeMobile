@@ -76,7 +76,7 @@ const Cliente = ({
           <View
             style={[
               styles.circle,
-              compactLists && styles.circleCompact,{backgroundColor: circleColor,},]}
+              compactLists && styles.circleCompact, { backgroundColor: circleColor, },]}
           >
             <Ionicons
               name={iconName}
@@ -133,10 +133,7 @@ const Cliente = ({
             {!compactLists && estado && (
               <Text
                 numberOfLines={1}
-                style={[
-                  styles.subtitle,
-                  { color: subText },
-                ]}
+                style={[styles.subtitle, { color: subText },]}
               >
                 {estado}
               </Text>
