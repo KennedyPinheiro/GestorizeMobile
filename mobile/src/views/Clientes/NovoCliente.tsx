@@ -468,9 +468,7 @@ export default function NovoCliente() {
                                     onChangeText={
                                         onChange
                                     }
-                                    editable={
-                                        !isVisualizar
-                                    }
+                                    editable={!isVisualizar}
                                 />
                             )}
                         />
@@ -487,15 +485,9 @@ export default function NovoCliente() {
                                 <EditableTextCard
                                     label="Data de nascimento"
                                     placeholder="DD/MM/AAAA"
-                                    value={
-                                        value ?? ""
-                                    }
-                                    onChangeText={
-                                        onChange
-                                    }
-                                    editable={
-                                        !isVisualizar
-                                    }
+                                    value={value ?? ""}
+                                    onChangeText={onChange}
+                                    editable={!isVisualizar}
                                 />
                             )}
                         />
