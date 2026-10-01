@@ -36,7 +36,6 @@ const tiposCliente = [
 const Clientes = () => {
   const navigation = useNavigation<Navigation>();
   const { colors } = useTheme();
-
   const [clientes, setClientes] = useState<ClienteType[]>([]);
   const [selectedTipo, setSelectedTipo] = useState<'PF' | 'PJ' | null>(
     null,
@@ -44,6 +43,7 @@ const Clientes = () => {
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
   const scrollY = useRef(new Animated.Value(0)).current;
+
   const carregarClientes = useCallback(async () => {
     try {
       setLoading(true);
@@ -107,7 +107,7 @@ const Clientes = () => {
   return (
     <View
       style={[
-        styles.container,{backgroundColor: colors.background,},]}
+        styles.container, { backgroundColor: colors.background, },]}
     >
       <Nav
         title="Clientes"
@@ -169,9 +169,12 @@ const Clientes = () => {
             tipo={item.tipo.toUpperCase() as 'PF' | 'PJ'}
             nome={item.nome}
             email={item.email}
-            onPress={() => navigation.navigate("NovoCliente", {
-              modo: "editar",
-            })}
+            onPress={() =>
+              navigation.navigate("NovoCliente", {
+                modo: "editar",
+                clienteId: item.id,
+              })
+            }
           />
         )}
         onScroll={handleScroll}

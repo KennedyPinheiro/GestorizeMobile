@@ -1,5 +1,3 @@
-// src/api/clientes.ts
-
 import { getAxios } from "@configs/axios";
 import { ArrayResponseType, ClienteType, ResponseType } from "@context/types";
 import { clienteSchema } from "src/schemas/ClienteSchema";
@@ -12,7 +10,7 @@ const getClientes = async (): Promise<ArrayResponseType<ClienteType>> => {
 };
 
 const getCliente = async (
-    id: string
+    id: string | undefined
 ): Promise<ResponseType<ClienteType>> => {
     const response = await getAxios().get(`/clientes/${id}`);
 

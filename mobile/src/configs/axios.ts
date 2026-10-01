@@ -29,10 +29,10 @@ export const authStorage = {
 
 type AxiosOpts = {
   contentType?:
-    | 'application/json'
-    | 'multipart/form-data'
-    | 'formData'
-    | string;
+  | 'application/json'
+  | 'multipart/form-data'
+  | 'formData'
+  | string;
 
   timeoutMs?: number;
 };
@@ -54,7 +54,7 @@ export const getAxios = ({
   }
 
   const instance = axios.create({
-    baseURL: 'http://192.168.1.10:8000/api',
+    baseURL: 'http://10.126.114.176:8000/api',
     timeout: timeoutMs ?? 15000,
     headers,
   });

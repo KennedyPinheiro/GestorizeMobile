@@ -24,9 +24,6 @@ import { clienteSchema } from "src/schemas/ClienteSchema";
 import { createCliente, getCliente, updateCliente } from "@api/apiClientes";
 import Toast from "react-native-toast-message";
 
-
-
-
 type Navigation = NativeStackNavigationProp<RootStackParamList>;
 
 type FormData = z.infer<typeof clienteSchema>;
@@ -58,7 +55,6 @@ export default function NovoCliente() {
         handleSubmit,
         reset,
         formState: {
-            errors,
             isDirty,
             isValid,
         },
@@ -91,87 +87,108 @@ export default function NovoCliente() {
         },
     });
     useEffect(() => {
-        if (!clienteId) {
-            return;
-        }
         if (modo === "criar") {
             return;
         }
+
+        if (!clienteId) {
+            Toast.error("Cliente não informado");
+            navigation.goBack();
+            return;
+        }
+
         const carregarCliente = async () => {
             try {
                 setLoading(true);
 
                 const response = await getCliente(clienteId);
                 const cliente = response.data;
-                if (cliente.tipo === "pf") {
-                    reset({
-                        tipo: "pf",
-                        nome: cliente.nome,
-                        email: cliente.email,
-                        telefone: cliente.telefone,
-                        endereco: {
-                            cep: cliente.endereco?.cep ?? "",
-                            logradouro: cliente.endereco?.logradouro ?? "",
-                            numero: cliente.endereco?.numero ?? "",
-                            complemento: cliente.endereco?.complemento ?? null,
-                            bairro: cliente.endereco?.bairro ?? "",
-                            cidade: cliente.endereco?.cidade ?? "",
-                            estado: cliente.endereco?.estado ?? "",
-                        },
 
-                        pf: {
-                            genero: cliente.pf?.genero ?? null,
-                            rg: cliente.pf?.rg ?? "",
-                            cpf: cliente.pf?.cpf ?? "",
-                            data_nascimento: cliente.pf?.data_nascimento ?? "",
-                        },
+                const dados: FormData =
+                    cliente.tipo === "pf"
+                        ? {
+                            tipo: "pf",
+                            nome: cliente.nome,
+                            email: cliente.email,
+                            telefone: cliente.telefone,
 
-                        pj: undefined,
-                    });
-                } else {
-                    reset({
-                        tipo: "pj",
+                            endereco: {
+                                cep: cliente.endereco?.cep ?? "",
+                                logradouro:
+                                    cliente.endereco?.logradouro ?? "",
+                                numero:
+                                    cliente.endereco?.numero ?? "",
+                                complemento:
+                                    cliente.endereco?.complemento ?? null,
+                                bairro:
+                                    cliente.endereco?.bairro ?? "",
+                                cidade:
+                                    cliente.endereco?.cidade ?? "",
+                                estado:
+                                    cliente.endereco?.estado ?? "",
+                            },
 
-                        nome: cliente.nome,
-                        email: cliente.email,
-                        telefone: cliente.telefone,
+                            pf: {
+                                genero: cliente.pf?.genero ?? null,
+                                rg: cliente.pf?.rg ?? "",
+                                cpf: cliente.pf?.cpf ?? "",
+                                data_nascimento:
+                                    cliente.pf?.data_nascimento ?? "",
+                            },
 
-                        endereco: {
-                            cep: cliente.endereco?.cep ?? "",
-                            logradouro: cliente.endereco?.logradouro ?? "",
-                            numero: cliente.endereco?.numero ?? "",
-                            complemento: cliente.endereco?.complemento ?? null,
-                            bairro: cliente.endereco?.bairro ?? "",
-                            cidade: cliente.endereco?.cidade ?? "",
-                            estado: cliente.endereco?.estado ?? "",
-                        },
+                            pj: undefined,
+                        }
+                        : {
+                            tipo: "pj",
+                            nome: cliente.nome,
+                            email: cliente.email,
+                            telefone: cliente.telefone,
 
-                        pf: undefined,
+                            endereco: {
+                                cep: cliente.endereco?.cep ?? "",
+                                logradouro:
+                                    cliente.endereco?.logradouro ?? "",
+                                numero:
+                                    cliente.endereco?.numero ?? "",
+                                complemento:
+                                    cliente.endereco?.complemento ?? null,
+                                bairro:
+                                    cliente.endereco?.bairro ?? "",
+                                cidade:
+                                    cliente.endereco?.cidade ?? "",
+                                estado:
+                                    cliente.endereco?.estado ?? "",
+                            },
 
-                        pj: {
-                            cnpj: cliente.pj?.cnpj ?? "",
-                            razao_social: cliente.pj?.razao_social ?? "",
-                            nome_fantasia: cliente.pj?.nome_fantasia ?? null,
-                            nome_responsavel: cliente.pj?.nome_do_responsavel ?? "",
-                            cpf_responsavel: cliente.pj?.cpf_responsavel ?? "",
-                            cargo_responsavel: cliente.pj?.nome_do_responsavel ?? null,
-                        },
-                    });
-                }
+                            pf: undefined,
+
+                            pj: {
+                                cnpj: cliente.pj?.cnpj ?? "",
+                                razao_social:
+                                    cliente.pj?.razao_social ?? "",
+                                nome_fantasia:
+                                    cliente.pj?.nome_fantasia ?? null,
+                                nome_responsavel:
+                                    cliente.pj?.nome_do_responsavel ?? "",
+                                cpf_responsavel:
+                                    cliente.pj?.cpf_responsavel ?? "",
+                                cargo_responsavel:
+                                    cliente.pj?.nome_do_responsavel ?? null,
+                            },
+                        };
+
+                reset(dados);
 
                 setAvatar(cliente.avatar_url ?? null);
             } catch (error) {
-                Toast.error(
-                    "Erro ao carregar cliente:",
-                    error
-                );
+                Toast.error("Erro ao carregar cliente");
             } finally {
                 setLoading(false);
             }
         };
 
         carregarCliente();
-    }, [clienteId, modo, reset]);
+    }, [clienteId, modo, reset, navigation]);
     const onSubmit = async (data: FormData) => {
         if (isVisualizar) {
             return;
