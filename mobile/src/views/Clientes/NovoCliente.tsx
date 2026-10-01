@@ -515,9 +515,8 @@ export default function NovoCliente() {
                                     value={value ?? ""}
                                     onChangeText={
                                         onChange
-                                    }
-                                    editable={!isVisualizar
-                                    }
+                                    } 
+                                    editable={!isVisualizar}
                                 />
                             )}
                         />
