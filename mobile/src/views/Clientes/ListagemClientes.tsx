@@ -17,6 +17,7 @@ import Cliente from '@components/ui-lists/Cliente';
 import { useTheme } from '@context/ThemeContext';
 import { ClienteType, RootStackParamList } from '@context/types';
 import { getClientes } from '@api/apiClientes';
+import Toast from 'react-native-toast-message';
 
 
 type Navigation = NativeStackNavigationProp<RootStackParamList>;
@@ -48,12 +49,10 @@ const Clientes = () => {
   const carregarClientes = useCallback(async () => {
     try {
       setLoading(true);
-
       const response = await getClientes();
-
       setClientes(response.data);
     } catch (error) {
-      console.error('Erro ao carregar clientes:', error);
+      Toast.error('Erro ao carregar clientes:', error);
     } finally {
       setLoading(false);
     }
