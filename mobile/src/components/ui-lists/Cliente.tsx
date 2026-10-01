@@ -107,13 +107,7 @@ const Cliente = ({
                 ]}
               >
                 <Text
-                  style={[
-                    styles.badgeText,
-                    {
-                      color: badgeTextColor,
-                    },
-                  ]}
-                >
+                  style={[styles.badgeText, { color: badgeTextColor, },]}>
                   {tipo}
                 </Text>
               </View>
