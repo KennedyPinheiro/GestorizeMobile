@@ -76,11 +76,7 @@ const Cliente = ({
           <View
             style={[
               styles.circle,
-              compactLists && styles.circleCompact,
-              {
-                backgroundColor: circleColor,
-              },
-            ]}
+              compactLists && styles.circleCompact,{backgroundColor: circleColor,},]}
           >
             <Ionicons
               name={iconName}
