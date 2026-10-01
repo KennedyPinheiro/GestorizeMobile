@@ -110,11 +110,7 @@ const Clientes = () => {
   return (
     <View
       style={[
-        styles.container,
-        {
-          backgroundColor: colors.background,
-        },
-      ]}
+        styles.container,{backgroundColor: colors.background,},]}
     >
       <Nav
         title="Clientes"
