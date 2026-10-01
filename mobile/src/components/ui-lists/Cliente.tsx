@@ -99,12 +99,7 @@ const Cliente = ({
               </Text>
 
               <View
-                style={[
-                  styles.badge,
-                  {
-                    backgroundColor: badgeBackground,
-                  },
-                ]}
+                style={[styles.badge, { backgroundColor: badgeBackground, },]}
               >
                 <Text
                   style={[styles.badgeText, { color: badgeTextColor, },]}>
