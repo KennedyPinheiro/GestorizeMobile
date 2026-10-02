@@ -12,6 +12,7 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
+
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -22,6 +23,7 @@ import { clienteSchema } from "src/schemas/ClienteSchema";
 import { createCliente, deleteCliente, getCliente, updateCliente } from "@api/apiClientes";
 import Toast from "react-native-toast-message";
 import DialogConfirmarAcao from "@components/dialogs/DialogConfirmarAcao";
+import { clearNumber, dateFromApi, dateToApi, formatCep, formatCnpj, formatCpf, formatDate, formatRg, formatTelefone } from "@core/utils/format";
 
 type Navigation = NativeStackNavigationProp<RootStackParamList>;
 
@@ -36,7 +38,6 @@ export default function NovoCliente() {
     const navigation = useNavigation<Navigation>();
     const route = useRoute<Route>();
     const { colors } = useTheme();
-    const modoInicial = route.params?.modo ?? "criar";
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const [avatar, setAvatar] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
@@ -79,7 +80,7 @@ export default function NovoCliente() {
                     data_nascimento: "",
                 },
 
-                pj: undefined,
+                pj: [],
             },
         });
 
@@ -151,7 +152,9 @@ export default function NovoCliente() {
                                 genero: cliente.pf?.genero ?? null,
                                 rg: cliente.pf?.rg ?? "",
                                 cpf: cliente.pf?.cpf ?? "",
-                                data_nascimento: cliente.pf?.data_nascimento ?? "",
+                                data_nascimento: dateFromApi(
+                                    cliente.pf?.data_nascimento ?? ""
+                                ),
                             },
 
                             pj: [],
@@ -184,7 +187,6 @@ export default function NovoCliente() {
                         };
 
                 reset(dados);
-
                 setAvatar(cliente.avatar_url ?? null);
             } catch (error) {
                 Toast.error("Erro ao carregar cliente");
@@ -204,7 +206,58 @@ export default function NovoCliente() {
             setSaving(true);
 
             if (isCriar) {
-                await createCliente(data);
+                const payload: FormData =
+                    data.tipo === "pf"
+                        ? {
+                            tipo: "pf",
+                            nome: data.nome,
+                            email: data.email,
+                            telefone: data.telefone
+                                ? clearNumber(data.telefone)
+                                : null,
+
+                            endereco: {
+                                ...data.endereco,
+                                cep: clearNumber(data.endereco.cep),
+                            },
+
+                            pf: {
+                                ...data.pf,
+                                cpf: clearNumber(data.pf.cpf),
+                                rg: clearNumber(data.pf.rg),
+                                data_nascimento: dateToApi(
+                                    data.pf.data_nascimento
+                                ),
+                            },
+
+                            pj: [],
+                        }
+                        : {
+                            tipo: "pj",
+                            nome: data.nome,
+                            email: data.email,
+                            telefone: data.telefone
+                                ? clearNumber(data.telefone)
+                                : null,
+
+                            endereco: {
+                                ...data.endereco,
+                                cep: clearNumber(data.endereco.cep),
+                            },
+
+                            pf: [],
+
+                            pj: {
+                                ...data.pj,
+                                cnpj: clearNumber(data.pj.cnpj),
+                                cpf_responsavel: clearNumber(
+                                    data.pj.cpf_responsavel
+                                ),
+                            },
+                        };
+
+                await createCliente(payload);
+
                 Toast.show({
                     type: "success",
                     text1: "Cliente cadastrado",
@@ -222,19 +275,48 @@ export default function NovoCliente() {
                             tipo: "pf",
                             nome: data.nome,
                             email: data.email,
-                            telefone: data.telefone,
-                            endereco: data.endereco,
-                            pf: data.pf,
+                            telefone: data.telefone
+                                ? clearNumber(data.telefone)
+                                : null,
+
+                            endereco: {
+                                ...data.endereco,
+                                cep: clearNumber(data.endereco.cep),
+                            },
+
+                            pf: {
+                                ...data.pf,
+                                cpf: clearNumber(data.pf.cpf),
+                                rg: clearNumber(data.pf.rg),
+                                data_nascimento: dateToApi(
+                                    data.pf.data_nascimento
+                                ),
+                            },
+
                             pj: [],
                         }
                         : {
                             tipo: "pj",
                             nome: data.nome,
                             email: data.email,
-                            telefone: data.telefone,
-                            endereco: data.endereco,
+                            telefone: data.telefone
+                                ? clearNumber(data.telefone)
+                                : null,
+
+                            endereco: {
+                                ...data.endereco,
+                                cep: clearNumber(data.endereco.cep),
+                            },
+
                             pf: [],
-                            pj: data.pj,
+
+                            pj: {
+                                ...data.pj,
+                                cnpj: clearNumber(data.pj.cnpj),
+                                cpf_responsavel: clearNumber(
+                                    data.pj.cpf_responsavel
+                                ),
+                            },
                         };
 
                 const response = await updateCliente(
@@ -242,12 +324,14 @@ export default function NovoCliente() {
                     payload
                 );
 
-                reset(payload);
+                reset(data);
 
                 Toast.show({
                     type: "success",
                     text1: "Cliente atualizado",
-                    text2: response.message ?? "Alterações salvas com sucesso.",
+                    text2:
+                        response.message ??
+                        "Alterações salvas com sucesso.",
                 });
             }
         } catch (error: any) {
@@ -294,15 +378,15 @@ export default function NovoCliente() {
                 keyboardShouldPersistTaps="handled"
                 enableOnAndroid
                 enableAutomaticScroll
-                extraScrollHeight={550}
+                extraScrollHeight={50}
             >
                 <View style={styles.avatarContainer}>
                     <Avatar
-                        nome="Cliente"
+                        nome={watch("nome") || "Cliente"}
                         imageUri={avatar}
                         size={120}
                         editable={true}
-                        onImageSelected={isEditar ? () => { } : setAvatar}
+                        onImageSelected={setAvatar}
                     />
 
                     <Text style={[styles.avatarLabel, { color: colors.text },]}>
@@ -328,15 +412,12 @@ export default function NovoCliente() {
                             }) => (
                                 <>
                                     <TouchableOpacity
-                                        disabled={!isCriar
-                                        }
+                                        disabled={!isCriar}
                                         activeOpacity={0.8}
-                                        style={[
-                                            styles.tipoButton, { backgroundColor: value === "pf" ? "#062046" : colors.surface, },]}
+                                        style={[styles.tipoButton, { backgroundColor: value === "pf" ? "#062046" : colors.surface, },]}
                                         onPress={() => onChange("pf")}
                                     >
-                                        <Text
-                                            style={[styles.tipoText, { color: value === "pf" ? "#fff" : colors.text, },]}>
+                                        <Text style={[styles.tipoText, { color: value === "pf" ? "#fff" : colors.text, },]}>
                                             Pessoa Física
                                         </Text>
                                     </TouchableOpacity>
@@ -406,20 +487,14 @@ export default function NovoCliente() {
                     <Controller
                         control={control}
                         name="telefone"
-                        render={({
-                            field: {
-                                value,
-                                onChange,
-                            },
-                        }) => (
+                        render={({ field: { value, onChange }, fieldState: { error } }) => (
                             <EditableTextCard
                                 label="Telefone"
-                                placeholder="Digite o telefone"
-                                value={value ?? ""}
-                                tipo="number"
-                                onChangeText={
-                                    onChange
-                                }
+                                value={formatTelefone(value ?? "")}
+                                editable={true}
+                                onChangeText={(text) => {
+                                    onChange(formatTelefone(text));
+                                }}
                             />
                         )}
                     />
@@ -428,14 +503,14 @@ export default function NovoCliente() {
                             <Controller
                                 control={control}
                                 name="pf.cpf"
-                                render={({ field: { value, onChange } }) => (
+                                render={({ field: { value, onChange }, fieldState: { error } }) => (
                                     <EditableTextCard
                                         label="CPF"
-                                        placeholder="Digite o CPF"
-                                        value={value ?? ""}
-                                        tipo="number"
-                                        onChangeText={onChange}
+                                        value={formatCpf(value ?? "")}
                                         editable={true}
+                                        onChangeText={(text) => {
+                                            onChange(formatCpf(text));
+                                        }}
                                     />
                                 )}
                             />
@@ -443,14 +518,14 @@ export default function NovoCliente() {
                             <Controller
                                 control={control}
                                 name="pf.rg"
-                                render={({ field: { value, onChange } }) => (
+                                render={({ field: { value, onChange }, fieldState: { error } }) => (
                                     <EditableTextCard
                                         label="RG"
-                                        placeholder="Digite o RG"
-                                        value={value ?? ""}
-                                        tipo="number"
-                                        onChangeText={onChange}
+                                        value={formatRg(value ?? "")}
                                         editable={true}
+                                        onChangeText={(text) => {
+                                            onChange(formatRg(text));
+                                        }}
                                     />
                                 )}
                             />
@@ -458,13 +533,14 @@ export default function NovoCliente() {
                             <Controller
                                 control={control}
                                 name="pf.data_nascimento"
-                                render={({ field: { value, onChange } }) => (
+                                render={({ field: { value, onChange }, fieldState: { error } }) => (
                                     <EditableTextCard
                                         label="Data de nascimento"
-                                        placeholder="DD/MM/AAAA"
-                                        value={value ?? ""}
-                                        onChangeText={onChange}
+                                        value={formatDate(value ?? "")}
                                         editable={true}
+                                        onChangeText={(text) => {
+                                            onChange(formatDate(text));
+                                        }}
                                     />
                                 )}
                             />
@@ -488,14 +564,14 @@ export default function NovoCliente() {
                             <Controller
                                 control={control}
                                 name="pj.cnpj"
-                                render={({ field: { value, onChange } }) => (
+                                render={({ field: { value, onChange }, fieldState: { error } }) => (
                                     <EditableTextCard
                                         label="CNPJ"
-                                        placeholder="Digite o CNPJ"
-                                        value={value ?? ""}
-                                        tipo="number"
-                                        onChangeText={onChange}
+                                        value={formatCnpj(value ?? "")}
                                         editable={true}
+                                        onChangeText={(text) => {
+                                            onChange(formatCnpj(text));
+                                        }}
                                     />
                                 )}
                             />
@@ -549,9 +625,11 @@ export default function NovoCliente() {
                                     <EditableTextCard
                                         label="CPF do responsável"
                                         placeholder="Digite o CPF do responsável"
-                                        value={value ?? ""}
+                                        value={formatCpf(value ?? "")}
                                         tipo="number"
-                                        onChangeText={onChange}
+                                        onChangeText={(text) => {
+                                            onChange(formatCpf(text));
+                                        }}
                                         editable={true}
                                     />
                                 )}
@@ -583,20 +661,14 @@ export default function NovoCliente() {
                     <Controller
                         control={control}
                         name="endereco.cep"
-                        render={({
-                            field: {
-                                value,
-                                onChange,
-                            },
-                        }) => (
+                        render={({ field: { value, onChange }, fieldState: { error } }) => (
                             <EditableTextCard
                                 label="CEP"
-                                placeholder="Digite o CEP"
-                                value={value}
-                                tipo="number"
-                                onChangeText={
-                                    onChange
-                                }
+                                value={formatCep(value ?? "")}
+                                editable={true}
+                                onChangeText={(text) => {
+                                    onChange(formatCep(text));
+                                }}
                             />
                         )}
                     />

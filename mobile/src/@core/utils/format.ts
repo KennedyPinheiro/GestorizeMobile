@@ -1,6 +1,5 @@
 import {
   ErrorResponseType,
-  MessageConversionObject,
   StringfiedDate,
 } from '@context/types';
 import { AxiosError, isAxiosError } from 'axios';
@@ -8,20 +7,45 @@ import { AxiosError, isAxiosError } from 'axios';
 export const clearNumber = (value = '') => {
   return value.replace(/\D+/g, '');
 };
-
 export function formatDate(texto: string): string {
-  const apenasNumeros = texto.replace(/\D/g, '');
-  const limitado = apenasNumeros.slice(0, 8);
+  const apenasNumeros = texto.replace(/\D/g, "").slice(0, 8);
 
-  if (limitado.length <= 4) return limitado;
-  if (limitado.length <= 6)
-    return `${limitado.slice(0, 4)}/${limitado.slice(4)}`;
+  if (apenasNumeros.length <= 2) {
+    return apenasNumeros;
+  }
 
-  return `${limitado.slice(0, 4)}/${limitado.slice(4, 6)}/${limitado.slice(
-    6,
-    8,
-  )}`;
+  if (apenasNumeros.length <= 4) {
+    return `${apenasNumeros.slice(0, 2)}/${apenasNumeros.slice(2)}`;
+  }
+
+  return `${apenasNumeros.slice(0, 2)}/${apenasNumeros.slice(
+    2,
+    4
+  )}/${apenasNumeros.slice(4, 8)}`;
 }
+
+
+export const dateToApi = (value: string) => {
+  const [dia, mes, ano] = value.split("/");
+
+  if (!dia || !mes || !ano) {
+    return value;
+  }
+
+  return `${ano}-${mes}-${dia}`;
+};
+
+export const dateFromApi = (value: string) => {
+  if (!value) return "";
+
+  const [ano, mes, dia] = value.split("-");
+
+  if (!ano || !mes || !dia) {
+    return value;
+  }
+
+  return `${dia}/${mes}/${ano}`;
+};
 
 export const formatToIsoDate = (data: string): StringfiedDate => {
   let tempDate = data.replace(' ', 'T');
