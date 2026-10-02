@@ -28,6 +28,7 @@ import Button from "@components/botoes/Button";
 import { InputError } from "@components/InputError";
 import GeneroSelector from "@components/GeneroSelector";
 import { getCep } from "@api/apiCep";
+import DateField from "@components/DateField";
 
 type Navigation = NativeStackNavigationProp<RootStackParamList>;
 
@@ -572,24 +573,14 @@ export default function NovoCliente() {
                             <Controller
                                 control={control}
                                 name="pf.data_nascimento"
-                                render={({
-                                    field: { value, onChange },
-                                    fieldState: { error },
-                                }) => (
+                                render={({ field: { value, onChange }, fieldState: { error } }) => (
                                     <>
-                                        <EditableTextCard
+                                        <DateField
                                             label="Data de nascimento"
-                                            placeholder="00/00/0000"
-                                            value={formatDate(value ?? "")}
-                                            editable={true}
-                                            tipo="number"
-                                            onChangeText={(text) => {
-                                                const data = onlyNumbers(text, 8);
-
-                                                onChange(data);
-                                            }}
+                                            value={value}
+                                            onChange={onChange}
+                                            maximumDate={new Date(Date.now() - 86400000)}
                                         />
-
                                         <InputError message={error?.message} />
                                     </>
                                 )}
