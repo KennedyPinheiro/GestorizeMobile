@@ -29,7 +29,7 @@ const tiposCliente = [
   },
   {
     id: 'PJ',
-    label: 'Pessoa Jurídica',
+    label: 'Pessoa Jurídica', 
   },
 ] as const;
 

@@ -16,6 +16,7 @@ type AvatarProps = {
     size?: number;
     editable?: boolean;
     onImageSelected?: (uri: string) => void;
+    onImageRemoved?: () => void;
 };
 
 const Avatar = ({
@@ -24,9 +25,12 @@ const Avatar = ({
     size = 56,
     editable = false,
     onImageSelected,
+    onImageRemoved,
 }: AvatarProps) => {
     const { colors } = useTheme();
+
     const [imagem, setImagem] = useState<string | null>(imageUri);
+
     const iniciais = useMemo(() => {
         const nomeFormatado = nome.trim();
 
@@ -37,7 +41,9 @@ const Avatar = ({
         const palavras = nomeFormatado.split(/\s+/);
 
         if (palavras.length === 1) {
-            return palavras[0].substring(0, 2).toUpperCase();
+            return palavras[0]
+                .substring(0, 2)
+                .toUpperCase();
         }
 
         return (
@@ -46,8 +52,9 @@ const Avatar = ({
         ).toUpperCase();
     }, [nome]);
 
-
-    useEffect(() => { setImagem(imageUri); }, [imageUri]);
+    useEffect(() => {
+        setImagem(imageUri);
+    }, [imageUri]);
 
     const selecionarImagem = async () => {
         if (!editable) {
@@ -61,12 +68,13 @@ const Avatar = ({
             return;
         }
 
-        const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ['images'],
-            allowsEditing: true,
-            aspect: [1, 1],
-            quality: 0.8,
-        });
+        const result =
+            await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ['images'],
+                allowsEditing: true,
+                aspect: [1, 1],
+                quality: 0.8,
+            });
 
         if (result.canceled) {
             return;
@@ -76,6 +84,15 @@ const Avatar = ({
 
         setImagem(uri);
         onImageSelected?.(uri);
+    };
+
+    const removerImagem = () => {
+        if (!editable || !imagem) {
+            return;
+        }
+
+        setImagem(null);
+        onImageRemoved?.();
     };
 
     const content = (
@@ -119,28 +136,52 @@ const Avatar = ({
             )}
 
             {editable && (
-                <View
-                    style={[
-                        styles.camera,
-                        {
-                            width: size * 0.32,
-                            height: size * 0.32,
-                            borderRadius: size * 0.16,
-                            backgroundColor: colors.primary,
-                            borderColor: colors.background,
-                        },
-                    ]}
-                >
-                    <Ionicons
-                        name="camera-outline"
-                        size={size * 0.18}
-                        color={colors.background}
-                    />
-                </View>
+                <>
+                    <View
+                        pointerEvents="none"
+                        style={[
+                            styles.camera,
+                            {
+                                width: size * 0.32,
+                                height: size * 0.32,
+                                borderRadius: size * 0.16,
+                                backgroundColor: colors.primary,
+                                borderColor: colors.background,
+                            },
+                        ]}
+                    >
+                        <Ionicons
+                            name="camera-outline"
+                            size={size * 0.18}
+                            color={colors.background}
+                        />
+                    </View>
+
+                    {imagem && (
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            onPress={removerImagem}
+                            style={[
+                                styles.remove,
+                                {
+                                    width: size * 0.30,
+                                    height: size * 0.30,
+                                    borderRadius: size * 0.15,
+                                    borderColor: colors.background,
+                                },
+                            ]}
+                        >
+                            <Ionicons
+                                name="close"
+                                size={size * 0.18}
+                                color="#ffffff"
+                            />
+                        </TouchableOpacity>
+                    )}
+                </>
             )}
         </>
     );
-
     if (!editable) {
         return (
             <View
@@ -160,7 +201,7 @@ const Avatar = ({
 
     return (
         <TouchableOpacity
-            activeOpacity={0.8}
+            activeOpacity={0.85}
             onPress={selecionarImagem}
             style={[
                 styles.container,
@@ -174,30 +215,58 @@ const Avatar = ({
             {content}
         </TouchableOpacity>
     );
+
+    return (
+        <View
+            style={[
+                styles.container,
+                {
+                    width: size,
+                    height: size,
+                    borderRadius: size / 2,
+                },
+            ]}
+        >
+            {content}
+        </View>
+    );
 };
 
 export default Avatar;
-
 const styles = StyleSheet.create({
     container: {
         position: 'relative',
     },
+
     image: {
         resizeMode: 'cover',
     },
+
     initials: {
         alignItems: 'center',
         justifyContent: 'center',
     },
+
     initialsText: {
         fontWeight: '800',
     },
+
     camera: {
         position: 'absolute',
         right: -2,
         bottom: -2,
         alignItems: 'center',
         justifyContent: 'center',
+        borderWidth: 2,
+    },
+
+    remove: {
+        position: 'absolute',
+        right: -2,
+        top: -2,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#dc2626',
         borderWidth: 2,
     },
 });
