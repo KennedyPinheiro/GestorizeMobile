@@ -121,7 +121,7 @@ class UpdateClienteRequest extends FormRequest
             'pf.data_nascimento' => ['sometimes', 'nullable', 'date', 'before:today',],
 
             'pj' => ['sometimes', 'array',],
-            'pj.cnpj' => ['sometimes', 'string', 'size:14', Rule::unique('clientes_pj', 'cnpj')->ignore($pjId, 'id'),],
+            Rule::unique('clientes_pj', 'cnpj')->ignore($pjId, 'id'),
             'pj.razao_social' => ['sometimes', 'string', 'max:255',],
             'pj.nome_fantasia' => ['sometimes', 'nullable', 'string', 'max:255',],
             'pj.nome_responsavel' => ['sometimes', 'nullable', 'string', 'max:255',],

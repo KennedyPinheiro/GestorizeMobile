@@ -28,7 +28,7 @@ class ClienteFactory extends Factory
         return $this->state(['tipo' => 'PF'])->afterCreating(function (Cliente $cliente) {
             ClientePf::create([
                 'cliente_id'      => $cliente->id,
-                'genero'          => $this->faker->randomElement(['M', 'F']),
+                'genero'          => $this->faker->randomElement(['masculino', 'feminino','outro']),
                 'rg'              => $this->faker->numerify('#########'),
                 'cpf'             => $this->faker->numerify('###.###.###-##'),
                 'data_nascimento' => $this->faker->dateTimeBetween('-60 years', '-18 years'),
