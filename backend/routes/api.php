@@ -33,6 +33,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/{id}/imagem',   [ClienteController::class, 'atualizarAvatar'])->middleware('permission:clientes.editar');
         Route::delete('/{id}/imagem', [ClienteController::class, 'removerAvatar'])->middleware('permission:clientes.editar');
     });
+    
     Route::prefix('produtos')->group(function () {
         Route::get('/', [ProdutoController::class, 'index'])->middleware('permission:produtos.ver');
         Route::post('/', [ProdutoController::class, 'store'])->middleware('permission:produtos.criar');

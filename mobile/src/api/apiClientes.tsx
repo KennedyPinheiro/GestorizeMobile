@@ -41,9 +41,25 @@ export const deleteCliente = async (
     return response.data;
 };
 
+const updateClienteAvatar = async (
+    id: string, imagem: string): Promise<ResponseType<ClienteType>> => {
+    const response = await getAxios().post(`/clientes/${id}/imagem`, { imagem });
+
+    return response.data;
+};
+const removeClienteAvatar = async (
+    id: string): Promise<ResponseType<ClienteType>> => {
+    const response = await getAxios().delete(`/clientes/${id}/imagem`);
+
+    return response.data;
+};
+
+
 export {
     getClientes,
     getCliente,
     createCliente,
     updateCliente,
+    updateClienteAvatar,
+    removeClienteAvatar
 };
