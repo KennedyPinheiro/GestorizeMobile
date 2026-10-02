@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -33,15 +33,34 @@ const EditableTextCard = ({
   const [internalValue, setInternalValue] = useState(value);
   const [secureText, setSecureText] = useState(true);
 
+  const inputRef = useRef<TextInput>(null);
+
+  useEffect(() => {
+    setInternalValue(value);
+  }, [value]);
+
   const keyboardType: KeyboardTypeOptions =
     tipo === 'number' ? 'numeric' : 'default';
+
   const isPassword = tipo === 'password';
+
+  const handleFocus = () => {
+    if (editable) {
+      setIsEditing(true);
+    }
+  };
 
   const handleBlur = () => {
     setIsEditing(false);
+
     if (onChangeText) {
       onChangeText(internalValue);
     }
+  };
+
+  const handleChangeText = (text: string) => {
+    setInternalValue(text);
+    onChangeText?.(text);
   };
 
   const displayValue =
@@ -52,38 +71,39 @@ const EditableTextCard = ({
   return (
     <View style={[styles.container, { width }]}>
       <Text style={styles.label}>{label}</Text>
+
       <View style={styles.inputWrapper}>
-        {isEditing ? (
+        <TouchableOpacity
+          activeOpacity={1}
+          style={styles.flex}
+          onPress={() => {
+            if (!editable) {
+              return;
+            }
+
+            inputRef.current?.focus();
+          }}
+        >
           <TextInput
-            style={[styles.input, isPassword && { flex: 1 }]}
+            ref={inputRef}
+            style={[
+              styles.input,
+              !isEditing && styles.inputReadOnly,
+              isPassword && { flex: 1 },
+            ]}
             value={internalValue}
-            onChangeText={setInternalValue}
+            onChangeText={handleChangeText}
+            onFocus={handleFocus}
             onBlur={handleBlur}
-            autoFocus
             keyboardType={keyboardType}
             placeholder={placeholder}
-            placeholderTextColor="#2c2b2b"
+            placeholderTextColor="#999"
             secureTextEntry={isPassword && secureText}
+            editable={editable}
+            pointerEvents={isEditing ? 'auto' : 'none'}
           />
-        ) : (
-          <TouchableOpacity
-            style={[styles.flex, isPassword && { flex: 1 }]}
-            onPress={() => {
-              if (editable) {
-                setIsEditing(true);
-              }
-            }}
-          >
-            <Text
-              style={[
-                styles.valueText,
-                !internalValue && styles.placeholderText,
-              ]}
-            >
-              {internalValue ? displayValue : placeholder || ' '}
-            </Text>
-          </TouchableOpacity>
-        )}
+        </TouchableOpacity>
+
         {isPassword && (
           <TouchableOpacity
             onPress={() => setSecureText(!secureText)}
@@ -113,35 +133,35 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     backgroundColor: '#fff',
   },
+
   label: {
     fontSize: 13,
     color: '#6e6e6e',
     fontWeight: 'bold',
     marginBottom: 5,
   },
-  valueText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#111',
+
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-  placeholderText: {
-    color: '#999',
-    fontWeight: 'normal',
-  },
+
   input: {
     fontSize: 20,
     fontWeight: 'bold',
     color: '#111',
     padding: 0,
+    minHeight: 25,
   },
-  inputWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
+
+  inputReadOnly: {
   },
-  iconWrapper: {
-    paddingLeft: 10,
-  },
+
   flex: {
     flex: 1,
+  },
+
+  iconWrapper: {
+    paddingLeft: 10,
   },
 });

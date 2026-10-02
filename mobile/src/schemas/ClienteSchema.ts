@@ -122,7 +122,7 @@ export const clienteSchema = z.discriminatedUnion("tipo", [
 
     pf: pfSchema,
 
-    pj: z.undefined().optional(),
+    pj: z.array(z.never()),
   }),
 
   z.object({
@@ -147,8 +147,7 @@ export const clienteSchema = z.discriminatedUnion("tipo", [
 
     endereco: enderecoSchema,
 
-    pf: z.undefined().optional(),
-
+    pf: z.array(z.never()),
     pj: pjSchema,
   }),
 ]);

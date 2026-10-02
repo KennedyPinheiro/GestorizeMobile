@@ -89,9 +89,9 @@ export type PessoaJuridicaType = {
   email: string;
   nome_fantasia: string;
   cnpj: string;
-  nome_do_responsavel: string;
+  nome_responsavel: string;
   cpf_responsavel: string;
-  cargo_do_representante: string;
+  cargo_responsavel: string;
   endereco_id: string;
   telefone: string;
 };
@@ -208,7 +208,7 @@ export type RootStackParamList = {
   Fornecedores: { novoFornecedor: boolean } | undefined;
   NovoCliente:
   | {
-    modo: "criar" | "visualizar" | "editar";
+    modo: "criar" | "editar";
     clienteId?: string;
   }
   | undefined;

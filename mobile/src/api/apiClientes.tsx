@@ -34,6 +34,13 @@ const updateCliente = async (
     return response.data;
 };
 
+export const deleteCliente = async (
+    id: string
+): Promise<ResponseType<null>> => {
+    const response = await getAxios().delete(`/clientes/${id}`);
+    return response.data;
+};
+
 export {
     getClientes,
     getCliente,

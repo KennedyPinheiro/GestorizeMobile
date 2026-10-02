@@ -58,13 +58,12 @@ class ClienteService
                 'telefone' => $dados['telefone'] ?? $cliente->telefone,
                 'imagem'   => $dados['imagem'] ?? $cliente->imagem,
             ]);
-            if (isset($dados['endereco'])) {
-                if ($cliente->endereco_id) {
-                    $endereco = Endereco::find($cliente->endereco_id);
 
-                    if ($endereco) {
-                        $endereco->update($dados['endereco']);
-                    }
+            if (array_key_exists('endereco', $dados)) {
+                if ($cliente->endereco_id) {
+                    $endereco = Endereco::findOrFail($cliente->endereco_id);
+
+                    $endereco->update($dados['endereco']);
                 } else {
                     $endereco = Endereco::create($dados['endereco']);
 
@@ -88,14 +87,15 @@ class ClienteService
                 );
             }
 
-            return $cliente->load([
+            return $cliente->fresh([
+                'endereco',
                 'dadosPf',
                 'dadosPj',
             ]);
         });
     }
 
-    public function deletar(int $id): array
+    public function deletar(string $id): array
     {
         $cliente = Cliente::findOrFail($id);
         $cliente->delete();

@@ -37,7 +37,7 @@ const Login = ({ navigation }: Props) => {
     : require('@assets/images/Logo.png');
 
   useEffect(() => {
-    const showSub = Keyboard.addListener('keyboardDidShow', () => {});
+    const showSub = Keyboard.addListener('keyboardDidShow', () => { });
 
     const hideSub = Keyboard.addListener('keyboardDidHide', () => {
       Animated.parallel([
@@ -95,13 +95,7 @@ const Login = ({ navigation }: Props) => {
           <Animated.Image
             source={logoSource}
             style={[
-              styles.logo,
-              {
-                transform: [
-                  { translateY: translateYLogo },
-                  { scale: scaleLogo },
-                ],
-              },
+              styles.logo, { transform: [{ translateY: translateYLogo }, { scale: scaleLogo },], },
             ]}
           />
 
