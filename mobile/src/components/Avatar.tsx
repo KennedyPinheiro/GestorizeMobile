@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
     Image,
     StyleSheet,
@@ -26,9 +26,7 @@ const Avatar = ({
     onImageSelected,
 }: AvatarProps) => {
     const { colors } = useTheme();
-
     const [imagem, setImagem] = useState<string | null>(imageUri);
-
     const iniciais = useMemo(() => {
         const nomeFormatado = nome.trim();
 
@@ -47,6 +45,9 @@ const Avatar = ({
             palavras[palavras.length - 1][0]
         ).toUpperCase();
     }, [nome]);
+
+
+    useEffect(() => { setImagem(imageUri); }, [imageUri]);
 
     const selecionarImagem = async () => {
         if (!editable) {

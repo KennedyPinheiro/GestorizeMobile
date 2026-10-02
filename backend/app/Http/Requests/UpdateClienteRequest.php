@@ -25,6 +25,9 @@ class UpdateClienteRequest extends FormRequest
         if (isset($data['pf']['cpf'])) {
             $data['pf']['cpf'] = preg_replace('/\D/', '', $data['pf']['cpf']);
         }
+        if (isset($data['pf']['rg'])) {
+            $data['pf']['rg'] = preg_replace('/\D/', '', $data['pf']['rg']);
+        }
 
         if (isset($data['pj']['cnpj'])) {
             $data['pj']['cnpj'] = preg_replace('/\D/', '', $data['pj']['cnpj']);
@@ -86,22 +89,23 @@ class UpdateClienteRequest extends FormRequest
 
     public function rules(): array
     {
-        $clienteId = $this->route('cliente');
-
-        $cliente = Cliente::with([
-            'dadosPf',
-            'dadosPj',
-        ])->find($clienteId);
-
+        $cliente = Cliente::with(['dadosPf', 'dadosPj'])->find($this->route('id'));
         $pfId = $cliente?->dadosPf?->id;
         $pjId = $cliente?->dadosPj?->id;
+
 
         return [
 
 
             'nome' => ['sometimes', 'string', 'max:255',],
             'tipo' => ['sometimes', 'string', 'in:pf,pj',],
-            'email' => ['sometimes', 'nullable', 'email', 'max:255',],
+            'email' => [
+                'sometimes',
+                'nullable',
+                'email',
+                'max:255',
+                Rule::unique('clientes', 'email')->ignore($this->route('id'))
+            ],
             'telefone' => ['sometimes', 'nullable', 'string', 'max:20',],
             'imagem' => ['sometimes', 'nullable', 'string', 'max:500',],
 
@@ -117,11 +121,21 @@ class UpdateClienteRequest extends FormRequest
             'pf' => ['sometimes', 'array',],
             'pf.genero' => ['nullable', 'string', Rule::in(['masculino', 'feminino', 'outro',]),],
             'pf.rg' => ['sometimes', 'nullable', 'string', 'max:30',],
-            Rule::unique('clientes_pf', 'cpf')->ignore($pfId, 'id'),
+            'pf.cpf' => [
+                'sometimes',
+                'string',
+                'size:11',
+                Rule::unique('clientes_pf', 'cpf')->ignore($pfId, 'id'),
+            ],
             'pf.data_nascimento' => ['sometimes', 'nullable', 'date', 'before:today',],
 
             'pj' => ['sometimes', 'array',],
-            Rule::unique('clientes_pj', 'cnpj')->ignore($pjId, 'id'),
+            'pj.cnpj' => [
+                'sometimes',
+                'string',
+                'size:14',
+                Rule::unique('clientes_pj', 'cnpj')->ignore($pjId, 'id'),
+            ],
             'pj.razao_social' => ['sometimes', 'string', 'max:255',],
             'pj.nome_fantasia' => ['sometimes', 'nullable', 'string', 'max:255',],
             'pj.nome_responsavel' => ['sometimes', 'nullable', 'string', 'max:255',],

@@ -50,7 +50,10 @@ const Clientes = () => {
       const response = await getClientes();
       setClientes(response.data);
     } catch (error) {
-      Toast.error('Erro ao carregar clientes:', error);
+      Toast.show({
+        type: "error",
+        text1: "Erro ao carregar Clientes",
+      });
     } finally {
       setLoading(false);
     }

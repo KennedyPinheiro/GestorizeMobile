@@ -52,25 +52,13 @@ class ClienteService
         return DB::transaction(function () use ($id, $dados) {
             $cliente = Cliente::findOrFail($id);
 
-            $cliente->update([
-                'nome'     => $dados['nome'] ?? $cliente->nome,
-                'email'    => $dados['email'] ?? $cliente->email,
-                'telefone' => $dados['telefone'] ?? $cliente->telefone,
-                'imagem'   => $dados['imagem'] ?? $cliente->imagem,
-            ]);
+            $cliente->update(collect($dados)->only(['nome', 'email', 'telefone'])->all());
 
-            if (array_key_exists('endereco', $dados)) {
-                if ($cliente->endereco_id) {
-                    $endereco = Endereco::findOrFail($cliente->endereco_id);
 
-                    $endereco->update($dados['endereco']);
-                } else {
-                    $endereco = Endereco::create($dados['endereco']);
-
-                    $cliente->update([
-                        'endereco_id' => $endereco->id,
-                    ]);
-                }
+            if (is_array($dados['endereco'] ?? null)) {
+                $cliente->endereco_id
+                    ? Endereco::findOrFail($cliente->endereco_id)->update($dados['endereco'])
+                    : $cliente->update(['endereco_id' => Endereco::create($dados['endereco'])->id]);
             }
 
             if ($cliente->tipo === 'pf' && isset($dados['pf'])) {

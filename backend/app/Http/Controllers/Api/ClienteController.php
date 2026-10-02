@@ -59,11 +59,10 @@ class ClienteController extends Controller
             $request->validated()
         );
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Cliente atualizado com sucesso.',
-            'data' => new ClienteResource($cliente),
-        ]);
+        return ResponseService::success(
+            new ClienteResource($cliente),
+            'Cliente atualizado com sucesso.'
+        );
     }
 
     public function destroy(string $id): JsonResponse
@@ -75,15 +74,16 @@ class ClienteController extends Controller
             $result['message'] ?? null
         );
     }
-
     public function atualizarAvatar(
         ClienteImagemRequest $request,
         string $id
     ): JsonResponse {
         return ResponseService::success(
-            $this->imagemService->salvar(
-                $id,
-                $request->file('avatar')
+            new ClienteResource(
+                $this->imagemService->salvar(
+                    $id,
+                    $request->file('avatar')
+                )
             )
         );
     }

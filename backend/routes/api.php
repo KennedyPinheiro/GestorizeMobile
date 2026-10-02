@@ -30,8 +30,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/{id}',    [ClienteController::class, 'atualizar'])->middleware('permission:clientes.editar');
         Route::delete('/{id}', [ClienteController::class, 'destroy'])->middleware('permission:clientes.excluir');
 
-        Route::post('/{id}/imagem',  [ClienteController::class, 'atualizarimagem'])->middleware('permission:clientes.editar');
-        Route::delete('/{id}/imagem', [ClienteController::class, 'removerimagem'])->middleware('permission:clientes.editar');
+        Route::post('/{id}/imagem',   [ClienteController::class, 'atualizarAvatar'])->middleware('permission:clientes.editar');
+        Route::delete('/{id}/imagem', [ClienteController::class, 'removerAvatar'])->middleware('permission:clientes.editar');
     });
     Route::prefix('produtos')->group(function () {
         Route::get('/', [ProdutoController::class, 'index'])->middleware('permission:produtos.ver');
