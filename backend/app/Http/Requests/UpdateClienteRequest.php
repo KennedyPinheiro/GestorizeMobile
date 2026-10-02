@@ -115,7 +115,7 @@ class UpdateClienteRequest extends FormRequest
             'endereco.estado' => ['sometimes', 'string', 'size:2',],
 
             'pf' => ['sometimes', 'array',],
-            'pf.genero' => ['sometimes', 'nullable', 'string', 'in:masculino,feminino,outro,prefiro_nao_dizer',],
+            'pf.genero' => ['nullable', 'string', Rule::in(['masculino', 'feminino', 'outro',]),],
             'pf.rg' => ['sometimes', 'nullable', 'string', 'max:30',],
             Rule::unique('clientes_pf', 'cpf')->ignore($pfId, 'id'),
             'pf.data_nascimento' => ['sometimes', 'nullable', 'date', 'before:today',],

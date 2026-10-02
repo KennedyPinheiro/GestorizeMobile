@@ -1,5 +1,6 @@
 import {
   ErrorResponseType,
+  Genero,
   StringfiedDate,
 } from '@context/types';
 import { AxiosError, isAxiosError } from 'axios';
@@ -24,6 +25,46 @@ export function formatDate(texto: string): string {
   )}/${apenasNumeros.slice(4, 8)}`;
 }
 
+export const onlyNumbers = (value: string, maxLength?: number) => {
+  const numbers = value.replace(/\D/g, "");
+
+  return maxLength
+    ? numbers.slice(0, maxLength)
+    : numbers;
+};
+
+export const onlyLetters = (value: string, maxLength?: number) => {
+  const letters = value.replace(/[^\p{L}\s]/gu, "");
+
+  return maxLength
+    ? letters.slice(0, maxLength)
+    : letters;
+};
+
+export const normalizeGenero = (
+    genero?: string | null
+): Genero | null => {
+    if (
+        genero === "masculino" ||
+        genero === "feminino" ||
+        genero === "outro"
+    ) {
+        return genero;
+    }
+
+    return null;
+};
+
+export const onlyLettersAndNumbers = (
+  value: string,
+  maxLength?: number
+) => {
+  const result = value.replace(/[^\p{L}\d\s]/gu, "");
+
+  return maxLength
+    ? result.slice(0, maxLength)
+    : result;
+};
 
 export const dateToApi = (value: string) => {
   const [dia, mes, ano] = value.split("/");

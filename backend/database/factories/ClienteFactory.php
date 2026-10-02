@@ -15,40 +15,62 @@ class ClienteFactory extends Factory
     public function definition(): array
     {
         return [
-            'nome'        => $this->faker->name(),
-            'tipo'        => $this->faker->randomElement(['PF', 'PJ']),
-            'email'       => $this->faker->unique()->safeEmail(),
-            'telefone'    => $this->faker->numerify('(##) #####-####'),
+            'nome' => $this->faker->name(),
+            'tipo' => 'PF',
+            'email' => $this->faker->unique()->safeEmail(),
+            'telefone' => $this->faker->numerify('###########'),
             'endereco_id' => Endereco::factory(),
         ];
     }
 
     public function pf(): static
     {
-        return $this->state(['tipo' => 'PF'])->afterCreating(function (Cliente $cliente) {
-            ClientePf::create([
-                'cliente_id'      => $cliente->id,
-                'genero'          => $this->faker->randomElement(['masculino', 'feminino','outro']),
-                'rg'              => $this->faker->numerify('#########'),
-                'cpf'             => $this->faker->numerify('###.###.###-##'),
-                'data_nascimento' => $this->faker->dateTimeBetween('-60 years', '-18 years'),
-            ]);
-        });
+        return $this
+            ->state([
+                'tipo' => 'PF',
+            ])
+            ->afterCreating(function (Cliente $cliente) {
+                ClientePf::create([
+                    'cliente_id' => $cliente->id,
+                    'genero' => $this->faker->randomElement([
+                        'masculino',
+                        'feminino',
+                        'outro',
+                    ]),
+                    'rg' => $this->faker->numerify('#########'),
+                    'cpf' => $this->faker
+                        ->unique()
+                        ->numerify('###########'),
+                    'data_nascimento' => $this->faker
+                        ->dateTimeBetween(
+                            '-60 years',
+                            '-18 years'
+                        ),
+                ]);
+            });
     }
 
     public function pj(): static
     {
-        return $this->state(['tipo' => 'PJ'])->afterCreating(function (Cliente $cliente) {
-            ClientePj::create([
-                'cliente_id'        => $cliente->id,
-                'cnpj'              => $this->faker->numerify('##.###.###/####-##'),
-                'razao_social'      => $this->faker->company(),
-                'nome_fantasia'     => $this->faker->companySuffix(),
-                'nome_responsavel'  => $this->faker->name(),
-                'cpf_responsavel'   => $this->faker->numerify('###.###.###-##'),
-                'cargo_responsavel' => $this->faker->jobTitle(),
-                'endereco_id'       => Endereco::factory()->create()->id,
-            ]);
-        });
+        return $this
+            ->state([
+                'tipo' => 'PJ',
+            ])
+            ->afterCreating(function (Cliente $cliente) {
+                ClientePj::create([
+                    'cliente_id' => $cliente->id,
+                    'cnpj' => $this->faker
+                        ->unique()
+                        ->numerify('##############'),
+                    'razao_social' => $this->faker->company(),
+                    'nome_fantasia' => $this->faker->company(),
+                    'nome_responsavel' => $this->faker->name(),
+                    'cpf_responsavel' => $this->faker
+                        ->unique()
+                        ->numerify('###########'),
+                    'cargo_responsavel' => $this->faker->jobTitle(),
+                ]);
+            });
     }
 }
+    

@@ -23,11 +23,15 @@ import { clienteSchema } from "src/schemas/ClienteSchema";
 import { createCliente, deleteCliente, getCliente, updateCliente } from "@api/apiClientes";
 import Toast from "react-native-toast-message";
 import DialogConfirmarAcao from "@components/dialogs/DialogConfirmarAcao";
-import { clearNumber, dateFromApi, dateToApi, formatCep, formatCnpj, formatCpf, formatDate, formatRg, formatTelefone } from "@core/utils/format";
+import { dateFromApi, formatCep, formatCnpj, formatCpf, formatDate, formatRg, formatTelefone, normalizeGenero, onlyLetters, onlyLettersAndNumbers, onlyNumbers } from "@core/utils/format";
+import Button from "@components/botoes/Button";
+import { InputError } from "@components/InputError";
+import GeneroSelector from "@components/GeneroSelector";
+import { getCep } from "@api/apiCep";
 
 type Navigation = NativeStackNavigationProp<RootStackParamList>;
 
-type FormData = z.infer<typeof clienteSchema>;
+type FormData = z.input<typeof clienteSchema>;
 
 type Route = NativeStackScreenProps<
     RootStackParamList,
@@ -46,43 +50,45 @@ export default function NovoCliente() {
     const clienteId = route.params?.clienteId;
     const isCriar = modo === "criar";
     const isEditar = modo === "editar";
-
     const {
         control,
         watch,
         handleSubmit,
         reset,
+        setValue,
         formState: {
             isDirty,
             isValid,
-        }, } = useForm<FormData>({
-            resolver: zodResolver(clienteSchema),
-            mode: "onChange",
-            defaultValues: {
-                tipo: "pf",
-                nome: "",
-                email: null,
-                telefone: null,
-                endereco: {
-                    cep: "",
-                    logradouro: "",
-                    numero: "",
-                    complemento: null,
-                    bairro: "",
-                    cidade: "",
-                    estado: "",
-                },
+            errors,
+        },
+    } = useForm<FormData>({
+        resolver: zodResolver(clienteSchema),
+        mode: "onChange",
+        defaultValues: {
+            tipo: "pf",
 
-                pf: {
-                    genero: null,
-                    rg: "",
-                    cpf: "",
-                    data_nascimento: "",
-                },
+            nome: "",
+            email: null,
+            telefone: null,
 
-                pj: [],
+            endereco: {
+                cep: "",
+                logradouro: "",
+                numero: "",
+                complemento: null,
+                bairro: "",
+                cidade: "",
+                estado: "",
             },
-        });
+
+            pf: {
+                genero: null,
+                rg: "",
+                cpf: "",
+                data_nascimento: "",
+            },
+        },
+    });
 
 
     const handleDelete = () => {
@@ -90,6 +96,7 @@ export default function NovoCliente() {
 
         setShowDeleteDialog(true);
     };
+
     const confirmarExclusao = async () => {
         if (!clienteId) return;
         try {
@@ -138,6 +145,7 @@ export default function NovoCliente() {
                             nome: cliente.nome,
                             email: cliente.email,
                             telefone: cliente.telefone,
+
                             endereco: {
                                 cep: cliente.endereco?.cep ?? "",
                                 logradouro: cliente.endereco?.logradouro ?? "",
@@ -149,21 +157,20 @@ export default function NovoCliente() {
                             },
 
                             pf: {
-                                genero: cliente.pf?.genero ?? null,
+                                genero: normalizeGenero(cliente.pf?.genero),
                                 rg: cliente.pf?.rg ?? "",
                                 cpf: cliente.pf?.cpf ?? "",
                                 data_nascimento: dateFromApi(
                                     cliente.pf?.data_nascimento ?? ""
                                 ),
                             },
-
-                            pj: [],
                         }
                         : {
                             tipo: "pj",
                             nome: cliente.nome,
                             email: cliente.email,
                             telefone: cliente.telefone,
+
                             endereco: {
                                 cep: cliente.endereco?.cep ?? "",
                                 logradouro: cliente.endereco?.logradouro ?? "",
@@ -173,8 +180,6 @@ export default function NovoCliente() {
                                 cidade: cliente.endereco?.cidade ?? "",
                                 estado: cliente.endereco?.estado ?? "",
                             },
-
-                            pf: [],
 
                             pj: {
                                 cnpj: cliente.pj?.cnpj ?? "",
@@ -205,57 +210,26 @@ export default function NovoCliente() {
         try {
             setSaving(true);
 
+            const payload =
+                data.tipo === "pf"
+                    ? {
+                        tipo: "pf" as const,
+                        nome: data.nome,
+                        email: data.email,
+                        telefone: data.telefone,
+                        endereco: data.endereco,
+                        pf: data.pf!,
+                    }
+                    : {
+                        tipo: "pj" as const,
+                        nome: data.nome,
+                        email: data.email,
+                        telefone: data.telefone,
+                        endereco: data.endereco,
+                        pj: data.pj!,
+                    };
+
             if (isCriar) {
-                const payload: FormData =
-                    data.tipo === "pf"
-                        ? {
-                            tipo: "pf",
-                            nome: data.nome,
-                            email: data.email,
-                            telefone: data.telefone
-                                ? clearNumber(data.telefone)
-                                : null,
-
-                            endereco: {
-                                ...data.endereco,
-                                cep: clearNumber(data.endereco.cep),
-                            },
-
-                            pf: {
-                                ...data.pf,
-                                cpf: clearNumber(data.pf.cpf),
-                                rg: clearNumber(data.pf.rg),
-                                data_nascimento: dateToApi(
-                                    data.pf.data_nascimento
-                                ),
-                            },
-
-                            pj: [],
-                        }
-                        : {
-                            tipo: "pj",
-                            nome: data.nome,
-                            email: data.email,
-                            telefone: data.telefone
-                                ? clearNumber(data.telefone)
-                                : null,
-
-                            endereco: {
-                                ...data.endereco,
-                                cep: clearNumber(data.endereco.cep),
-                            },
-
-                            pf: [],
-
-                            pj: {
-                                ...data.pj,
-                                cnpj: clearNumber(data.pj.cnpj),
-                                cpf_responsavel: clearNumber(
-                                    data.pj.cpf_responsavel
-                                ),
-                            },
-                        };
-
                 await createCliente(payload);
 
                 Toast.show({
@@ -269,56 +243,6 @@ export default function NovoCliente() {
             }
 
             if (isEditar && clienteId) {
-                const payload: FormData =
-                    data.tipo === "pf"
-                        ? {
-                            tipo: "pf",
-                            nome: data.nome,
-                            email: data.email,
-                            telefone: data.telefone
-                                ? clearNumber(data.telefone)
-                                : null,
-
-                            endereco: {
-                                ...data.endereco,
-                                cep: clearNumber(data.endereco.cep),
-                            },
-
-                            pf: {
-                                ...data.pf,
-                                cpf: clearNumber(data.pf.cpf),
-                                rg: clearNumber(data.pf.rg),
-                                data_nascimento: dateToApi(
-                                    data.pf.data_nascimento
-                                ),
-                            },
-
-                            pj: [],
-                        }
-                        : {
-                            tipo: "pj",
-                            nome: data.nome,
-                            email: data.email,
-                            telefone: data.telefone
-                                ? clearNumber(data.telefone)
-                                : null,
-
-                            endereco: {
-                                ...data.endereco,
-                                cep: clearNumber(data.endereco.cep),
-                            },
-
-                            pf: [],
-
-                            pj: {
-                                ...data.pj,
-                                cnpj: clearNumber(data.pj.cnpj),
-                                cpf_responsavel: clearNumber(
-                                    data.pj.cpf_responsavel
-                                ),
-                            },
-                        };
-
                 const response = await updateCliente(
                     clienteId,
                     payload
@@ -350,12 +274,80 @@ export default function NovoCliente() {
     const isPF = tipoCliente === "pf";
 
 
+    const buscarCep = async (cep: string) => {
+        const cepLimpo = cep.replace(/\D/g, "");
+
+        if (cepLimpo.length !== 8) {
+            return;
+        }
+
+        try {
+            const endereco = await getCep(cepLimpo);
+
+            setValue(
+                "endereco.logradouro",
+                endereco.logradouro ?? "",
+                {
+                    shouldDirty: true,
+                    shouldValidate: true,
+                }
+            );
+
+            setValue(
+                "endereco.bairro",
+                endereco.bairro ?? "",
+                {
+                    shouldDirty: true,
+                    shouldValidate: true,
+                }
+            );
+
+            setValue(
+                "endereco.cidade",
+                endereco.localidade ?? "",
+                {
+                    shouldDirty: true,
+                    shouldValidate: true,
+                }
+            );
+
+            setValue(
+                "endereco.estado",
+                endereco.uf ?? "",
+                {
+                    shouldDirty: true,
+                    shouldValidate: true,
+                }
+            );
+        } catch (error) {
+            Toast.show({
+                type: "error",
+                text1: "CEP não encontrado",
+                text2: "Verifique o CEP informado.",
+            });
+        }
+    };
+
     if (loading) {
         return (
             <View
-                style={[styles.container, { backgroundColor: colors.background, justifyContent: "center", alignItems: "center", },]}>
+                style={[
+                    styles.container,
+                    {
+                        backgroundColor: colors.background,
+                        justifyContent: "center",
+                        alignItems: "center",
+                    },
+                ]}
+            >
                 <ActivityIndicator size="large" />
-                <Text style={{ color: colors.text, marginTop: 12, }}>
+
+                <Text
+                    style={{
+                        color: colors.text,
+                        marginTop: 12,
+                    }}
+                >
                     Carregando cliente...
                 </Text>
             </View>
@@ -415,7 +407,18 @@ export default function NovoCliente() {
                                         disabled={!isCriar}
                                         activeOpacity={0.8}
                                         style={[styles.tipoButton, { backgroundColor: value === "pf" ? "#062046" : colors.surface, },]}
-                                        onPress={() => onChange("pf")}
+                                        onPress={() => {
+                                            onChange("pf");
+
+                                            setValue("pj", {
+                                                cnpj: "",
+                                                razao_social: "",
+                                                nome_fantasia: null,
+                                                nome_responsavel: "",
+                                                cpf_responsavel: "",
+                                                cargo_responsavel: null,
+                                            });
+                                        }}
                                     >
                                         <Text style={[styles.tipoText, { color: value === "pf" ? "#fff" : colors.text, },]}>
                                             Pessoa Física
@@ -426,7 +429,16 @@ export default function NovoCliente() {
                                         disabled={!isCriar}
                                         activeOpacity={0.8}
                                         style={[styles.tipoButton, { backgroundColor: value === "pj" ? "#062046" : colors.surface, },]}
-                                        onPress={() => onChange("pj")}
+                                        onPress={() => {
+                                            onChange("pj");
+
+                                            setValue("pf", {
+                                                genero: null,
+                                                rg: "",
+                                                cpf: "",
+                                                data_nascimento: "",
+                                            });
+                                        }}
                                     >
                                         <Text style={[styles.tipoText, { color: value === "pj" ? "#fff" : colors.text, },]}
                                         >
@@ -448,19 +460,23 @@ export default function NovoCliente() {
                         control={control}
                         name="nome"
                         render={({
-                            field: {
-                                value,
-                                onChange,
-                            },
+                            field: { value, onChange },
+                            fieldState: { error },
                         }) => (
-                            <EditableTextCard
-                                label="Nome completo"
-                                placeholder="Digite o nome completo"
-                                value={value}
-                                onChangeText={
-                                    onChange
-                                }
-                            />
+                            <>
+                                <EditableTextCard
+                                    label="Nome completo"
+                                    placeholder="Digite o nome completo"
+                                    value={value}
+                                    onChangeText={(text) => {
+                                        onChange(
+                                            onlyLetters(text, 255)
+                                        );
+                                    }}
+                                />
+
+                                <InputError message={error?.message} />
+                            </>
                         )}
                     />
 
@@ -487,15 +503,26 @@ export default function NovoCliente() {
                     <Controller
                         control={control}
                         name="telefone"
-                        render={({ field: { value, onChange }, fieldState: { error } }) => (
-                            <EditableTextCard
-                                label="Telefone"
-                                value={formatTelefone(value ?? "")}
-                                editable={true}
-                                onChangeText={(text) => {
-                                    onChange(formatTelefone(text));
-                                }}
-                            />
+                        render={({
+                            field: { value, onChange },
+                            fieldState: { error },
+                        }) => (
+                            <>
+                                <EditableTextCard
+                                    label="Telefone"
+                                    placeholder="(00) 00000-0000"
+                                    value={formatTelefone(value ?? "")}
+                                    editable={true}
+                                    tipo="number"
+                                    onChangeText={(text) => {
+                                        const telefone = onlyNumbers(text, 11);
+
+                                        onChange(telefone);
+                                    }}
+                                />
+
+                                <InputError message={error?.message} />
+                            </>
                         )}
                     />
                     {isPF ? (
@@ -503,15 +530,26 @@ export default function NovoCliente() {
                             <Controller
                                 control={control}
                                 name="pf.cpf"
-                                render={({ field: { value, onChange }, fieldState: { error } }) => (
-                                    <EditableTextCard
-                                        label="CPF"
-                                        value={formatCpf(value ?? "")}
-                                        editable={true}
-                                        onChangeText={(text) => {
-                                            onChange(formatCpf(text));
-                                        }}
-                                    />
+                                render={({
+                                    field: { value, onChange },
+                                    fieldState: { error },
+                                }) => (
+                                    <>
+                                        <EditableTextCard
+                                            label="CPF"
+                                            placeholder="000.000.000-00"
+                                            value={formatCpf(value ?? "")}
+                                            editable={true}
+                                            tipo="number"
+                                            onChangeText={(text) => {
+                                                const cpf = onlyNumbers(text, 11);
+
+                                                onChange(cpf);
+                                            }}
+                                        />
+
+                                        <InputError message={error?.message} />
+                                    </>
                                 )}
                             />
 
@@ -521,6 +559,7 @@ export default function NovoCliente() {
                                 render={({ field: { value, onChange }, fieldState: { error } }) => (
                                     <EditableTextCard
                                         label="RG"
+                                        placeholder="00-000.000"
                                         value={formatRg(value ?? "")}
                                         editable={true}
                                         onChangeText={(text) => {
@@ -533,29 +572,41 @@ export default function NovoCliente() {
                             <Controller
                                 control={control}
                                 name="pf.data_nascimento"
-                                render={({ field: { value, onChange }, fieldState: { error } }) => (
-                                    <EditableTextCard
-                                        label="Data de nascimento"
-                                        value={formatDate(value ?? "")}
-                                        editable={true}
-                                        onChangeText={(text) => {
-                                            onChange(formatDate(text));
-                                        }}
-                                    />
+                                render={({
+                                    field: { value, onChange },
+                                    fieldState: { error },
+                                }) => (
+                                    <>
+                                        <EditableTextCard
+                                            label="Data de nascimento"
+                                            placeholder="00/00/0000"
+                                            value={formatDate(value ?? "")}
+                                            editable={true}
+                                            tipo="number"
+                                            onChangeText={(text) => {
+                                                const data = onlyNumbers(text, 8);
+
+                                                onChange(data);
+                                            }}
+                                        />
+
+                                        <InputError message={error?.message} />
+                                    </>
                                 )}
                             />
 
                             <Controller
                                 control={control}
                                 name="pf.genero"
-                                render={({ field: { value, onChange } }) => (
-                                    <EditableTextCard
-                                        label="Gênero"
-                                        placeholder="Digite o gênero"
-                                        value={value ?? ""}
-                                        onChangeText={onChange}
-                                        editable={true}
-                                    />
+                                render={({ field: { value, onChange }, fieldState: { error } }) => (
+                                    <>
+                                        <GeneroSelector
+                                            value={value}
+                                            onChange={onChange}
+                                        />
+
+                                        <InputError message={error?.message} />
+                                    </>
                                 )}
                             />
                         </>
@@ -564,29 +615,51 @@ export default function NovoCliente() {
                             <Controller
                                 control={control}
                                 name="pj.cnpj"
-                                render={({ field: { value, onChange }, fieldState: { error } }) => (
-                                    <EditableTextCard
-                                        label="CNPJ"
-                                        value={formatCnpj(value ?? "")}
-                                        editable={true}
-                                        onChangeText={(text) => {
-                                            onChange(formatCnpj(text));
-                                        }}
-                                    />
+                                render={({
+                                    field: { value, onChange },
+                                    fieldState: { error },
+                                }) => (
+                                    <>
+                                        <EditableTextCard
+                                            label="CNPJ"
+                                            placeholder="00.000.000/0000-00"
+                                            value={formatCnpj(value ?? "")}
+                                            editable={true}
+                                            tipo="number"
+                                            onChangeText={(text) => {
+                                                const cnpj = onlyNumbers(text, 14);
+
+                                                onChange(cnpj);
+                                            }}
+                                        />
+
+                                        <InputError message={error?.message} />
+                                    </>
                                 )}
                             />
 
                             <Controller
                                 control={control}
                                 name="pj.razao_social"
-                                render={({ field: { value, onChange } }) => (
-                                    <EditableTextCard
-                                        label="Razão social"
-                                        placeholder="Digite a razão social"
-                                        value={value ?? ""}
-                                        onChangeText={onChange}
-                                        editable={true}
-                                    />
+                                render={({
+                                    field: { value, onChange },
+                                    fieldState: { error },
+                                }) => (
+                                    <>
+                                        <EditableTextCard
+                                            label="Razão social"
+                                            placeholder="Digite a razão social"
+                                            value={value ?? ""}
+                                            editable={true}
+                                            onChangeText={(text) => {
+                                                onChange(
+                                                    onlyLettersAndNumbers(text, 255)
+                                                );
+                                            }}
+                                        />
+
+                                        <InputError message={error?.message} />
+                                    </>
                                 )}
                             />
 
@@ -607,31 +680,51 @@ export default function NovoCliente() {
                             <Controller
                                 control={control}
                                 name="pj.nome_responsavel"
-                                render={({ field: { value, onChange } }) => (
-                                    <EditableTextCard
-                                        label="Nome do responsável"
-                                        placeholder="Digite o nome do responsável"
-                                        value={value ?? ""}
-                                        onChangeText={onChange}
-                                        editable={true}
-                                    />
+                                render={({
+                                    field: { value, onChange },
+                                    fieldState: { error },
+                                }) => (
+                                    <>
+                                        <EditableTextCard
+                                            label="Nome do responsável"
+                                            placeholder="Digite o nome do responsável"
+                                            value={value ?? ""}
+                                            editable={true}
+                                            onChangeText={(text) => {
+                                                onChange(
+                                                    onlyLetters(text, 255)
+                                                );
+                                            }}
+                                        />
+
+                                        <InputError message={error?.message} />
+                                    </>
                                 )}
                             />
 
                             <Controller
                                 control={control}
                                 name="pj.cpf_responsavel"
-                                render={({ field: { value, onChange } }) => (
-                                    <EditableTextCard
-                                        label="CPF do responsável"
-                                        placeholder="Digite o CPF do responsável"
-                                        value={formatCpf(value ?? "")}
-                                        tipo="number"
-                                        onChangeText={(text) => {
-                                            onChange(formatCpf(text));
-                                        }}
-                                        editable={true}
-                                    />
+                                render={({
+                                    field: { value, onChange },
+                                    fieldState: { error },
+                                }) => (
+                                    <>
+                                        <EditableTextCard
+                                            label="CPF do responsável"
+                                            placeholder="000.000.000-00"
+                                            value={formatCpf(value ?? "")}
+                                            tipo="number"
+                                            editable={true}
+                                            onChangeText={(text) => {
+                                                const cpf = onlyNumbers(text, 11);
+
+                                                onChange(cpf);
+                                            }}
+                                        />
+
+                                        <InputError message={error?.message} />
+                                    </>
                                 )}
                             />
 
@@ -661,15 +754,30 @@ export default function NovoCliente() {
                     <Controller
                         control={control}
                         name="endereco.cep"
-                        render={({ field: { value, onChange }, fieldState: { error } }) => (
-                            <EditableTextCard
-                                label="CEP"
-                                value={formatCep(value ?? "")}
-                                editable={true}
-                                onChangeText={(text) => {
-                                    onChange(formatCep(text));
-                                }}
-                            />
+                        render={({
+                            field: { value, onChange },
+                            fieldState: { error },
+                        }) => (
+                            <>
+                                <EditableTextCard
+                                    label="CEP"
+                                    placeholder="00000-000"
+                                    value={formatCep(value ?? "")}
+                                    editable={true}
+                                    tipo="number"
+                                    onChangeText={(text) => {
+                                        const cep = onlyNumbers(text, 8);
+
+                                        onChange(cep);
+
+                                        if (cep.length === 8) {
+                                            buscarCep(cep);
+                                        }
+                                    }}
+                                />
+
+                                <InputError message={error?.message} />
+                            </>
                         )}
                     />
 
@@ -698,21 +806,29 @@ export default function NovoCliente() {
                             control={control}
                             name="endereco.numero"
                             render={({
-                                field: {
-                                    value,
-                                    onChange,
-                                },
+                                field: { value, onChange },
+                                fieldState: { error },
                             }) => (
-                                <EditableTextCard
-                                    label="Número"
-                                    placeholder="Número"
-                                    value={value}
-                                    tipo="number"
-                                    width="48%"
-                                    onChangeText={
-                                        onChange
-                                    }
-                                />
+                                <>
+                                    <EditableTextCard
+                                        label="Número"
+                                        placeholder="Número"
+                                        value={value}
+                                        width="48%"
+                                        onChangeText={(text) => {
+                                            onChange(
+                                                text
+                                                    .replace(
+                                                        /[^\p{L}\d\s/-]/gu,
+                                                        ""
+                                                    )
+                                                    .slice(0, 20)
+                                            );
+                                        }}
+                                    />
+
+                                    <InputError message={error?.message} />
+                                </>
                             )}
                         />
 
@@ -763,60 +879,54 @@ export default function NovoCliente() {
                         control={control}
                         name="endereco.estado"
                         render={({
-                            field: {
-                                value,
-                                onChange,
-                            },
+                            field: { value, onChange },
+                            fieldState: { error },
                         }) => (
-                            <EditableTextCard
-                                label="Estado"
-                                placeholder="UF"
-                                value={value}
-                                onChangeText={
-                                    onChange
-                                }
+                            <>
+                                <EditableTextCard
+                                    label="Estado"
+                                    placeholder="UF"
+                                    value={value}
+                                    editable={true}
+                                    onChangeText={(text) => {
+                                        const estado = text
+                                            .replace(/[^a-zA-Z]/g, "")
+                                            .slice(0, 2)
+                                            .toUpperCase();
 
-                            />
+                                        onChange(estado);
+                                    }}
+                                />
+
+                                <InputError message={error?.message} />
+                            </>
                         )}
                     />
                 </View>
                 <View style={styles.actionsContainer}>
-                    <TouchableOpacity
-                        activeOpacity={0.8}
-                        disabled={!isDirty || !isValid || saving}
-                        style={[
-                            styles.saveButton,
-                            {
-                                opacity:
-                                    !isDirty || !isValid || saving
-                                        ? 0.5
-                                        : 1,
-                            },
-                        ]}
-                        onPress={handleSubmit(onSubmit)}
-                    >
-                        {saving ? (
-                            <ActivityIndicator color="#fff" />
-                        ) : (
-                            <Text style={styles.saveButtonText}>
-                                {isCriar
+                    <Button
+                        title={
+                            saving
+                                ? "Salvando..."
+                                : isCriar
                                     ? "Cadastrar cliente"
-                                    : "Salvar alterações"}
-                            </Text>
+                                    : "Salvar alterações"
+                        }
+                        variant="contained"
+                        color="primary"
+                        disabled={!isDirty || saving}
+                        onPress={handleSubmit(
+                            onSubmit
                         )}
-                    </TouchableOpacity>
+                    />
 
                     {isEditar && (
-                        <TouchableOpacity
-                            activeOpacity={0.8}
+                        <Button
+                            title="Excluir cliente"
+                            variant="delete"
                             disabled={saving}
-                            style={[styles.deleteButton, { opacity: saving ? 0.5 : 1, },]}
                             onPress={handleDelete}
-                        >
-                            <Text style={styles.deleteButtonText}>
-                                Excluir cliente
-                            </Text>
-                        </TouchableOpacity>
+                        />
                     )}
                 </View>
             </KeyboardAwareScrollView>
@@ -891,39 +1001,10 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
     },
 
-    saveButton: {
-        backgroundColor: "#062046",
-        borderRadius: 15,
-        paddingVertical: 17,
-        alignItems: "center",
-        marginTop: 10,
-    },
-
-    saveButtonText: {
-        color: "#fff",
-        fontSize: 17,
-        fontWeight: "800",
-    },
     actionsContainer: {
-        gap: 12,
-        marginTop: 24,
-        marginBottom: 32,
-    },
-
-
-    deleteButton: {
-        minHeight: 52,
-        borderRadius: 12,
         alignItems: "center",
-        justifyContent: "center",
-        borderWidth: 1,
-        borderColor: "#dc2626",
-        backgroundColor: "transparent",
-    },
-
-    deleteButtonText: {
-        color: "#dc2626",
-        fontSize: 16,
-        fontWeight: "600",
+        width: "100%",
+        gap: 12,
+        marginBottom: 5,
     },
 });

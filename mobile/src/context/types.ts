@@ -193,6 +193,8 @@ export type RoleType = {
   descricao?: string;
 };
 
+export type Genero = "masculino" | "feminino" | "outro";
+
 export type RootStackParamList = {
   Relatorios: undefined;
   Configuracoes: undefined;

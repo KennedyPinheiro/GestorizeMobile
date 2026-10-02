@@ -84,39 +84,28 @@ class StoreClienteRequest extends FormRequest
             'email' => ['nullable', 'email', 'max:255', 'unique:clientes,email',],
             'telefone' => ['nullable', 'string', 'max:20',],
 
-            /*
-            |--------------------------------------------------------------------------
-            | Endereço
-            |--------------------------------------------------------------------------
-            */
-
-            'endereco' => ['required', 'array',],
-            'endereco.cep' => ['required', 'string', 'size:8',],
-            'endereco.logradouro' => ['required', 'string', 'max:255',],
-            'endereco.numero' => ['required', 'string', 'max:20',],
-            'endereco.complemento' => ['nullable', 'string', 'max:100',],
-            'endereco.bairro' => ['required', 'string', 'max:100',],
-            'endereco.cidade' => ['required', 'string', 'max:100',],
-            'endereco.estado' => ['required', 'string', 'size:2',],
-
-            /*
-            |--------------------------------------------------------------------------
-            | Pessoa Física
-            |--------------------------------------------------------------------------
-            */
+            'endereco' => ['nullable', 'array'],
+            'endereco.cep' => ['sometimes', 'nullable', 'string', 'size:8',],
+            'endereco.logradouro' => ['sometimes', 'nullable', 'string', 'max:255',],
+            'endereco.numero' => ['sometimes', 'nullable', 'string', 'max:20',],
+            'endereco.complemento' => ['sometimes', 'nullable', 'string', 'max:100',],
+            'endereco.bairro' => ['sometimes', 'nullable', 'string', 'max:100',],
+            'endereco.cidade' => ['sometimes', 'nullable', 'string', 'max:100',],
+            'endereco.estado' => ['sometimes', 'nullable', 'string', 'size:2',],
 
             'pf' => ['required_if:tipo,pf', 'array',],
-            'pf.genero' => ['nullable', 'string', 'max:30',],
-            'pf.rg' => ['required_if:tipo,pf','string','max:20',],
+            'pf.genero' => ['nullable', 'string', Rule::in(['masculino', 'feminino', 'outro',]),],
+            'pf.rg' => ['required_if:tipo,pf', 'string', 'max:20',],
             'pf.cpf' => ['required_if:tipo,pf', 'string', 'size:11', 'unique:clientes_pf,cpf',],
             'pf.data_nascimento' => ['required_if:tipo,pf', 'date', 'before:today',],
+
             'pj' => ['required_if:tipo,pj', 'array',],
             'pj.cnpj' => ['required_if:tipo,pj', 'string', 'size:14', 'unique:clientes_pj,cnpj',],
-            'pj.razao_social' => ['required_if:tipo,pj','string','max:255',],
-            'pj.nome_fantasia' => ['nullable','string','max:255',],
-            'pj.nome_responsavel' => ['required_if:tipo,pj','string','max:255',],
-            'pj.cpf_responsavel' => ['required_if:tipo,pj','string','size:11',],
-            'pj.cargo_responsavel' => ['nullable','string','max:100',],
+            'pj.razao_social' => ['required_if:tipo,pj', 'string', 'max:255',],
+            'pj.nome_fantasia' => ['nullable', 'string', 'max:255',],
+            'pj.nome_responsavel' => ['required_if:tipo,pj', 'string', 'max:255',],
+            'pj.cpf_responsavel' => ['required_if:tipo,pj', 'string', 'size:11',],
+            'pj.cargo_responsavel' => ['nullable', 'string', 'max:100',],
         ];
     }
 

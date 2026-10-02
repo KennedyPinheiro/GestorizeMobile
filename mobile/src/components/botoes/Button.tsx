@@ -42,7 +42,7 @@ const Button = ({
     : 'transparent';
 
   const textColor = isDelete
-    ? '#000'
+    ? '#ffffff'
     : !isOutlined
       ? '#fff'
       : color === 'primary'
@@ -51,12 +51,12 @@ const Button = ({
 
   const shadowStyle: ViewStyle = !isOutlined
     ? {
-        elevation: 3,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.5,
-        shadowRadius: 4,
-      }
+      elevation: 3,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.5,
+      shadowRadius: 4,
+    }
     : {};
 
   const containerStyle = [
@@ -86,20 +86,20 @@ const Button = ({
 
 const styles = StyleSheet.create({
   base: {
-    width: '95%',
-    maxWidth: '80%',
+    width: '100%',
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderRadius: 25,
     alignItems: 'center',
     justifyContent: 'center',
   },
+
   dialogButton: {
     width: '100%',
-    maxWidth: '110%',
     height: 64,
     borderRadius: 15,
   },
+
   text: {
     fontSize: 18,
     fontWeight: '900',
