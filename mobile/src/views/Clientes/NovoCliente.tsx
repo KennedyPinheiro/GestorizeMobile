@@ -211,7 +211,7 @@ export default function NovoCliente() {
         carregarCliente();
     }, [clienteId, modo, reset, navigation]);
     const onSubmit = async (data: FormData) => {
-        if (!isDirty && avatar === avatarOriginal) {
+        if (!isDirty && !avatarAlterado) {
             return;
         }
 
