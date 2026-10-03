@@ -22,5 +22,5 @@ class ClienteImagemRequest extends FormRequest
                 'max:2048',
             ],
         ];
-    }
+    }   
 }

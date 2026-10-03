@@ -42,11 +42,27 @@ export const deleteCliente = async (
 };
 
 const updateClienteAvatar = async (
-    id: string, imagem: string): Promise<ResponseType<ClienteType>> => {
-    const response = await getAxios().post(`/clientes/${id}/imagem`, { imagem });
+    id: string,
+    uri: string
+): Promise<ResponseType<ClienteType>> => {
+    const formData = new FormData();
+
+    formData.append("avatar", {
+        uri,
+        name: `avatar-${id}.jpg`,
+        type: "image/jpeg",
+    } as any);
+
+    const response = await getAxios({
+        contentType: "formData",
+    }).post(
+        `/clientes/${id}/imagem`,
+        formData
+    );
 
     return response.data;
 };
+
 const removeClienteAvatar = async (
     id: string): Promise<ResponseType<ClienteType>> => {
     const response = await getAxios().delete(`/clientes/${id}/imagem`);

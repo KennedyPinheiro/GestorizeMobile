@@ -29,7 +29,7 @@ const tiposCliente = [
   },
   {
     id: 'PJ',
-    label: 'Pessoa Jurídica', 
+    label: 'Pessoa Jurídica',
   },
 ] as const;
 
@@ -172,6 +172,7 @@ const Clientes = () => {
             tipo={item.tipo.toUpperCase() as 'PF' | 'PJ'}
             nome={item.nome}
             email={item.email}
+            avatar={item.avatar_url}
             onPress={() =>
               navigation.navigate("NovoCliente", {
                 modo: "editar",

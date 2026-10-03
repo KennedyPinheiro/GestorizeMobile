@@ -20,7 +20,7 @@ import { useEffect, useState } from "react";
 import { RootStackParamList } from "@context/types";
 import { useTheme } from "@context/ThemeContext";
 import { clienteSchema } from "src/schemas/ClienteSchema";
-import { createCliente, deleteCliente, getCliente, updateCliente } from "@api/apiClientes";
+import { createCliente, deleteCliente, getCliente, removeClienteAvatar, updateCliente, updateClienteAvatar } from "@api/apiClientes";
 import Toast from "react-native-toast-message";
 import DialogConfirmarAcao from "@components/dialogs/DialogConfirmarAcao";
 import { dateFromApi, formatCep, formatCnpj, formatCpf, formatDate, formatRg, formatTelefone, normalizeGenero, onlyLetters, onlyLettersAndNumbers, onlyNumbers } from "@core/utils/format";
@@ -45,12 +45,14 @@ export default function NovoCliente() {
     const { colors } = useTheme();
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const [avatar, setAvatar] = useState<string | null>(null);
+    const [avatarOriginal, setAvatarOriginal] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [saving, setSaving] = useState(false);
     const modo = route.params?.modo ?? "criar";
     const clienteId = route.params?.clienteId;
     const isCriar = modo === "criar";
     const isEditar = modo === "editar";
+    const avatarAlterado = avatar !== avatarOriginal;
     const {
         control,
         watch,
@@ -193,6 +195,11 @@ export default function NovoCliente() {
                         };
 
                 reset(dados);
+
+                const avatarUrl = cliente.avatar_url ?? null;
+
+                setAvatar(avatarUrl);
+                setAvatarOriginal(avatarUrl);
                 setAvatar(cliente.avatar_url ?? null);
             } catch (error) {
                 Toast.error("Erro ao carregar cliente");
@@ -204,7 +211,7 @@ export default function NovoCliente() {
         carregarCliente();
     }, [clienteId, modo, reset, navigation]);
     const onSubmit = async (data: FormData) => {
-        if (!isDirty) {
+        if (!isDirty && avatar === avatarOriginal) {
             return;
         }
 
@@ -231,7 +238,16 @@ export default function NovoCliente() {
                     };
 
             if (isCriar) {
-                await createCliente(payload);
+                const response = await createCliente(payload);
+
+                const novoCliente = response.data;
+
+                if (avatar) {
+                    await updateClienteAvatar(
+                        novoCliente.id,
+                        avatar
+                    );
+                }
 
                 Toast.show({
                     type: "success",
@@ -244,22 +260,42 @@ export default function NovoCliente() {
             }
 
             if (isEditar && clienteId) {
-                const response = await updateCliente(
-                    clienteId,
-                    payload
-                );
+                if (isDirty) {
+                    const response = await updateCliente(
+                        clienteId,
+                        payload
+                    );
+
+                    Toast.show({
+                        type: "success",
+                        text1: "Cliente atualizado",
+                        text2:
+                            response.message ??
+                            "Alterações salvas com sucesso.",
+                    });
+                }
+                if (avatar !== avatarOriginal) {
+                    if (avatar) {
+                        await updateClienteAvatar(
+                            clienteId,
+                            avatar
+                        );
+                    } else if (avatarOriginal) {
+                        await removeClienteAvatar(
+                            clienteId
+                        );
+                    }
+                }
 
                 reset(data);
-
-                Toast.show({
-                    type: "success",
-                    text1: "Cliente atualizado",
-                    text2:
-                        response.message ??
-                        "Alterações salvas com sucesso.",
-                });
+                setAvatarOriginal(avatar);
             }
         } catch (error: any) {
+            console.error(
+                "Erro ao salvar cliente:",
+                error?.response?.data ?? error
+            );
+
             Toast.show({
                 type: "error",
                 text1: "Erro ao salvar cliente",
@@ -329,6 +365,14 @@ export default function NovoCliente() {
         }
     };
 
+    const handleImageSelected = (uri: string) => {
+        setAvatar(uri);
+    };
+
+    const handleRemoveAvatar = () => {
+        setAvatar(null);
+    };
+
     if (loading) {
         return (
             <View
@@ -379,7 +423,8 @@ export default function NovoCliente() {
                         imageUri={avatar}
                         size={120}
                         editable={true}
-                        onImageSelected={setAvatar}
+                        onImageSelected={handleImageSelected}
+                        onImageRemoved={handleRemoveAvatar}
                     />
 
                     <Text style={[styles.avatarLabel, { color: colors.text },]}>
@@ -905,7 +950,7 @@ export default function NovoCliente() {
                         }
                         variant="contained"
                         color="primary"
-                        disabled={!isDirty || saving}
+                        disabled={(!isDirty && !avatarAlterado) || saving}
                         onPress={handleSubmit(
                             onSubmit
                         )}

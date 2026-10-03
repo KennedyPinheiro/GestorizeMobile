@@ -15,7 +15,7 @@ class ClienteImagemService
     ): Cliente {
         $cliente = Cliente::findOrFail($clienteId);
 
-        $imagemAnterior = $cliente->imagem;
+        $avatarAnterior = $cliente->avatar;
 
         $caminho = Upload::make()
             ->file($arquivo)
@@ -23,10 +23,10 @@ class ClienteImagemService
             ->disk('public')
             ->save();
 
-        $cliente->imagem = $caminho;
+        $cliente->avatar = $caminho;
         $cliente->save();
 
-        $this->apagarArquivo($imagemAnterior);
+        $this->apagarArquivo($avatarAnterior);
 
         return $cliente->refresh();
     }
@@ -35,12 +35,12 @@ class ClienteImagemService
     {
         $cliente = Cliente::findOrFail($clienteId);
 
-        $imagem = $cliente->imagem;
+        $avatarAnterior = $cliente->avatar;
 
-        $cliente->imagem = null;
+        $cliente->avatar = null;
         $cliente->save();
 
-        $this->apagarArquivo($imagem);
+        $this->apagarArquivo($avatarAnterior);
 
         return $cliente->refresh();
     }

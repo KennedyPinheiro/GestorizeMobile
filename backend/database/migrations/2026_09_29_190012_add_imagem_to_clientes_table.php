@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('clientes', function (Blueprint $table) {
-            $table->string('imagem')->nullable()->after('telefone');
+            $table->string('avatar')->nullable()->after('telefone');
         });
     }
 
@@ -23,6 +23,7 @@ return new class extends Migration
     {
         Schema::table('clientes', function (Blueprint $table) {
             $table->dropColumn('imagem');
+            $table->dropColumn('avatar');
         });
     }
 };

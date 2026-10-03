@@ -18,10 +18,7 @@ class Cliente extends Model
         'email',
         'telefone',
         'endereco_id',
-    ];
-
-    protected $hidden = [
-        'imagem',
+        'avatar',
     ];
 
     protected $appends = [
@@ -31,8 +28,8 @@ class Cliente extends Model
     protected function avatarUrl(): Attribute
     {
         return Attribute::get(
-            fn() => $this->imagem
-                ? Storage::disk('public')->url($this->imagem)
+            fn() => $this->avatar
+                ? url(Storage::disk('public')->url($this->avatar))
                 : null
         );
     }

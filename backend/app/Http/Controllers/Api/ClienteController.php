@@ -87,11 +87,12 @@ class ClienteController extends Controller
             )
         );
     }
-
     public function removerAvatar(string $id): JsonResponse
     {
         return ResponseService::success(
-            $this->imagemService->remover($id)
+            new ClienteResource(
+                $this->imagemService->remover($id)
+            )
         );
     }
 }

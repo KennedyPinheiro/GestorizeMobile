@@ -4,23 +4,36 @@ namespace App\Services;
 
 use App\Models\Cliente;
 use App\Models\Endereco;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 
 class ClienteService
 {
+    public function __construct(
+        private ClienteImagemService $clienteImagemService
+    ) {}
+
     public function listar()
     {
         return Cliente::with([
             'endereco',
             'dadosPf',
             'dadosPj',
-        ])->paginate(20);
+        ])->get();
     }
 
     public function criar(array $dados): Cliente
     {
         return DB::transaction(function () use ($dados) {
-            $endereco = isset($dados['endereco']) ? Endereco::create($dados['endereco']) : null;
+
+            /** @var UploadedFile|null $avatar */
+            $avatar = $dados['avatar'] ?? null;
+
+            unset($dados['avatar']);
+
+            $endereco = isset($dados['endereco'])
+                ? Endereco::create($dados['endereco'])
+                : null;
 
             $cliente = Cliente::create([
                 'nome'        => $dados['nome'],
@@ -34,7 +47,18 @@ class ClienteService
                 ? $cliente->dadosPf()->create($dados['pf'])
                 : $cliente->dadosPj()->create($dados['pj']);
 
-            return $cliente->load(['dadosPf', 'dadosPj']);
+            if ($avatar instanceof UploadedFile) {
+                $this->clienteImagemService->salvar(
+                    $cliente->id,
+                    $avatar
+                );
+            }
+
+            return $cliente->load([
+                'endereco',
+                'dadosPf',
+                'dadosPj',
+            ]);
         });
     }
 
@@ -52,13 +76,22 @@ class ClienteService
         return DB::transaction(function () use ($id, $dados) {
             $cliente = Cliente::findOrFail($id);
 
-            $cliente->update(collect($dados)->only(['nome', 'email', 'telefone'])->all());
-
+            $cliente->update(
+                collect($dados)
+                    ->only(['nome', 'email', 'telefone'])
+                    ->all()
+            );
 
             if (is_array($dados['endereco'] ?? null)) {
                 $cliente->endereco_id
-                    ? Endereco::findOrFail($cliente->endereco_id)->update($dados['endereco'])
-                    : $cliente->update(['endereco_id' => Endereco::create($dados['endereco'])->id]);
+                    ? Endereco::findOrFail(
+                        $cliente->endereco_id
+                    )->update($dados['endereco'])
+                    : $cliente->update([
+                        'endereco_id' => Endereco::create(
+                            $dados['endereco']
+                        )->id,
+                    ]);
             }
 
             if ($cliente->tipo === 'pf' && isset($dados['pf'])) {
@@ -86,8 +119,11 @@ class ClienteService
     public function deletar(string $id): array
     {
         $cliente = Cliente::findOrFail($id);
+
         $cliente->delete();
 
-        return ['message' => 'Cliente removido'];
+        return [
+            'message' => 'Cliente removido',
+        ];
     }
 }

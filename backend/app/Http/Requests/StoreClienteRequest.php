@@ -84,6 +84,8 @@ class StoreClienteRequest extends FormRequest
             'email' => ['nullable', 'email', 'max:255', 'unique:clientes,email',],
             'telefone' => ['nullable', 'string', 'max:20',],
 
+            'avatar' => ['nullable', 'file', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048',],
+
             'endereco' => ['nullable', 'array'],
             'endereco.cep' => ['sometimes', 'nullable', 'string', 'size:8',],
             'endereco.logradouro' => ['sometimes', 'nullable', 'string', 'max:255',],

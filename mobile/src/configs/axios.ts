@@ -42,19 +42,15 @@ export const getAxios = ({
   timeoutMs,
 }: AxiosOpts = {}): AxiosInstance => {
   const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
     Accept: 'application/json',
   };
 
-  if (contentType) {
-    headers['Content-Type'] =
-      contentType === 'formData'
-        ? 'multipart/form-data'
-        : contentType;
+  if (contentType && contentType !== 'formData') {
+    headers['Content-Type'] = contentType;
   }
 
   const instance = axios.create({
-    baseURL: 'http://192.168.21.143:8000/api',
+    baseURL: 'http://192.168.15.11:8000/api',
     timeout: timeoutMs ?? 15000,
     headers,
   });

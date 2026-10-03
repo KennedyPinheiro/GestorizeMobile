@@ -16,7 +16,7 @@ type Props = {
   tipo: 'PF' | 'PJ';
   nome: string;
   email: string | null;
-  imagem?: string | null;
+  avatar?: string | null;
   estado?: string;
   onPress?: () => void;
 };
@@ -25,7 +25,7 @@ const Cliente = ({
   tipo,
   nome,
   email,
-  imagem,
+  avatar,
   estado,
   onPress,
 }: Props) => {
@@ -54,11 +54,6 @@ const Cliente = ({
     ? '#ffffff'
     : '#062046';
 
-  const tipoLabel =
-    tipo === 'PF'
-      ? 'Pessoa Física'
-      : 'Pessoa Jurídica';
-
   return (
     <TouchableOpacity
       activeOpacity={0.9}
@@ -81,8 +76,8 @@ const Cliente = ({
 
           <Avatar
             nome={nome}
-            imageUri={imagem}
-            size={compactLists ? 44 : 65}
+            imageUri={avatar}
+            size={compactLists ? 40 : 85}
           />
 
           <View style={styles.info}>
@@ -102,6 +97,7 @@ const Cliente = ({
               <View
                 style={[
                   styles.badge,
+                  compactLists && styles.badgeCompact,
                   {
                     backgroundColor: badgeBackground,
                     borderColor: badgeTextColor,
@@ -114,7 +110,7 @@ const Cliente = ({
                       ? 'person'
                       : 'business'
                   }
-                  size={compactLists ? 13 : 16}
+                  size={compactLists ? 11 : 13}
                   color={badgeTextColor}
                 />
 
@@ -132,27 +128,30 @@ const Cliente = ({
               </View>
             </View>
 
-            <Text
-              numberOfLines={1}
-              style={[
-                styles.subtitle,
-                compactLists && styles.subtitleCompact,
-                { color: subText },
-              ]}
-            >
-              {email || 'Sem e-mail'}
-            </Text>
+            {!compactLists && (
+              <>
+                <Text
+                  numberOfLines={1}
+                  style={[
+                    styles.subtitle,
+                    { color: subText },
+                  ]}
+                >
+                  {email || 'Sem e-mail'}
+                </Text>
 
-            {!compactLists && estado && (
-              <Text
-                numberOfLines={1}
-                style={[
-                  styles.subtitle,
-                  { color: subText },
-                ]}
-              >
-                {estado}
-              </Text>
+                {estado && (
+                  <Text
+                    numberOfLines={1}
+                    style={[
+                      styles.subtitle,
+                      { color: subText },
+                    ]}
+                  >
+                    {estado}
+                  </Text>
+                )}
+              </>
             )}
 
           </View>
@@ -160,7 +159,7 @@ const Cliente = ({
 
         <Ionicons
           name="chevron-forward"
-          size={22}
+          size={compactLists ? 16 : 20}
           color={arrowColor}
         />
       </View>
@@ -185,15 +184,15 @@ const styles = StyleSheet.create({
 
   cardCompact: {
     borderRadius: 12,
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    marginBottom: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    marginBottom: 7,
   },
 
   left: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: 10,
     flex: 1,
   },
 
@@ -203,49 +202,51 @@ const styles = StyleSheet.create({
 
   title: {
     flexShrink: 1,
-    fontSize: 18,
-    fontWeight: '900',
-    marginBottom: 5,
+    fontSize: 16,
+    fontWeight: '800',
+    marginBottom: 4,
   },
 
   titleCompact: {
-    fontSize: 15,
-    marginBottom: 3,
+    fontSize: 13,
+    marginBottom: 2,
   },
 
   typeRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 5,
+    marginBottom: 2,
   },
 
   badge: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: 5,
     alignSelf: 'flex-start',
-    paddingHorizontal: 11,
-    paddingVertical: 5,
-    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 7,
+  },
+
+  badgeCompact: {
+    paddingHorizontal: 7,
+    paddingVertical: 3,
+    borderRadius: 6,
   },
 
   badgeText: {
-    fontWeight: '900',
-    fontSize: 12,
-    letterSpacing: 0.4,
-  },
-
-  badgeTextCompact: {
+    fontWeight: '800',
     fontSize: 10,
     letterSpacing: 0.2,
   },
-  subtitle: {
-    fontSize: 15,
-    marginTop: 2,
+
+  badgeTextCompact: {
+    fontSize: 8,
+    letterSpacing: 0.1,
   },
 
-  subtitleCompact: {
+  subtitle: {
     fontSize: 12,
-    marginTop: 1,
+    marginTop: 3,
   },
 });

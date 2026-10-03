@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
     Image,
+    Modal,
     StyleSheet,
     Text,
     TouchableOpacity,
@@ -30,6 +31,7 @@ const Avatar = ({
     const { colors } = useTheme();
 
     const [imagem, setImagem] = useState<string | null>(imageUri);
+    const [imagemExpandida, setImagemExpandida] = useState(false);
 
     const iniciais = useMemo(() => {
         const nomeFormatado = nome.trim();
@@ -86,16 +88,29 @@ const Avatar = ({
         onImageSelected?.(uri);
     };
 
+    const handlePress = () => {
+        if (imagem) {
+            setImagemExpandida(true);
+            return;
+        }
+
+        if (editable) {
+            selecionarImagem();
+        }
+    };
+
     const removerImagem = () => {
         if (!editable || !imagem) {
             return;
         }
 
         setImagem(null);
+        setImagemExpandida(false);
+
         onImageRemoved?.();
     };
 
-    const content = (
+    const avatarContent = (
         <>
             {imagem ? (
                 <Image
@@ -136,55 +151,56 @@ const Avatar = ({
             )}
 
             {editable && (
-                <>
-                    <View
-                        pointerEvents="none"
-                        style={[
-                            styles.camera,
-                            {
-                                width: size * 0.32,
-                                height: size * 0.32,
-                                borderRadius: size * 0.16,
-                                backgroundColor: colors.primary,
-                                borderColor: colors.background,
-                            },
-                        ]}
-                    >
-                        <Ionicons
-                            name="camera-outline"
-                            size={size * 0.18}
-                            color={colors.background}
-                        />
-                    </View>
+                <View
+                    pointerEvents="none"
+                    style={[
+                        styles.camera,
+                        {
+                            width: size * 0.32,
+                            height: size * 0.32,
+                            borderRadius: size * 0.16,
+                            backgroundColor: colors.primary,
+                            borderColor: colors.background,
+                        },
+                    ]}
+                >
+                    <Ionicons
+                        name="camera-outline"
+                        size={size * 0.18}
+                        color={colors.background}
+                    />
+                </View>
+            )}
 
-                    {imagem && (
-                        <TouchableOpacity
-                            activeOpacity={0.8}
-                            onPress={removerImagem}
-                            style={[
-                                styles.remove,
-                                {
-                                    width: size * 0.30,
-                                    height: size * 0.30,
-                                    borderRadius: size * 0.15,
-                                    borderColor: colors.background,
-                                },
-                            ]}
-                        >
-                            <Ionicons
-                                name="close"
-                                size={size * 0.18}
-                                color="#ffffff"
-                            />
-                        </TouchableOpacity>
-                    )}
-                </>
+            {editable && imagem && (
+                <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={removerImagem}
+                    style={[
+                        styles.remove,
+                        {
+                            width: size * 0.30,
+                            height: size * 0.30,
+                            borderRadius: size * 0.15,
+                            borderColor: colors.background,
+                        },
+                    ]}
+                >
+                    <Ionicons
+                        name="close"
+                        size={size * 0.18}
+                        color="#ffffff"
+                    />
+                </TouchableOpacity>
             )}
         </>
     );
-    if (!editable) {
-        return (
-            <View
+
+    return (
+        <>
+            <TouchableOpacity
+                activeOpacity={0.85}
+                onPress={handlePress}
                 style={[
                     styles.container,
                     {
@@ -194,45 +210,49 @@ const Avatar = ({
                     },
                 ]}
             >
-                {content}
-            </View>
-        );
-    }
+                {avatarContent}
+            </TouchableOpacity>
 
-    return (
-        <TouchableOpacity
-            activeOpacity={0.85}
-            onPress={selecionarImagem}
-            style={[
-                styles.container,
-                {
-                    width: size,
-                    height: size,
-                    borderRadius: size / 2,
-                },
-            ]}
-        >
-            {content}
-        </TouchableOpacity>
-    );
+            <Modal
+                visible={imagemExpandida}
+                transparent
+                animationType="fade"
+                onRequestClose={() => setImagemExpandida(false)}
+            >
+                <View style={styles.modalContainer}>
+                    <TouchableOpacity
+                        activeOpacity={1}
+                        style={styles.modalBackground}
+                        onPress={() => setImagemExpandida(false)}
+                    >
+                        {imagem && (
+                            <Image
+                                source={{ uri: imagem }}
+                                style={styles.expandedImage}
+                            />
+                        )}
 
-    return (
-        <View
-            style={[
-                styles.container,
-                {
-                    width: size,
-                    height: size,
-                    borderRadius: size / 2,
-                },
-            ]}
-        >
-            {content}
-        </View>
+                        <TouchableOpacity
+                            style={styles.closeButton}
+                            onPress={() =>
+                                setImagemExpandida(false)
+                            }
+                        >
+                            <Ionicons
+                                name="close"
+                                size={28}
+                                color="#ffffff"
+                            />
+                        </TouchableOpacity>
+                    </TouchableOpacity>
+                </View>
+            </Modal>
+        </>
     );
 };
 
 export default Avatar;
+
 const styles = StyleSheet.create({
     container: {
         position: 'relative',
@@ -268,5 +288,35 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: '#dc2626',
         borderWidth: 2,
+    },
+
+    modalContainer: {
+        flex: 1,
+        backgroundColor: 'rgba(0, 0, 0, 0.9)',
+    },
+
+    modalBackground: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+
+    expandedImage: {
+        width: '90%',
+        aspectRatio: 1,
+        borderRadius: 12,
+        resizeMode: 'contain',
+    },
+
+    closeButton: {
+        position: 'absolute',
+        top: 50,
+        right: 24,
+        width: 42,
+        height: 42,
+        borderRadius: 21,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.6)',
     },
 });
