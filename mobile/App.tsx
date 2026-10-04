@@ -34,6 +34,7 @@ import Configuracoes from '@views/Configuracoes';
 import { canAccessRoute } from '@utils/permissions';
 import Ajuda from '@views/Ajuda';
 import NovoCliente from '@views/Clientes/NovoCliente';
+import NovoProduto from '@views/Produtos/NovoProduto';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const navigationRef = createNavigationContainerRef<RootStackParamList>();
@@ -63,6 +64,7 @@ const AppNavigator = () => {
             <Stack.Screen name="Homepage" component={Homepage} />
             <Stack.Screen name="Clientes" component={Clientes} />
             <Stack.Screen name="NovoCliente" component={NovoCliente} />
+            <Stack.Screen name="NovoProduto" component={NovoProduto} />
             <Stack.Screen name="Orcamentos" component={Orcamentos} />
             <Stack.Screen name="Configuracoes" component={Configuracoes} />
             <Stack.Screen name="Ajuda" component={Ajuda} />

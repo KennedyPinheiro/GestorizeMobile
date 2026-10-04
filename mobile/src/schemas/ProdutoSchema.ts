@@ -1,48 +1,59 @@
 import { z } from "zod";
 
-export const produtoSchema = z.object({
+const produtoSchema = z.object({
   nome: z
     .string()
-    .min(1, "Informe o nome do produto")
-    .max(255, "O nome deve ter no máximo 255 caracteres"),
+    .min(1, "O nome do produto é obrigatório.")
+    .max(255, "O nome do produto deve ter no máximo 255 caracteres."),
 
   descricao: z
     .string()
     .nullable()
     .optional(),
 
-  quantidade: z
-    .number()
-    .min(0, "A quantidade não pode ser negativa"),
+  preco_custo: z
+    .number({
+      message: "O preço de custo deve ser informado.",
+    })
+    .min(0, "O preço de custo não pode ser negativo."),
+
+  porcentagem_lucro: z
+    .number({
+      message: "A porcentagem de lucro deve ser informada.",
+    })
+    .min(0, "A porcentagem de lucro não pode ser negativa."),
+
+  preco_venda: z
+    .number({
+      message: "O preço de venda deve ser informado.",
+    })
+    .min(0, "O preço de venda não pode ser negativo."),
+
+  estoque: z
+    .number({
+      message: "O estoque deve ser informado.",
+    })
+    .min(0, "O estoque não pode ser negativo."),
 
   data_entrada: z
     .string()
-    .min(1, "Informe a data de entrada"),
+    .nullable(),
 
-  data_validade: z
+  validade: z
     .string()
-    .nullable()
-    .optional(),
-
-  preco_custo: z
-    .number()
-    .min(0, "O preço de custo não pode ser negativo"),
-
-  margem_lucro: z
-    .number()
-    .min(0, "A margem de lucro não pode ser negativa"),
+    .nullable(),
 
   categoria_id: z
-    .number()
-    .min(1, "Selecione uma categoria"),
+    .string()
+    .min(1, "A categoria é obrigatória."),
 
   fornecedor_id: z
-    .number()
-    .min(1, "Selecione um fornecedor"),
+    .string()
+    .min(1, "O fornecedor é obrigatório."),
 
-  medida_id: z
-    .number()
-    .min(1, "Selecione uma unidade de medida"),
+  unidade_medida_id: z
+    .string()
+    .min(1, "A unidade de medida é obrigatória."),
 });
 
-export type ProdutoFormData = z.input<typeof produtoSchema>;
+export { produtoSchema };

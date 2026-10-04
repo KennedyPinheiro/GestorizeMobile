@@ -157,35 +157,37 @@ export type MedidaType = {
   titulo: string;
 };
 
-export type ProdutoTipo = {
-  id: number;
-  nome: string;
-  categoria_id: number;
-  quantidade: number;
-  medida_id: number;
-  data_validade?: string;
-  preco_custo?: number;
-  data_de_entrada?: string;
-  margem_lucro?: string;
-  fornecedor_id: number;
-  descricao?: string;
-  medida_titulo?: string;
+export type ProdutoImagemType = {
+  id: string;
+  url: string;
+  principal: boolean;
+  created_at: StringfiedDate;
+  updated_at: StringfiedDate;
 };
 
 export type ProdutoType = {
+  id: string;
   nome: string;
-  descricao: string;
-  categoria_id: number;
-  data_de_entrada: StringfiedDate | null;
-  quantidade: number;
-  medida_id: number;
-  data_validade: StringfiedDate | null;
+  descricao: string | null;
   preco_custo: number | null;
-  margem_lucro: number | null;
-  fornecedor_id: number;
-  data_criacao: StringfiedDate;
-  ultima_atualizacao: StringfiedDate;
+  porcentagem_lucro: number | null;
+  preco_venda: number | null;
+  estoque: number;
+  data_entrada: StringfiedDate | null;
+  validade: StringfiedDate | null;
+  categoria_id: string;
+  categoria_titulo: string | null;
+  fornecedor_id: string;
+  fornecedor_razao_social: string | null;
+  unidade_medida_id: string;
+  unidade_medida_titulo: string | null;
+  unidade_medida_sigla: string | null;
+  imagem_principal: ProdutoImagemType | null;
+  imagens: ProdutoImagemType[];
+  created_at: StringfiedDate;
+  updated_at: StringfiedDate;
 };
+
 
 export type RoleType = {
   id: number;
@@ -214,7 +216,13 @@ export type RootStackParamList = {
     clienteId?: string;
   }
   | undefined;
-  CadastroProdutos: undefined;
+
+  NovoProduto: {
+    modo: "criar" | "editar"
+    produtoId?: string
+  }
+
+
   CadastroFornecedores: undefined;
   CadastroFuncionarios: undefined;
   PerfilProduto: {

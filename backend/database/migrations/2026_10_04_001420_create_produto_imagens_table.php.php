@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('produto_imagens', function (Blueprint $table) {
+        Schema::create('produto_imagems', function (Blueprint $table) {
             $table->uuid('id')->primary();
 
             $table->foreignUuid('produto_id')
@@ -31,5 +31,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('produto_imagens');
+        Schema::dropIfExists('produto_imagems');
     }
 };
