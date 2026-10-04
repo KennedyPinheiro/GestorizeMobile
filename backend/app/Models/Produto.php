@@ -45,4 +45,15 @@ class Produto extends Model
     {
         return $this->belongsTo(UnidadeMedida::class);
     }
+
+    public function imagens()
+    {
+        return $this->hasMany(ProdutoImagem::class);
+    }
+
+    public function imagemPrincipal()
+    {
+        return $this->hasOne(ProdutoImagem::class)
+            ->where('principal', true);
+    }
 }
