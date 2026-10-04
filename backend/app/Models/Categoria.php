@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Categoria extends Model
 {
-    //
     use HasUuids;
 
     protected $fillable = [
