@@ -36,7 +36,7 @@ import {
 import { produtoSchema } from "src/schemas/ProdutoSchema";
 
 import Toast from "react-native-toast-message";
-import { ProdutoSelector } from "@components/ProdutoSelector";
+import Selector from "@components/Selector";
 
 type Navigation =
     NativeStackNavigationProp<RootStackParamList>;
@@ -47,8 +47,6 @@ type Route = NativeStackScreenProps<
     RootStackParamList,
     "NovoProduto"
 >["route"];
-
-
 
 export default function NovoProduto() {
     const navigation = useNavigation<Navigation>();
@@ -583,7 +581,7 @@ export default function NovoProduto() {
                                     },
                                 }) => (
                                     <>
-                                        <ProdutoSelector
+                                        <Selector
                                             label="Unidade"
                                             placeholder="Selecionar"
                                             value={value}
@@ -618,7 +616,7 @@ export default function NovoProduto() {
                             },
                         }) => (
                             <>
-                                <ProdutoSelector
+                                <Selector
                                     label="Categoria"
                                     placeholder="Selecionar categoria"
                                     value={value}
@@ -643,7 +641,7 @@ export default function NovoProduto() {
                             },
                         }) => (
                             <>
-                                <ProdutoSelector
+                                <Selector
                                     label="Fornecedor"
                                     placeholder="Selecionar fornecedor"
                                     value={value}

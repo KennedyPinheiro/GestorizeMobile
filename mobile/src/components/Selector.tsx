@@ -1,4 +1,7 @@
 import ClickableTextCard from "@components/ClickableTextCard";
+import { Opcao } from "@context/types";
+import { Ionicons } from "@expo/vector-icons";
+import { useState } from "react";
 import {
     Modal,
     Pressable,
@@ -7,13 +10,8 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 
-import { useState } from "react";
-
-import { Opcao } from "@context/types";
-
-type ProdutoSelectorProps = {
+type SelectorProps = {
     label: string;
     placeholder: string;
     value?: string | null;
@@ -25,7 +23,7 @@ type ProdutoSelectorProps = {
     onAdd?: () => void;
 };
 
-export function ProdutoSelector({
+export default function Selector({
     label,
     placeholder,
     value,
@@ -34,7 +32,7 @@ export function ProdutoSelector({
     disabled = false,
     showAddButton = false,
     onAdd,
-}: ProdutoSelectorProps) {
+}: SelectorProps) {
     const [visible, setVisible] = useState(false);
 
     const labelSelecionado =
@@ -70,15 +68,15 @@ export function ProdutoSelector({
                 onRequestClose={() => setVisible(false)}
             >
                 <Pressable
-                    style={styles.selectorOverlay}
+                    style={styles.overlay}
                     onPress={() => setVisible(false)}
                 >
                     <Pressable
-                        style={styles.selectorModal}
+                        style={styles.modal}
                         onPress={(event) => event.stopPropagation()}
                     >
-                        <View style={styles.selectorHeader}>
-                            <Text style={styles.selectorTitle}>
+                        <View style={styles.header}>
+                            <Text style={styles.title}>
                                 {label}
                             </Text>
 
@@ -90,49 +88,53 @@ export function ProdutoSelector({
                                 >
                                     <Ionicons
                                         name="add"
-                                        size={40}
+                                        size={22}
                                         color="#062046"
                                     />
                                 </TouchableOpacity>
                             )}
                         </View>
 
-                        <View style={styles.selectorOptions}>
-                            {options.map((opcao, index) => (
-                                <View key={opcao.id}>
-                                    <TouchableOpacity
-                                        activeOpacity={0.7}
-                                        style={[
-                                            styles.selectorOption,
-                                            value === opcao.id &&
-                                            styles.selectorSelectedOption,
-                                        ]}
-                                        onPress={() =>
-                                            selecionar(opcao.id)
-                                        }
-                                    >
-                                        <Text
-                                            style={[
-                                                styles.selectorOptionText,
-                                                value === opcao.id &&
-                                                styles.selectorSelectedOptionText,
-                                            ]}
-                                        >
-                                            {opcao.nome}
-                                        </Text>
-                                    </TouchableOpacity>
+                        <View style={styles.options}>
+                            {options.map((opcao, index) => {
+                                const selecionado = value === opcao.id;
 
-                                    {index < options.length - 1 && (
-                                        <View
-                                            style={styles.selectorDivider}
-                                        />
-                                    )}
-                                </View>
-                            ))}
+                                return (
+                                    <View key={opcao.id}>
+                                        <TouchableOpacity
+                                            activeOpacity={0.7}
+                                            style={[
+                                                styles.option,
+                                                selecionado &&
+                                                styles.selectedOption,
+                                            ]}
+                                            onPress={() =>
+                                                selecionar(opcao.id)
+                                            }
+                                        >
+                                            <Text
+                                                style={[
+                                                    styles.optionText,
+                                                    selecionado &&
+                                                    styles.selectedOptionText,
+                                                ]}
+                                            >
+                                                {opcao.nome}
+                                            </Text>
+                                        </TouchableOpacity>
+
+                                        {index < options.length - 1 && (
+                                            <View
+                                                style={styles.divider}
+                                            />
+                                        )}
+                                    </View>
+                                );
+                            })}
 
                             {options.length === 0 && (
-                                <View style={styles.emptyOptions}>
-                                    <Text style={styles.emptyOptionsText}>
+                                <View style={styles.empty}>
+                                    <Text style={styles.emptyText}>
                                         Nenhuma opção disponível.
                                     </Text>
                                 </View>
@@ -146,7 +148,7 @@ export function ProdutoSelector({
 }
 
 const styles = StyleSheet.create({
-    selectorOverlay: {
+    overlay: {
         flex: 1,
         backgroundColor: "rgba(0, 0, 0, 0.45)",
         justifyContent: "center",
@@ -154,7 +156,7 @@ const styles = StyleSheet.create({
         padding: 20,
     },
 
-    selectorModal: {
+    modal: {
         width: "100%",
         maxWidth: 400,
         backgroundColor: "#fff",
@@ -162,8 +164,8 @@ const styles = StyleSheet.create({
         overflow: "hidden",
     },
 
-    selectorHeader: {
-        minHeight: 76,
+    header: {
+        minHeight: 68,
         backgroundColor: "#062046",
         flexDirection: "row",
         alignItems: "center",
@@ -171,70 +173,62 @@ const styles = StyleSheet.create({
         paddingHorizontal: 18,
     },
 
-    selectorTitle: {
+    title: {
         flex: 1,
-        fontSize: 24,
+        fontSize: 21,
         fontWeight: "500",
         color: "#fff",
         textAlign: "center",
     },
 
     addButton: {
-        width: 54,
-        height: 54,
-        borderRadius: 27,
+        width: 32,
+        height: 32,
+        borderRadius: 16,
         backgroundColor: "#fff",
         alignItems: "center",
         justifyContent: "center",
         marginLeft: 10,
     },
 
-    addButtonIcon: {
-        fontSize: 58,
-        lineHeight: 60,
-        fontWeight: "300",
-        color: "#062046",
-        marginTop: -5,
-    },
-
-    selectorOptions: {
+    options: {
         width: "100%",
     },
 
-    selectorOption: {
+    option: {
         minHeight: 52,
         justifyContent: "center",
         paddingHorizontal: 20,
     },
 
-    selectorSelectedOption: {
+    selectedOption: {
         backgroundColor: "#062046",
     },
 
-    selectorOptionText: {
+    optionText: {
         fontSize: 16,
         color: "#111",
         fontWeight: "600",
     },
 
-    selectorSelectedOptionText: {
+    selectedOptionText: {
         color: "#fff",
     },
 
-    selectorDivider: {
+    divider: {
         height: StyleSheet.hairlineWidth,
         backgroundColor: "#D9D9D9",
         marginHorizontal: 20,
     },
 
-    emptyOptions: {
+    empty: {
         minHeight: 70,
         justifyContent: "center",
         alignItems: "center",
         paddingHorizontal: 20,
     },
 
-    emptyOptionsText: {
+    emptyText: {
         fontSize: 15,
         color: "#777",
     },
