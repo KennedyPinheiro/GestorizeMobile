@@ -76,7 +76,6 @@ export function ProdutoSelector({
                         style={styles.selectorModal}
                         onPress={(event) => event.stopPropagation()}
                     >
-                        {/* CABEÇALHO */}
                         <View style={styles.selectorHeader}>
                             <Text style={styles.selectorTitle}>
                                 {label}
