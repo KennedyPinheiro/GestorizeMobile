@@ -37,6 +37,7 @@ import { produtoSchema } from "src/schemas/ProdutoSchema";
 
 import Toast from "react-native-toast-message";
 import Selector from "@components/Selector";
+import { formatDate, onlyLettersAndNumbers, onlyNumbers, parseReal } from "@core/utils/format";
 
 type Navigation =
     NativeStackNavigationProp<RootStackParamList>;
@@ -311,7 +312,9 @@ export default function NovoProduto() {
                                     label="Nome do produto"
                                     placeholder="Digite o nome do produto"
                                     value={value}
-                                    onChangeText={(text) => onChange(text.slice(0, 255))}
+                                    onChangeText={(text) =>
+                                        onChange(onlyLettersAndNumbers(text, 255))
+                                    }
                                 />
 
                                 <InputError message={error?.message} />
@@ -330,7 +333,7 @@ export default function NovoProduto() {
                                     label="Descrição"
                                     placeholder="Digite a descrição do produto"
                                     value={value ?? ""}
-                                    onChangeText={onChange}
+                                    onChangeText={(text) => onChange(text.slice(0, 1000))}
                                 />
                                 <InputError message={error?.message} />
                             </>
@@ -359,35 +362,11 @@ export default function NovoProduto() {
                                 <EditableTextCard
                                     label="Preço de custo"
                                     placeholder="0,00"
-                                    value={
-                                        value ===
-                                            null ||
-                                            value ===
-                                            undefined
-                                            ? ""
-                                            : String(
-                                                value
-                                            )
-                                    }
+                                    value={value === null || value === undefined ? "" : String(value).replace(".", ",")}
                                     tipo="number"
-                                    onChangeText={(
-                                        text
-                                    ) => {
-                                        const numero =
-                                            Number(
-                                                text.replace(
-                                                    ",",
-                                                    "."
-                                                )
-                                            );
-
-                                        onChange(
-                                            Number.isNaN(
-                                                numero
-                                            )
-                                                ? 0
-                                                : numero
-                                        );
+                                    onChangeText={(text) => {
+                                        const valor = parseReal(text);
+                                        onChange(Number.isNaN(valor) ? 0 : valor);
                                     }}
                                 />
 
@@ -410,40 +389,15 @@ export default function NovoProduto() {
                         }) => (
                             <>
                                 <EditableTextCard
-                                    label="Margem de lucro (%)"
-                                    placeholder="0"
-                                    value={
-                                        value ===
-                                            null ||
-                                            value ===
-                                            undefined
-                                            ? ""
-                                            : String(
-                                                value
-                                            )
-                                    }
+                                    label="Preço de custo"
+                                    placeholder="0,00"
+                                    value={value === null || value === undefined ? "" : String(value).replace(".", ",")}
                                     tipo="number"
-                                    onChangeText={(
-                                        text
-                                    ) => {
-                                        const numero =
-                                            Number(
-                                                text.replace(
-                                                    ",",
-                                                    "."
-                                                )
-                                            );
-
-                                        onChange(
-                                            Number.isNaN(
-                                                numero
-                                            )
-                                                ? 0
-                                                : numero
-                                        );
+                                    onChangeText={(text) => {
+                                        const valor = parseReal(text);
+                                        onChange(Number.isNaN(valor) ? 0 : valor);
                                     }}
                                 />
-
                                 <InputError message={error?.message} />
                             </>
                         )}
@@ -463,37 +417,13 @@ export default function NovoProduto() {
                         }) => (
                             <>
                                 <EditableTextCard
-                                    label="Preço de venda"
+                                    label="Preço de custo"
                                     placeholder="0,00"
-                                    value={
-                                        value ===
-                                            null ||
-                                            value ===
-                                            undefined
-                                            ? ""
-                                            : String(
-                                                value
-                                            )
-                                    }
+                                    value={value === null || value === undefined ? "" : String(value).replace(".", ",")}
                                     tipo="number"
-                                    onChangeText={(
-                                        text
-                                    ) => {
-                                        const numero =
-                                            Number(
-                                                text.replace(
-                                                    ",",
-                                                    "."
-                                                )
-                                            );
-
-                                        onChange(
-                                            Number.isNaN(
-                                                numero
-                                            )
-                                                ? 0
-                                                : numero
-                                        );
+                                    onChangeText={(text) => {
+                                        const valor = parseReal(text);
+                                        onChange(Number.isNaN(valor) ? 0 : valor);
                                     }}
                                 />
 
@@ -504,24 +434,12 @@ export default function NovoProduto() {
                     />
                 </View>
                 <View style={styles.section}>
-                    <Text
-                        style={[
-                            styles.sectionTitle,
-                            {
-                                color:
-                                    colors.text,
-                            },
-                        ]}
-                    >
+                    <Text style={[styles.sectionTitle, { color: colors.text, },]}>
                         Estoque
                     </Text>
 
                     <View style={styles.row}>
-                        <View
-                            style={
-                                styles.half
-                            }
-                        >
+                        <View style={styles.half} >
                             <Controller
                                 control={control}
                                 name="estoque"
@@ -538,26 +456,11 @@ export default function NovoProduto() {
                                         <EditableTextCard
                                             label="Estoque"
                                             placeholder="0"
-                                            value={String(
-                                                value ??
-                                                ""
-                                            )}
+                                            value={String(value ?? "")}
                                             tipo="number"
-                                            onChangeText={(
-                                                text
-                                            ) => {
-                                                const numero =
-                                                    Number(
-                                                        text
-                                                    );
-
-                                                onChange(
-                                                    Number.isNaN(
-                                                        numero
-                                                    )
-                                                        ? 0
-                                                        : numero
-                                                );
+                                            onChangeText={(text) => {
+                                                const valor = onlyNumbers(text);
+                                                onChange(valor === "" ? 0 : Number(valor));
                                             }}
                                         />
 
@@ -673,12 +576,11 @@ export default function NovoProduto() {
                                 error,
                             },
                         }) => (
-                            <>
-                                <DateField
-                                    label="Data de entrada"
-                                    value={value ?? ""}
-                                    onChange={onChange}
-                                />
+                            <><DateField
+                                label="Data de entrada"
+                                value={value ?? ""}
+                                onChange={(text) => onChange(formatDate(text))}
+                            />
                                 <InputError message={error?.message}
                                 />
                             </>
@@ -698,8 +600,7 @@ export default function NovoProduto() {
                                 <DateField
                                     label="Validade"
                                     value={value ?? ""}
-                                    onChange={onChange
-                                    } maximumDate={new Date()}
+                                    onChange={(text) => onChange(formatDate(text))}
                                 />
                                 <InputError message={error?.message}
                                 />
