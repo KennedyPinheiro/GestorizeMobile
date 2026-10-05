@@ -175,33 +175,18 @@ export default function NovoProduto() {
     const navigation = useNavigation<Navigation>();
     const route = useRoute<Route>();
     const { colors } = useTheme();
-
-    const [showDeleteDialog, setShowDeleteDialog] =
-        useState(false);
-
-    const [imagem, setImagem] =
-        useState<string | null>(null);
-
-    const [imagemOriginal, setImagemOriginal] =
-        useState<string | null>(null);
-
+    const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+    const [imagem, setImagem] = useState<string | null>(null);
+    const [imagemOriginal, setImagemOriginal] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [saving, setSaving] = useState(false);
-
-    /*
-     * Essas opções serão posteriormente carregadas
-     * pelas respectivas APIs.
-     */
     const [categorias] = useState<Opcao[]>([]);
     const [fornecedores] = useState<Opcao[]>([]);
     const [unidadesMedida] = useState<Opcao[]>([]);
-
     const modo = route.params?.modo ?? "criar";
     const produtoId = route.params?.produtoId;
-
     const isCriar = modo === "criar";
     const isEditar = modo === "editar";
-
     const imagemAlterada =
         imagem !== imagemOriginal;
 
@@ -239,9 +224,7 @@ export default function NovoProduto() {
 
     const nomeProduto = watch("nome");
 
-    /*
-     * Carregar produto
-     */
+
     useEffect(() => {
         if (modo === "criar") {
             return;
@@ -268,55 +251,26 @@ export default function NovoProduto() {
 
                 const dados: FormData = {
                     nome: produto.nome ?? "",
-
-                    descricao:
-                        produto.descricao ?? "",
-
-                    preco_custo:
-                        produto.preco_custo ?? 0,
-
-                    porcentagem_lucro:
-                        produto.porcentagem_lucro ?? 0,
-
-                    preco_venda:
-                        produto.preco_venda ?? 0,
-
-                    estoque:
-                        produto.estoque ?? 0,
-
-                    data_entrada:
-                        produto.data_entrada ?? null,
-
-                    validade:
-                        produto.validade ?? null,
-
-                    categoria_id:
-                        produto.categoria_id ?? "",
-
-                    fornecedor_id:
-                        produto.fornecedor_id ?? "",
-
-                    unidade_medida_id:
-                        produto.unidade_medida_id ?? "",
+                    descricao: produto.descricao ?? "",
+                    preco_custo: produto.preco_custo ?? 0,
+                    porcentagem_lucro: produto.porcentagem_lucro ?? 0,
+                    preco_venda: produto.preco_venda ?? 0,
+                    estoque: produto.estoque ?? 0,
+                    data_entrada: produto.data_entrada ?? null,
+                    validade: produto.validade ?? null,
+                    categoria_id: produto.categoria_id ?? "",
+                    fornecedor_id: produto.fornecedor_id ?? "",
+                    unidade_medida_id: produto.unidade_medida_id ?? "",
                 };
 
                 reset(dados);
 
-                /*
-                 * A imagem principal será utilizada
-                 * como identificação do produto.
-                 */
                 const imagemPrincipal =
                     produto.imagem_principal?.url ?? null;
 
                 setImagem(imagemPrincipal);
                 setImagemOriginal(imagemPrincipal);
             } catch (error) {
-                console.error(
-                    "Erro ao carregar produto:",
-                    error
-                );
-
                 Toast.show({
                     type: "error",
                     text1: "Erro ao carregar produto",
@@ -338,9 +292,6 @@ export default function NovoProduto() {
         reset,
     ]);
 
-    /*
-     * Excluir produto
-     */
     const handleDelete = () => {
         if (!produtoId) {
             return;
@@ -362,17 +313,11 @@ export default function NovoProduto() {
             Toast.show({
                 type: "success",
                 text1: "Produto excluído",
-                text2:
-                    "O produto foi removido com sucesso.",
+                text2: "O produto foi removido com sucesso.",
             });
 
             navigation.goBack();
         } catch (error: any) {
-            console.error(
-                "Erro ao excluir produto:",
-                error?.response?.data ?? error
-            );
-
             Toast.show({
                 type: "error",
                 text1: "Erro ao excluir",
@@ -386,7 +331,7 @@ export default function NovoProduto() {
         }
     };
 
-  
+
     const onSubmit = async (data: FormData) => {
         if (!isCriar && !isDirty && !imagemAlterada) {
             return;
@@ -398,33 +343,19 @@ export default function NovoProduto() {
             const payload = {
                 nome: data.nome,
                 descricao: data.descricao || null,
-
                 preco_custo: data.preco_custo,
-                porcentagem_lucro:
-                    data.porcentagem_lucro,
+                porcentagem_lucro: data.porcentagem_lucro,
                 preco_venda: data.preco_venda,
-
                 estoque: data.estoque,
-
-                data_entrada:
-                    data.data_entrada,
-
-                validade:
-                    data.validade,
-
-                categoria_id:
-                    data.categoria_id,
-
-                fornecedor_id:
-                    data.fornecedor_id,
-
-                unidade_medida_id:
-                    data.unidade_medida_id,
+                data_entrada: data.data_entrada,
+                validade: data.validade,
+                categoria_id: data.categoria_id,
+                fornecedor_id: data.fornecedor_id,
+                unidade_medida_id: data.unidade_medida_id,
             };
 
             if (isCriar) {
-                const response =
-                    await createProduto(payload);
+                const response = await createProduto(payload);
 
 
                 Toast.show({
@@ -455,27 +386,14 @@ export default function NovoProduto() {
                             "Alterações salvas com sucesso.",
                     });
                 }
-
-                /*
-                 * A atualização da imagem será feita
-                 * separadamente pela API de imagens.
-                 */
-
                 reset(data);
                 setImagemOriginal(imagem);
             }
         } catch (error: any) {
-            console.error(
-                "Erro ao salvar produto:",
-                error?.response?.data ?? error
-            );
-
             Toast.show({
                 type: "error",
                 text1: "Erro ao salvar produto",
-                text2:
-                    error?.response?.data?.message ??
-                    "Não foi possível salvar as alterações.",
+                text2: error?.response?.data?.message ?? "Não foi possível salvar as alterações.",
             });
         } finally {
             setSaving(false);
