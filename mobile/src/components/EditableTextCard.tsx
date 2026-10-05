@@ -69,8 +69,21 @@ const EditableTextCard = ({
       : internalValue;
 
   return (
-    <View style={[styles.container, { width }]}>
-      <Text style={styles.label}>{label}</Text>
+    <View
+      style={[
+        styles.container,
+        !editable && styles.containerDisabled,
+        { width },
+      ]}
+    >
+      <Text
+        style={[
+          styles.label,
+          !editable && styles.labelDisabled,
+        ]}
+      >
+        {label}
+      </Text>
 
       <View style={styles.inputWrapper}>
         <TouchableOpacity
@@ -89,6 +102,7 @@ const EditableTextCard = ({
             style={[
               styles.input,
               !isEditing && styles.inputReadOnly,
+              !editable && styles.inputDisabled,
               isPassword && { flex: 1 },
             ]}
             value={internalValue}
@@ -97,7 +111,7 @@ const EditableTextCard = ({
             onBlur={handleBlur}
             keyboardType={keyboardType}
             placeholder={placeholder}
-            placeholderTextColor="#999"
+            placeholderTextColor={editable ? '#999' : '#aaa'}
             secureTextEntry={isPassword && secureText}
             editable={editable}
             pointerEvents={isEditing ? 'auto' : 'none'}
@@ -108,11 +122,12 @@ const EditableTextCard = ({
           <TouchableOpacity
             onPress={() => setSecureText(!secureText)}
             style={styles.iconWrapper}
+            disabled={!editable}
           >
             <Ionicons
               name={secureText ? 'eye-off-outline' : 'eye-outline'}
               size={24}
-              color="#000"
+              color={editable ? '#000' : '#999'}
             />
           </TouchableOpacity>
         )}
@@ -134,11 +149,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
 
+  containerDisabled: {
+    backgroundColor: '#F2F3F5',
+    borderColor: '#C9CDD2',
+  },
+
   label: {
     fontSize: 13,
     color: '#6e6e6e',
     fontWeight: 'bold',
     marginBottom: 5,
+  },
+
+  labelDisabled: {
+    color: '#8A8F98',
   },
 
   inputWrapper: {
@@ -155,6 +179,10 @@ const styles = StyleSheet.create({
   },
 
   inputReadOnly: {
+  },
+
+  inputDisabled: {
+    color: '#666B73',
   },
 
   flex: {
