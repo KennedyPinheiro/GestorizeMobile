@@ -386,9 +386,7 @@ export default function NovoProduto() {
         }
     };
 
-    /*
-     * Salvar produto
-     */
+  
     const onSubmit = async (data: FormData) => {
         if (!isCriar && !isDirty && !imagemAlterada) {
             return;
