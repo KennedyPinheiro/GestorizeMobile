@@ -90,9 +90,7 @@ function ProdutoSelector({
                 value={labelSelecionado}
                 placeholder={placeholder}
                 onPress={() => {
-                    if (!disabled) {
-                        setVisible(true);
-                    }
+                    if (!disabled) { setVisible(true); }
                 }}
             />
 
@@ -108,9 +106,7 @@ function ProdutoSelector({
                 >
                     <Pressable
                         style={styles.selectorModal}
-                        onPress={(event) =>
-                            event.stopPropagation()
-                        }
+                        onPress={(event) => event.stopPropagation()}
                     >
                         <Text style={styles.selectorTitle}>
                             {label}
@@ -126,9 +122,7 @@ function ProdutoSelector({
                                             value === opcao.id &&
                                             styles.selectorSelectedOption,
                                         ]}
-                                        onPress={() =>
-                                            selecionar(opcao.id)
-                                        }
+                                        onPress={() => selecionar(opcao.id)}
                                     >
                                         <Text
                                             style={[
@@ -141,23 +135,14 @@ function ProdutoSelector({
                                         </Text>
                                     </TouchableOpacity>
 
-                                    {index <
-                                        options.length - 1 && (
-                                            <View
-                                                style={
-                                                    styles.selectorDivider
-                                                }
-                                            />
-                                        )}
+                                    {index < options.length - 1 && (
+                                        <View style={styles.selectorDivider} />)}
                                 </View>
                             ))}
 
                             {options.length === 0 && (
                                 <View style={styles.emptyOptions}>
-                                    <Text
-                                        style={
-                                            styles.emptyOptionsText
-                                        }
+                                    <Text style={styles.emptyOptionsText}
                                     >
                                         Nenhuma opção disponível.
                                     </Text>
@@ -456,28 +441,14 @@ export default function NovoProduto() {
                                     onChangeText={onChange}
                                 />
 
-                                <InputError
-                                    message={
-                                        error?.message
-                                    }
-                                />
+                                <InputError message={error?.message} />
                             </>
                         )}
                     />
                 </View>
 
-                {/* VALORES */}
-
                 <View style={styles.section}>
-                    <Text
-                        style={[
-                            styles.sectionTitle,
-                            {
-                                color:
-                                    colors.text,
-                            },
-                        ]}
-                    >
+                    <Text style={[styles.sectionTitle, { color: colors.text, },]}>
                         Valores
                     </Text>
 
