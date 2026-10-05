@@ -411,26 +411,11 @@ export default function NovoProduto() {
     if (loading) {
         return (
             <View
-                style={[
-                    styles.container,
-                    {
-                        backgroundColor:
-                            colors.background,
-                        justifyContent:
-                            "center",
-                        alignItems:
-                            "center",
-                    },
-                ]}
+                style={[styles.container, { backgroundColor: colors.background, justifyContent: "center", alignItems: "center", },]}
             >
                 <ActivityIndicator size="large" />
 
-                <Text
-                    style={{
-                        color: colors.text,
-                        marginTop: 12,
-                    }}
-                >
+                <Text style={{ color: colors.text, marginTop: 12, }}>
                     Carregando produto...
                 </Text>
             </View>
@@ -438,62 +423,30 @@ export default function NovoProduto() {
     }
 
     return (
-        <View
-            style={[
-                styles.container,
-                {
-                    backgroundColor:
-                        colors.background,
-                },
-            ]}
-        >
-            <Nav
-                title={
-                    isCriar
-                        ? "Novo Produto"
-                        : "Editar Produto"
-                }
+        <View style={[styles.container, { backgroundColor: colors.background, },]}>
+            <Nav title={isCriar ? "Novo Produto" : "Editar Produto"}
                 subtitle="Produto"
-                onBackPress={() =>
-                    navigation.goBack()
-                }
+                onBackPress={() => navigation.goBack()}
                 rightType="menu"
             />
 
             <KeyboardAwareScrollView
                 style={styles.flex}
-                contentContainerStyle={
-                    styles.content
-                }
-                showsVerticalScrollIndicator={
-                    false
-                }
+                contentContainerStyle={styles.content}
+                showsVerticalScrollIndicator={false}
                 keyboardShouldPersistTaps="handled"
                 enableOnAndroid
                 enableAutomaticScroll
                 extraScrollHeight={50}
             >
-                {/* IMAGEM */}
-
-                <View
-                    style={
-                        styles.avatarContainer
-                    }
-                >
+                <View style={styles.avatarContainer}>
                     <Avatar
-                        nome={
-                            nomeProduto ||
-                            "Produto"
-                        }
+                        nome={nomeProduto || "Produto"}
                         imageUri={imagem}
                         size={120}
                         editable={true}
-                        onImageSelected={
-                            handleImageSelected
-                        }
-                        onImageRemoved={
-                            handleRemoveImagem
-                        }
+                        onImageSelected={handleImageSelected}
+                        onImageRemoved={handleRemoveImagem}
                     />
 
                     <Text
