@@ -206,16 +206,12 @@ export default function NovoProduto() {
         defaultValues: {
             nome: "",
             descricao: "",
-
             preco_custo: 0,
             porcentagem_lucro: 0,
             preco_venda: 0,
-
             estoque: 0,
-
             data_entrada: null,
             validade: null,
-
             categoria_id: "",
             fornecedor_id: "",
             unidade_medida_id: "",
@@ -223,7 +219,6 @@ export default function NovoProduto() {
     });
 
     const nomeProduto = watch("nome");
-
 
     useEffect(() => {
         if (modo === "criar") {
@@ -244,11 +239,8 @@ export default function NovoProduto() {
             try {
                 setLoading(true);
 
-                const response =
-                    await getProduto(produtoId);
-
+                const response = await getProduto(produtoId);
                 const produto = response.data;
-
                 const dados: FormData = {
                     nome: produto.nome ?? "",
                     descricao: produto.descricao ?? "",
@@ -264,18 +256,14 @@ export default function NovoProduto() {
                 };
 
                 reset(dados);
-
-                const imagemPrincipal =
-                    produto.imagem_principal?.url ?? null;
-
+                const imagemPrincipal = produto.imagem_principal?.url ?? null;
                 setImagem(imagemPrincipal);
                 setImagemOriginal(imagemPrincipal);
             } catch (error) {
                 Toast.show({
                     type: "error",
                     text1: "Erro ao carregar produto",
-                    text2:
-                        "Não foi possível carregar os dados do produto.",
+                    text2: "Não foi possível carregar os dados do produto.",
                 });
 
                 navigation.goBack();
@@ -285,18 +273,12 @@ export default function NovoProduto() {
         };
 
         carregarProduto();
-    }, [
-        modo,
-        produtoId,
-        navigation,
-        reset,
-    ]);
+    }, [modo, produtoId, navigation, reset,]);
 
     const handleDelete = () => {
         if (!produtoId) {
             return;
         }
-
         setShowDeleteDialog(true);
     };
 
@@ -307,23 +289,18 @@ export default function NovoProduto() {
 
         try {
             setSaving(true);
-
             await deleteProduto(produtoId);
-
             Toast.show({
                 type: "success",
                 text1: "Produto excluído",
                 text2: "O produto foi removido com sucesso.",
             });
-
             navigation.goBack();
         } catch (error: any) {
             Toast.show({
                 type: "error",
                 text1: "Erro ao excluir",
-                text2:
-                    error?.response?.data?.message ??
-                    "Não foi possível excluir o produto.",
+                text2: error?.response?.data?.message ?? "Não foi possível excluir o produto.",
             });
         } finally {
             setSaving(false);
@@ -357,33 +334,24 @@ export default function NovoProduto() {
             if (isCriar) {
                 const response = await createProduto(payload);
 
-
                 Toast.show({
                     type: "success",
                     text1: "Produto cadastrado",
-                    text2:
-                        "O produto foi cadastrado com sucesso.",
+                    text2: "O produto foi cadastrado com sucesso.",
                 });
 
                 navigation.goBack();
-
                 return;
             }
 
             if (isEditar && produtoId) {
                 if (isDirty) {
-                    const response =
-                        await updateProduto(
-                            produtoId,
-                            payload
-                        );
+                    const response = await updateProduto(produtoId, payload);
 
                     Toast.show({
                         type: "success",
                         text1: "Produto atualizado",
-                        text2:
-                            response.message ??
-                            "Alterações salvas com sucesso.",
+                        text2: response.message ?? "Alterações salvas com sucesso.",
                     });
                 }
                 reset(data);
@@ -410,11 +378,8 @@ export default function NovoProduto() {
 
     if (loading) {
         return (
-            <View
-                style={[styles.container, { backgroundColor: colors.background, justifyContent: "center", alignItems: "center", },]}
-            >
+            <View style={[styles.container, { backgroundColor: colors.background, justifyContent: "center", alignItems: "center", },]}>
                 <ActivityIndicator size="large" />
-
                 <Text style={{ color: colors.text, marginTop: 12, }}>
                     Carregando produto...
                 </Text>
@@ -449,70 +414,30 @@ export default function NovoProduto() {
                         onImageRemoved={handleRemoveImagem}
                     />
 
-                    <Text
-                        style={[
-                            styles.avatarLabel,
-                            {
-                                color:
-                                    colors.text,
-                            },
-                        ]}
-                    >
+                    <Text style={[styles.avatarLabel, { color: colors.text, },]}>
                         Foto do produto
                     </Text>
                 </View>
 
-                {/* DADOS PRINCIPAIS */}
-
                 <View style={styles.section}>
-                    <Text
-                        style={[
-                            styles.sectionTitle,
-                            {
-                                color:
-                                    colors.text,
-                            },
-                        ]}
-                    >
+                    <Text style={[styles.sectionTitle, { color: colors.text, },]}>
                         Dados principais
                     </Text>
 
                     <Controller
                         control={control}
                         name="nome"
-                        render={({
-                            field: {
-                                value,
-                                onChange,
-                            },
-                            fieldState: {
-                                error,
-                            },
+                        render={({ field: { value, onChange, }, fieldState: { error, },
                         }) => (
                             <>
                                 <EditableTextCard
                                     label="Nome do produto"
                                     placeholder="Digite o nome do produto"
-                                    value={
-                                        value
-                                    }
-                                    onChangeText={(
-                                        text
-                                    ) =>
-                                        onChange(
-                                            text.slice(
-                                                0,
-                                                255
-                                            )
-                                        )
-                                    }
+                                    value={value}
+                                    onChangeText={(text) => onChange(text.slice(0, 255))}
                                 />
 
-                                <InputError
-                                    message={
-                                        error?.message
-                                    }
-                                />
+                                <InputError message={error?.message} />
                             </>
                         )}
                     />
@@ -521,25 +446,14 @@ export default function NovoProduto() {
                         control={control}
                         name="descricao"
                         render={({
-                            field: {
-                                value,
-                                onChange,
-                            },
-                            fieldState: {
-                                error,
-                            },
+                            field: { value, onChange, }, fieldState: { error, },
                         }) => (
                             <>
                                 <EditableTextCard
                                     label="Descrição"
                                     placeholder="Digite a descrição do produto"
-                                    value={
-                                        value ??
-                                        ""
-                                    }
-                                    onChangeText={
-                                        onChange
-                                    }
+                                    value={value ?? ""}
+                                    onChangeText={onChange}
                                 />
 
                                 <InputError
@@ -967,19 +881,11 @@ export default function NovoProduto() {
                             <>
                                 <DateField
                                     label="Data de entrada"
-                                    value={
-                                        value ??
-                                        ""
-                                    }
-                                    onChange={
-                                        onChange
-                                    }
+                                    value={value ?? ""}
+                                    onChange={onChange}
                                 />
 
-                                <InputError
-                                    message={
-                                        error?.message
-                                    }
+                                <InputError message={error?.message}
                                 />
                             </>
                         )}
@@ -992,88 +898,47 @@ export default function NovoProduto() {
                             field: {
                                 value,
                                 onChange,
-                            },
-                            fieldState: {
-                                error,
-                            },
+                            }, fieldState: { error, },
                         }) => (
                             <>
                                 <DateField
                                     label="Validade"
-                                    value={
-                                        value ??
-                                        ""
-                                    }
-                                    onChange={
-                                        onChange
-                                    }
-                                    maximumDate={
-                                        new Date()
-                                    }
+                                    value={value ?? ""}
+                                    onChange={onChange
+                                    } maximumDate={new Date()}
                                 />
 
-                                <InputError
-                                    message={
-                                        error?.message
-                                    }
+                                <InputError message={error?.message}
                                 />
                             </>
                         )}
                     />
                 </View>
-
-
-                <View
-                    style={
-                        styles.actionsContainer
-                    }
-                >
+                <View style={styles.actionsContainer}>
                     <Button
-                        title={
-                            saving
-                                ? "Salvando..."
-                                : isCriar
-                                    ? "Cadastrar produto"
-                                    : "Salvar alterações"
-                        }
+                        title={saving ? "Salvando..." : isCriar ? "Cadastrar produto" : "Salvar alterações"}
                         variant="contained"
                         color="primary"
-                        disabled={
-                            (!isDirty &&
-                                !imagemAlterada) ||
-                            saving
-                        }
-                        onPress={handleSubmit(
-                            onSubmit
-                        )}
+                        disabled={(!isDirty && !imagemAlterada) || saving}
+                        onPress={handleSubmit(onSubmit)}
                     />
 
                     {isEditar && (
                         <Button
                             title="Excluir produto"
                             variant="delete"
-                            disabled={
-                                saving
-                            }
-                            onPress={
-                                handleDelete
-                            }
+                            disabled={saving}
+                            onPress={handleDelete}
                         />
                     )}
                 </View>
             </KeyboardAwareScrollView>
 
             <DialogConfirmarAcao
-                show={
-                    showDeleteDialog
-                }
-                setShow={
-                    setShowDeleteDialog
-                }
+                show={showDeleteDialog}
+                setShow={setShowDeleteDialog}
                 titulo="Tem certeza que deseja excluir este produto?"
-                onSuccess={
-                    confirmarExclusao
-                }
+                onSuccess={confirmarExclusao}
             />
         </View>
     );
