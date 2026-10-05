@@ -428,10 +428,6 @@ export default function NovoProduto() {
                 const response =
                     await createProduto(payload);
 
-                /*
-                 * A imagem será integrada aqui depois,
-                 * utilizando o ID retornado pelo backend.
-                 */
 
                 Toast.show({
                     type: "success",
