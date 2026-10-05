@@ -37,7 +37,7 @@ import { produtoSchema } from "src/schemas/ProdutoSchema";
 
 import Toast from "react-native-toast-message";
 import Selector from "@components/Selector";
-import { formatDate, onlyLettersAndNumbers, onlyNumbers, parseReal } from "@core/utils/format";
+import { formatDate, onlyLettersAndNumbers, onlyNumbers, parsePercent, parseReal } from "@core/utils/format";
 
 type Navigation =
     NativeStackNavigationProp<RootStackParamList>;
@@ -389,12 +389,12 @@ export default function NovoProduto() {
                         }) => (
                             <>
                                 <EditableTextCard
-                                    label="Preço de custo"
-                                    placeholder="0,00"
+                                    label="Margem de lucro (%)"
+                                    placeholder="0"
                                     value={value === null || value === undefined ? "" : String(value).replace(".", ",")}
                                     tipo="number"
                                     onChangeText={(text) => {
-                                        const valor = parseReal(text);
+                                        const valor = parsePercent(text);
                                         onChange(Number.isNaN(valor) ? 0 : valor);
                                     }}
                                 />
@@ -417,7 +417,7 @@ export default function NovoProduto() {
                         }) => (
                             <>
                                 <EditableTextCard
-                                    label="Preço de custo"
+                                    label="Preço de venda"
                                     placeholder="0,00"
                                     value={value === null || value === undefined ? "" : String(value).replace(".", ",")}
                                     tipo="number"
@@ -426,7 +426,6 @@ export default function NovoProduto() {
                                         onChange(Number.isNaN(valor) ? 0 : valor);
                                     }}
                                 />
-
                                 <InputError message={error?.message}
                                 />
                             </>
