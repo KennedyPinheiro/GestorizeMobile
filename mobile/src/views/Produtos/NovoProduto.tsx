@@ -440,7 +440,6 @@ export default function NovoProduto() {
                                     value={value ?? ""}
                                     onChangeText={onChange}
                                 />
-
                                 <InputError message={error?.message} />
                             </>
                         )}
@@ -500,11 +499,7 @@ export default function NovoProduto() {
                                     }}
                                 />
 
-                                <InputError
-                                    message={
-                                        error?.message
-                                    }
-                                />
+                                <InputError message={error?.message} />
                             </>
                         )}
                     />
@@ -557,11 +552,7 @@ export default function NovoProduto() {
                                     }}
                                 />
 
-                                <InputError
-                                    message={
-                                        error?.message
-                                    }
-                                />
+                                <InputError message={error?.message} />
                             </>
                         )}
                     />
@@ -614,18 +605,12 @@ export default function NovoProduto() {
                                     }}
                                 />
 
-                                <InputError
-                                    message={
-                                        error?.message
-                                    }
+                                <InputError message={error?.message}
                                 />
                             </>
                         )}
                     />
                 </View>
-
-                {/* ESTOQUE */}
-
                 <View style={styles.section}>
                     <Text
                         style={[
@@ -684,21 +669,13 @@ export default function NovoProduto() {
                                             }}
                                         />
 
-                                        <InputError
-                                            message={
-                                                error?.message
-                                            }
-                                        />
+                                        <InputError message={error?.message} />
                                     </>
                                 )}
                             />
                         </View>
 
-                        <View
-                            style={
-                                styles.half
-                            }
-                        >
+                        <View style={styles.half}>
                             <Controller
                                 control={control}
                                 name="unidade_medida_id"
@@ -715,22 +692,12 @@ export default function NovoProduto() {
                                         <ProdutoSelector
                                             label="Unidade"
                                             placeholder="Selecionar"
-                                            value={
-                                                value
-                                            }
-                                            options={
-                                                unidadesMedida
-                                            }
-                                            onChange={
-                                                onChange
-                                            }
+                                            value={value}
+                                            options={unidadesMedida}
+                                            onChange={onChange}
                                         />
 
-                                        <InputError
-                                            message={
-                                                error?.message
-                                            }
-                                        />
+                                        <InputError message={error?.message} />
                                     </>
                                 )}
                             />
@@ -740,15 +707,7 @@ export default function NovoProduto() {
 
 
                 <View style={styles.section}>
-                    <Text
-                        style={[
-                            styles.sectionTitle,
-                            {
-                                color:
-                                    colors.text,
-                            },
-                        ]}
-                    >
+                    <Text style={[styles.sectionTitle, { color: colors.text, },]}>
                         Classificação
                     </Text>
 
@@ -768,22 +727,11 @@ export default function NovoProduto() {
                                 <ProdutoSelector
                                     label="Categoria"
                                     placeholder="Selecionar categoria"
-                                    value={
-                                        value
-                                    }
-                                    options={
-                                        categorias
-                                    }
-                                    onChange={
-                                        onChange
-                                    }
+                                    value={value}
+                                    options={categorias}
+                                    onChange={onChange}
                                 />
-
-                                <InputError
-                                    message={
-                                        error?.message
-                                    }
-                                />
+                                <InputError message={error?.message} />
                             </>
                         )}
                     />
@@ -804,36 +752,17 @@ export default function NovoProduto() {
                                 <ProdutoSelector
                                     label="Fornecedor"
                                     placeholder="Selecionar fornecedor"
-                                    value={
-                                        value
-                                    }
-                                    options={
-                                        fornecedores
-                                    }
-                                    onChange={
-                                        onChange
-                                    }
+                                    value={value}
+                                    options={fornecedores}
+                                    onChange={onChange}
                                 />
-
-                                <InputError
-                                    message={
-                                        error?.message
-                                    }
-                                />
+                                <InputError message={error?.message} />
                             </>
                         )}
                     />
                 </View>
                 <View style={styles.section}>
-                    <Text
-                        style={[
-                            styles.sectionTitle,
-                            {
-                                color:
-                                    colors.text,
-                            },
-                        ]}
-                    >
+                    <Text style={[styles.sectionTitle, { color: colors.text, },]} >
                         Datas
                     </Text>
 
@@ -855,7 +784,6 @@ export default function NovoProduto() {
                                     value={value ?? ""}
                                     onChange={onChange}
                                 />
-
                                 <InputError message={error?.message}
                                 />
                             </>
@@ -878,7 +806,6 @@ export default function NovoProduto() {
                                     onChange={onChange
                                     } maximumDate={new Date()}
                                 />
-
                                 <InputError message={error?.message}
                                 />
                             </>
