@@ -95,7 +95,6 @@ export function ProdutoSelector({
                             )}
                         </View>
 
-                        {/* OPÇÕES */}
                         <View style={styles.selectorOptions}>
                             {options.map((opcao, index) => (
                                 <View key={opcao.id}>
@@ -104,7 +103,7 @@ export function ProdutoSelector({
                                         style={[
                                             styles.selectorOption,
                                             value === opcao.id &&
-                                                styles.selectorSelectedOption,
+                                            styles.selectorSelectedOption,
                                         ]}
                                         onPress={() =>
                                             selecionar(opcao.id)
@@ -114,7 +113,7 @@ export function ProdutoSelector({
                                             style={[
                                                 styles.selectorOptionText,
                                                 value === opcao.id &&
-                                                    styles.selectorSelectedOptionText,
+                                                styles.selectorSelectedOptionText,
                                             ]}
                                         >
                                             {opcao.nome}
@@ -160,10 +159,6 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         overflow: "hidden",
     },
-
-    // ─────────────────────────────────────────────
-    // CABEÇALHO
-    // ─────────────────────────────────────────────
 
     selectorHeader: {
         minHeight: 110,
