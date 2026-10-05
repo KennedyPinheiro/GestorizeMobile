@@ -73,6 +73,7 @@ export default function NovoProduto() {
         handleSubmit,
         reset,
         watch,
+        setValue,
         formState: {
             isDirty,
             errors,
@@ -95,7 +96,6 @@ export default function NovoProduto() {
             unidade_medida_id: "",
         },
     });
-
     const nomeProduto = watch("nome");
 
     useEffect(() => {
@@ -187,6 +187,8 @@ export default function NovoProduto() {
     };
 
 
+
+
     const onSubmit = async (data: FormData) => {
         if (!isCriar && !isDirty && !imagemAlterada) {
             return;
@@ -253,6 +255,14 @@ export default function NovoProduto() {
     const handleRemoveImagem = () => {
         setImagem(null);
     };
+
+    const custo = watch("preco_custo");
+    const lucro = watch("porcentagem_lucro");
+
+    useEffect(() => {
+        const venda = Number((custo * (1 + lucro / 100)).toFixed(2));
+        setValue("preco_venda", venda, { shouldDirty: true, shouldValidate: true });
+    }, [custo, lucro, setValue]);
 
     if (loading) {
         return (
@@ -389,7 +399,7 @@ export default function NovoProduto() {
                         }) => (
                             <>
                                 <EditableTextCard
-                                    label="Margem de lucro (%)"
+                                    label="Porcentagem de lucro (%)"
                                     placeholder="0"
                                     value={value === null || value === undefined ? "" : String(value).replace(".", ",")}
                                     tipo="number"
@@ -406,28 +416,17 @@ export default function NovoProduto() {
                     <Controller
                         control={control}
                         name="preco_venda"
-                        render={({
-                            field: {
-                                value,
-                                onChange,
-                            },
-                            fieldState: {
-                                error,
-                            },
-                        }) => (
+                        render={({ field: { value }, fieldState: { error } }) => (
                             <>
                                 <EditableTextCard
                                     label="Preço de venda"
                                     placeholder="0,00"
                                     value={value === null || value === undefined ? "" : String(value).replace(".", ",")}
                                     tipo="number"
-                                    onChangeText={(text) => {
-                                        const valor = parseReal(text);
-                                        onChange(Number.isNaN(valor) ? 0 : valor);
-                                    }}
+                                    editable={false}
                                 />
-                                <InputError message={error?.message}
-                                />
+
+                                <InputError message={error?.message} />
                             </>
                         )}
                     />
@@ -687,75 +686,5 @@ const styles = StyleSheet.create({
         width: "100%",
         gap: 12,
         marginBottom: 5,
-    },
-
-    selectorOverlay: {
-        flex: 1,
-        backgroundColor:
-            "rgba(0, 0, 0, 0.45)",
-        justifyContent: "center",
-        alignItems: "center",
-        padding: 20,
-    },
-
-    selectorModal: {
-        width: "100%",
-        maxWidth: 400,
-        backgroundColor: "#fff",
-        borderRadius: 20,
-        paddingTop: 20,
-        paddingBottom: 10,
-        overflow: "hidden",
-    },
-
-    selectorTitle: {
-        fontSize: 20,
-        fontWeight: "800",
-        color: "#111",
-        textAlign: "center",
-        marginBottom: 10,
-        paddingHorizontal: 20,
-    },
-
-    selectorOptions: {
-        width: "100%",
-    },
-
-    selectorOption: {
-        minHeight: 52,
-        justifyContent: "center",
-        paddingHorizontal: 20,
-    },
-
-    selectorSelectedOption: {
-        backgroundColor: "#062046",
-    },
-
-    selectorOptionText: {
-        fontSize: 16,
-        color: "#111",
-        fontWeight: "600",
-    },
-
-    selectorSelectedOptionText: {
-        color: "#fff",
-    },
-
-    selectorDivider: {
-        height: StyleSheet.hairlineWidth,
-        backgroundColor: "#D9D9D9",
-        marginHorizontal: 20,
-    },
-
-    emptyOptions: {
-        minHeight: 52,
-        justifyContent: "center",
-        alignItems: "center",
-        paddingHorizontal: 20,
-    },
-
-    emptyOptionsText: {
-        fontSize: 15,
-        color: "#777",
-    },
+    }
 });
