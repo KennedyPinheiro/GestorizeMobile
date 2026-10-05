@@ -1,7 +1,6 @@
 import Avatar from "@components/Avatar";
 import Nav from "@components/utilities/Nav";
 import EditableTextCard from "@components/EditableTextCard";
-import ClickableTextCard from "@components/ClickableTextCard";
 import Button from "@components/botoes/Button";
 import DialogConfirmarAcao from "@components/dialogs/DialogConfirmarAcao";
 import DateField from "@components/DateField";
@@ -14,11 +13,8 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import {
     ActivityIndicator,
-    Modal,
-    Pressable,
     StyleSheet,
     Text,
-    TouchableOpacity,
     View,
 } from "react-native";
 
@@ -27,7 +23,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 
-import { RootStackParamList } from "@context/types";
+import { Opcao, RootStackParamList } from "@context/types";
 import { useTheme } from "@context/ThemeContext";
 
 import {
@@ -40,6 +36,7 @@ import {
 import { produtoSchema } from "src/schemas/ProdutoSchema";
 
 import Toast from "react-native-toast-message";
+import { ProdutoSelector } from "@components/ProdutoSelector";
 
 type Navigation =
     NativeStackNavigationProp<RootStackParamList>;
@@ -51,110 +48,7 @@ type Route = NativeStackScreenProps<
     "NovoProduto"
 >["route"];
 
-type Opcao = {
-    id: string;
-    nome: string;
-};
 
-type ProdutoSelectorProps = {
-    label: string;
-    placeholder: string;
-    value?: string | null;
-    options: Opcao[];
-    onChange: (value: string) => void;
-    disabled?: boolean;
-};
-
-function ProdutoSelector({
-    label,
-    placeholder,
-    value,
-    options,
-    onChange,
-    disabled = false,
-}: ProdutoSelectorProps) {
-    const [visible, setVisible] = useState(false);
-
-    const labelSelecionado =
-        options.find((item) => item.id === value)?.nome ?? "";
-
-    const selecionar = (id: string) => {
-        onChange(id);
-        setVisible(false);
-    };
-
-    return (
-        <>
-            <ClickableTextCard
-                label={label}
-                value={labelSelecionado}
-                placeholder={placeholder}
-                onPress={() => {
-                    if (!disabled) { setVisible(true); }
-                }}
-            />
-
-            <Modal
-                visible={visible}
-                transparent
-                animationType="fade"
-                onRequestClose={() => setVisible(false)}
-            >
-                <Pressable
-                    style={styles.selectorOverlay}
-                    onPress={() => setVisible(false)}
-                >
-                    <Pressable
-                        style={styles.selectorModal}
-                        onPress={(event) => event.stopPropagation()}
-                    >
-                        <Text style={styles.selectorTitle}>
-                            {label}
-                        </Text>
-
-                        <View style={styles.selectorOptions}>
-                            {options.map((opcao, index) => (
-                                <View key={opcao.id}>
-                                    <TouchableOpacity
-                                        activeOpacity={0.7}
-                                        style={[
-                                            styles.selectorOption,
-                                            value === opcao.id &&
-                                            styles.selectorSelectedOption,
-                                        ]}
-                                        onPress={() => selecionar(opcao.id)}
-                                    >
-                                        <Text
-                                            style={[
-                                                styles.selectorOptionText,
-                                                value === opcao.id &&
-                                                styles.selectorSelectedOptionText,
-                                            ]}
-                                        >
-                                            {opcao.nome}
-                                        </Text>
-                                    </TouchableOpacity>
-
-                                    {index < options.length - 1 && (
-                                        <View style={styles.selectorDivider} />)}
-                                </View>
-                            ))}
-
-                            {options.length === 0 && (
-                                <View style={styles.emptyOptions}>
-                                    <Text style={styles.emptyOptionsText}
-                                    >
-                                        Nenhuma opção disponível.
-                                    </Text>
-                                </View>
-                            )}
-                        </View>
-                    </Pressable>
-                </Pressable>
-            </Modal>
-        </>
-    );
-}
 
 export default function NovoProduto() {
     const navigation = useNavigation<Navigation>();
@@ -162,12 +56,12 @@ export default function NovoProduto() {
     const { colors } = useTheme();
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const [imagem, setImagem] = useState<string | null>(null);
-    const [imagemOriginal, setImagemOriginal] = useState<string | null>(null);
-    const [loading, setLoading] = useState(false);
-    const [saving, setSaving] = useState(false);
     const [categorias] = useState<Opcao[]>([]);
     const [fornecedores] = useState<Opcao[]>([]);
     const [unidadesMedida] = useState<Opcao[]>([]);
+    const [imagemOriginal, setImagemOriginal] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
+    const [saving, setSaving] = useState(false);
     const modo = route.params?.modo ?? "criar";
     const produtoId = route.params?.produtoId;
     const isCriar = modo === "criar";
@@ -755,6 +649,9 @@ export default function NovoProduto() {
                                     value={value}
                                     options={fornecedores}
                                     onChange={onChange}
+                                    showAddButton
+                                    onAdd={() => {
+                                    }}
                                 />
                                 <InputError message={error?.message} />
                             </>

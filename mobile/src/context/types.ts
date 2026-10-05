@@ -6,6 +6,11 @@ export type Avatar = {
   onPress: () => void;
 }
 
+export type Opcao = {
+  id: string;
+  nome: string;
+
+};
 export type ErrorResponseType = {
   success?: boolean;
   message?: string;
