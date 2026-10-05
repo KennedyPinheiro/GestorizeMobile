@@ -7,6 +7,7 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
 import { useState } from "react";
 
@@ -87,9 +88,11 @@ export function ProdutoSelector({
                                     style={styles.addButton}
                                     onPress={adicionar}
                                 >
-                                    <Text style={styles.addButtonIcon}>
-                                        +
-                                    </Text>
+                                    <Ionicons
+                                        name="add"
+                                        size={40}
+                                        color="#062046"
+                                    />
                                 </TouchableOpacity>
                             )}
                         </View>
@@ -160,31 +163,30 @@ const styles = StyleSheet.create({
     },
 
     selectorHeader: {
-        minHeight: 110,
+        minHeight: 76,
         backgroundColor: "#062046",
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
-        paddingHorizontal: 30,
-        paddingVertical: 20,
+        paddingHorizontal: 18,
     },
 
     selectorTitle: {
         flex: 1,
-        fontSize: 32,
-        fontWeight: "400",
+        fontSize: 24,
+        fontWeight: "500",
         color: "#fff",
         textAlign: "center",
     },
 
     addButton: {
-        width: 64,
-        height: 64,
-        borderRadius: 32,
+        width: 54,
+        height: 54,
+        borderRadius: 27,
         backgroundColor: "#fff",
         alignItems: "center",
         justifyContent: "center",
-        marginLeft: 15,
+        marginLeft: 10,
     },
 
     addButtonIcon: {
