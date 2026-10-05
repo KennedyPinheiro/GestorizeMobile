@@ -4,7 +4,6 @@ import { useTheme, useThemeToggle } from '@context/ThemeContext';
 
 type Props = {
   nome: string;
-  descricao?: string | null;
   preco?: number | null;
   estoque: number;
   unidade?: string | null;
@@ -15,7 +14,6 @@ type Props = {
 
 const Produto = ({
   nome,
-  descricao,
   preco,
   estoque,
   unidade,
@@ -25,23 +23,13 @@ const Produto = ({
 }: Props) => {
   const { colors } = useTheme();
   const { compactLists } = useThemeToggle();
-
   const isDark = colors.background !== '#ffffff';
-
   const cardBg = isDark ? '#0A4191' : '#ffffff';
   const textColor = isDark ? '#ffffff' : '#0f172a';
   const subText = isDark ? '#cbd5e1' : '#6b7280';
-
-  const circleColor = isDark
-    ? '#09377B'
-    : 'rgba(6, 32, 70, 0.22)';
-
+  const circleColor = isDark ? '#09377B' : 'rgba(6, 32, 70, 0.22)';
   const arrowColor = isDark ? '#ffffff' : '#062046';
-
-  const badgeBg = isDark
-    ? 'rgba(255,255,255,0.2)'
-    : 'rgba(0,104,255,0.2)';
-
+  const badgeBg = isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,104,255,0.2)';
   const badgeText = isDark ? '#ffffff' : '#062046';
 
   return (
@@ -62,22 +50,11 @@ const Produto = ({
       >
         <View style={styles.left}>
           <View
-            style={[
-              styles.circle,
-              compactLists && styles.circleCompact,
-              {
-                backgroundColor: circleColor,
-              },
-            ]}
-          >
+            style={[styles.circle, compactLists && styles.circleCompact, { backgroundColor: circleColor, },]}>
             {imagem ? (
               <Image
                 source={{ uri: imagem }}
-                style={[
-                  styles.image,
-                  compactLists && styles.imageCompact,
-                ]}
-              />
+                style={[styles.image, compactLists && styles.imageCompact,]} />
             ) : (
               <Ionicons
                 name="cube-outline"
@@ -91,24 +68,12 @@ const Produto = ({
             <View style={styles.row}>
               <Text
                 numberOfLines={1}
-                style={[
-                  styles.title,
-                  compactLists && styles.titleCompact,
-                  { color: textColor },
-                ]}
-              >
+                style={[styles.title, compactLists && styles.titleCompact, { color: textColor },]} >
                 {nome}
               </Text>
 
               {!compactLists && categoria && (
-                <View
-                  style={[
-                    styles.badge,
-                    {
-                      backgroundColor: badgeBg,
-                    },
-                  ]}
-                >
+                <View style={[styles.badge, { backgroundColor: badgeBg, },]}>
                   <Text
                     numberOfLines={1}
                     style={{
@@ -122,26 +87,9 @@ const Produto = ({
                 </View>
               )}
             </View>
-
-            {!compactLists && descricao && (
-              <Text
-                numberOfLines={1}
-                style={[
-                  styles.description,
-                  { color: subText },
-                ]}
-              >
-                {descricao}
-              </Text>
-            )}
-
             <Text
               numberOfLines={1}
-              style={[
-                styles.subtitle,
-                compactLists && styles.subtitleCompact,
-                { color: subText },
-              ]}
+              style={[styles.subtitle, compactLists && styles.subtitleCompact, { color: subText },]}
             >
               Valor: R${' '}
               {(preco ?? 0).toLocaleString('pt-BR', {
@@ -153,10 +101,7 @@ const Produto = ({
             {!compactLists && (
               <Text
                 numberOfLines={1}
-                style={[
-                  styles.subtitle,
-                  { color: subText },
-                ]}
+                style={[styles.subtitle, { color: subText },]}
               >
                 Estoque: {estoque} {unidade ?? ''}
               </Text>
