@@ -7,8 +7,9 @@ export type Avatar = {
 }
 
 export type Opcao = {
-  id: string;
-  nome: string;
+  id?: string;
+  nome?: string;
+  
 
 };
 export type ErrorResponseType = {
@@ -153,13 +154,15 @@ export type FornecedorType = {
 
 export type CategoriaType = {
   id: number;
-  titulo: string;
-  descricao: string;
+  nome: string;
 };
 
-export type MedidaType = {
-  id: number;
-  titulo: string;
+export type UnidadeMedidaType = {
+  id: string;
+  nome: string;
+  sigla: string;
+  created_at: string;
+  updated_at: string;
 };
 
 export type ProdutoImagemType = {

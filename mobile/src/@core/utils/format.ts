@@ -66,14 +66,20 @@ export const onlyLettersAndNumbers = (
     : result;
 };
 
-export const dateToApi = (value: string) => {
+export const dateToApi = (
+  value: string | null | undefined
+): string | null => {
+  if (!value) {
+    return null;
+  }
+
   const [dia, mes, ano] = value.split("/");
 
   if (!dia || !mes || !ano) {
     return value;
   }
 
-  return `${ano}-${mes}-${dia}`;
+  return `${ano}-${mes.padStart(2, "0")}-${dia.padStart(2, "0")}`;
 };
 
 export const dateFromApi = (value: string) => {

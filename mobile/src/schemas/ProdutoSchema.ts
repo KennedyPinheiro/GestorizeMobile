@@ -35,13 +35,8 @@ const produtoSchema = z.object({
     })
     .min(0, "O estoque não pode ser negativo."),
 
-  data_entrada: z
-    .string()
-    .nullable(),
-
-  validade: z
-    .string()
-    .nullable(),
+  data_entrada: z.string().nullable(),
+  validade: z.string().nullable(),
 
   categoria_id: z
     .string()

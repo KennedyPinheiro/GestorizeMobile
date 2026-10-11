@@ -16,6 +16,7 @@ type SelectorProps = {
     placeholder: string;
     value?: string | null;
     options: Opcao[];
+    onOpen?: () => void;
     onChange: (value: string) => void;
     disabled?: boolean;
 
@@ -28,6 +29,7 @@ export default function Selector({
     placeholder,
     value,
     options,
+    onOpen,
     onChange,
     disabled = false,
     showAddButton = false,
@@ -57,6 +59,7 @@ export default function Selector({
                 onPress={() => {
                     if (!disabled) {
                         setVisible(true);
+                        onOpen?.();
                     }
                 }}
             />
