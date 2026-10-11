@@ -14,11 +14,6 @@ import Produtos from '@views/Produtos/index';
 import Fornecedores from '@views/Fornecedores/index';
 import Funcionarios from '@views/Funcionarios/index';
 import { RootStackParamList } from '@context/types';
-import PerfilProduto from '@views/perfil/PerfilProduto';
-import PerfilFornecedor from '@views/perfil/PerfilFornecedor';
-import PerfilPessoaFisica from '@views/perfil/PerfilPessoaFisica';
-import PerfilPessoaJuridica from '@views/perfil/PerfilPessoaJuridica';
-import PerfilFuncionario from '@views/perfil/PerfilFuncionario';
 import ForgoutPassword from '@views/ForgoutPassword';
 import ResetPassword from '@views/ResetPasswor';
 import UserPerfil from '@views/perfil/UserPerfil';
@@ -68,43 +63,22 @@ const AppNavigator = () => {
             <Stack.Screen name="Orcamentos" component={Orcamentos} />
             <Stack.Screen name="Configuracoes" component={Configuracoes} />
             <Stack.Screen name="Ajuda" component={Ajuda} />
-            <Stack.Screen
-              name="PerfilPessoaFisica"
-              component={PerfilPessoaFisica}
-            />
-            <Stack.Screen
-              name="PerfilPessoaJuridica"
-              component={PerfilPessoaJuridica}
-            />
+
             <Stack.Screen name="UserPerfil" component={UserPerfil} />
             {canAccess('Produtos') && (
               <>
                 <Stack.Screen name="Produtos" component={Produtos} />
 
-                <Stack.Screen
-                  name="PerfilProduto"
-                  component={PerfilProduto}
-                />
               </>
             )}
             {canAccess('Fornecedores') && (
               <>
                 <Stack.Screen name="Fornecedores" component={Fornecedores} />
-
-                <Stack.Screen
-                  name="PerfilFornecedor"
-                  component={PerfilFornecedor}
-                />
               </>
             )}
             {canAccess('Funcionarios') && (
               <>
                 <Stack.Screen name="Funcionarios" component={Funcionarios} />
-
-                <Stack.Screen
-                  name="PerfilFuncionario"
-                  component={PerfilFuncionario}
-                />
               </>
             )}
             {canAccess('Relatorios') && (
