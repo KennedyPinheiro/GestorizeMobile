@@ -38,8 +38,7 @@ export default function Selector({
     const [visible, setVisible] = useState(false);
 
     const labelSelecionado =
-        options.find((item) => item.id === value)?.nome ?? "";
-
+        options.find((item) => String(item.id) === String(value))?.nome ?? "";
     const selecionar = (id: string) => {
         onChange(id);
         setVisible(false);
@@ -100,10 +99,10 @@ export default function Selector({
 
                         <View style={styles.options}>
                             {options.map((opcao, index) => {
-                                const selecionado = value === opcao.id;
+                                const selecionado = String(value ?? "") === String(opcao.id);
 
                                 return (
-                                    <View key={opcao.id}>
+                                    <View key={opcao.id ?? `opcao-${index}`}>
                                         <TouchableOpacity
                                             activeOpacity={0.7}
                                             style={[
@@ -111,9 +110,11 @@ export default function Selector({
                                                 selecionado &&
                                                 styles.selectedOption,
                                             ]}
-                                            onPress={() =>
-                                                selecionar(opcao.id)
-                                            }
+                                            onPress={() => {
+                                                if (opcao.id !== undefined) {
+                                                    selecionar(String(opcao.id));
+                                                }
+                                            }}
                                         >
                                             <Text
                                                 style={[

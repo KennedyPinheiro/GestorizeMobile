@@ -120,39 +120,78 @@ export default function NovoProduto() {
             return;
         }
 
-        const carregarProduto = async () => {
+        const carregarDados = async () => {
             try {
-                const response = await getProduto(produtoId);
-                const produto = response.data;
+                const [
+                    produtoResponse,
+                    categoriasResponse,
+                    unidadesResponse,
+                ] = await Promise.all([
+                    getProduto(produtoId),
+                    getCategorias(),
+                    getUnidadesMedida(),
+                ]);
+
+                const produto = produtoResponse.data;
+
+                setCategorias(
+                    categoriasResponse.data.map((categoria) => ({
+                        id: String(categoria.id),
+                        nome: categoria.nome,
+                    }))
+                );
+
+                setUnidadesMedida(
+                    unidadesResponse.data.map((unidade) => ({
+                        id: String(unidade.id),
+                        nome: `${unidade.nome} (${unidade.sigla})`,
+                    }))
+                );
+
                 const dados: FormData = {
                     nome: produto.nome ?? "",
                     descricao: produto.descricao ?? "",
                     preco_custo: Number(produto.preco_custo ?? 0),
-                    porcentagem_lucro: Number(produto.porcentagem_lucro ?? 0),
+                    porcentagem_lucro: Number(
+                        produto.porcentagem_lucro ?? 0
+                    ),
                     preco_venda: Number(produto.preco_venda ?? 0),
                     estoque: Number(produto.estoque ?? 0),
                     data_entrada: produto.data_entrada ?? null,
                     validade: produto.validade ?? null,
-                    categoria_id: produto.categoria_id ?? "",
-                    fornecedor_id: produto.fornecedor_id ?? "",
-                    unidade_medida_id: produto.unidade_medida_id ?? "",
+                    categoria_id: produto.categoria_id
+                        ? String(produto.categoria_id)
+                        : "",
+                    fornecedor_id: produto.fornecedor_id
+                        ? String(produto.fornecedor_id)
+                        : "",
+                    unidade_medida_id: produto.unidade_medida_id
+                        ? String(produto.unidade_medida_id)
+                        : "",
                 };
+
                 reset(dados);
-                const imagemPrincipal = produto.imagem_principal?.url ?? null;
+
+                const imagemPrincipal =
+                    produto.imagem_principal?.url ?? null;
+
                 setImagem(imagemPrincipal);
                 setImagemOriginal(imagemPrincipal);
-            } catch (error) {
+            } catch (error: any) {
                 Toast.show({
                     type: "error",
                     text1: "Erro ao carregar produto",
-                    text2: "Não foi possível carregar os dados do produto.",
+                    text2:
+                        error?.response?.data?.message ??
+                        "Não foi possível carregar os dados do produto.",
                 });
+
                 navigation.goBack();
             }
         };
 
-        carregarProduto();
-    }, [modo, produtoId, navigation, reset,]);
+        carregarDados();
+    }, [modo, produtoId, navigation, reset]);
 
 
     const carregarCategorias = async () => {
@@ -360,7 +399,10 @@ export default function NovoProduto() {
 
     useEffect(() => {
         const venda = Number((custo * (1 + lucro / 100)).toFixed(2));
-        setValue("preco_venda", venda, { shouldDirty: true, shouldValidate: true });
+
+        setValue("preco_venda", venda, {
+            shouldValidate: true,
+        });
     }, [custo, lucro, setValue]);
 
     return (
@@ -546,27 +588,17 @@ export default function NovoProduto() {
                                 control={control}
                                 name="unidade_medida_id"
                                 render={({
-                                    field: { value, onChange, },
-                                    fieldState: { error, },
+                                    field: { value, onChange },
+                                    fieldState: { error },
                                 }) => (
                                     <>
-                                        <Controller
-                                            control={control}
-                                            name="unidade_medida_id"
-                                            render={({ field: { value, onChange }, fieldState: { error } }) => (
-                                                <>
-                                                    <Selector
-                                                        label="Unidade"
-                                                        placeholder="Selecionar"
-                                                        value={value}
-                                                        options={unidadesMedida}
-                                                        onChange={onChange}
-                                                        onOpen={carregarUnidadesMedida}
-                                                    />
-
-                                                    <InputError message={error?.message} />
-                                                </>
-                                            )}
+                                        <Selector
+                                            label="Unidade"
+                                            placeholder="Selecionar"
+                                            value={value}
+                                            options={unidadesMedida}
+                                            onChange={onChange}
+                                            onOpen={carregarUnidadesMedida}
                                         />
 
                                         <InputError message={error?.message} />
@@ -586,7 +618,10 @@ export default function NovoProduto() {
                     <Controller
                         control={control}
                         name="categoria_id"
-                        render={({ field: { value, onChange }, fieldState: { error } }) => (
+                        render={({
+                            field: { value, onChange },
+                            fieldState: { error },
+                        }) => (
                             <>
                                 <Selector
                                     label="Categoria"
@@ -678,7 +713,7 @@ export default function NovoProduto() {
                         title={saving ? "Salvando..." : isCriar ? "Cadastrar produto" : "Salvar alterações"}
                         variant="contained"
                         color="primary"
-                        disabled={(!isDirty && !imagemAlterada) || saving}
+                        disabled={(!isCriar && !isDirty && !imagemAlterada) || saving}
                         onPress={handleSubmit(onSubmit)}
                     />
 
