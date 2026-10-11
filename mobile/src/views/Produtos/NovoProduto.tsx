@@ -40,7 +40,7 @@ import { produtoSchema } from "src/schemas/ProdutoSchema";
 
 import Toast from "react-native-toast-message";
 import Selector from "@components/Selector";
-import { dateToApi, formatDate, onlyLettersAndNumbers, onlyNumbers, parsePercent, parseReal } from "@core/utils/format";
+import { dateFromApi, dateToApi, formatDate, onlyLettersAndNumbers, onlyNumbers, parsePercent, parseReal } from "@core/utils/format";
 import { createCategoria, getCategorias, getUnidadesMedida } from "@api/apiCategoria";
 type Navigation =
     NativeStackNavigationProp<RootStackParamList>;
@@ -83,7 +83,6 @@ export default function NovoProduto() {
         setValue,
         formState: {
             isDirty,
-            errors,
         },
     } = useForm<FormData>({
         resolver: zodResolver(produtoSchema),
@@ -147,27 +146,63 @@ export default function NovoProduto() {
                         nome: `${unidade.nome} (${unidade.sigla})`,
                     }))
                 );
+                const categoriasDisponiveis: Opcao[] =
+                    categoriasResponse.data.map((categoria) => ({
+                        id: String(categoria.id),
+                        nome: categoria.nome,
+                    }));
+
+                if (
+                    produto.categoria_id &&
+                    !categoriasDisponiveis.some(
+                        (categoria) =>
+                            String(categoria.id) === String(produto.categoria_id)
+                    )
+                ) {
+                    categoriasDisponiveis.push({
+                        id: String(produto.categoria_id),
+                        nome: produto.categoria_titulo ?? "Categoria",
+                    });
+                }
+
+                setCategorias(categoriasDisponiveis);
+
+                const unidadesDisponiveis: Opcao[] =
+                    unidadesResponse.data.map((unidade) => ({
+                        id: String(unidade.id),
+                        nome: `${unidade.nome} (${unidade.sigla})`,
+                    }));
+
+                if (
+                    produto.unidade_medida_id &&
+                    !unidadesDisponiveis.some(
+                        (unidade) =>
+                            String(unidade.id) === String(produto.unidade_medida_id)
+                    )
+                ) {
+                    unidadesDisponiveis.push({
+                        id: String(produto.unidade_medida_id),
+                        nome: `${produto.unidade_medida_titulo ?? "Unidade"}${produto.unidade_medida_sigla
+                            ? ` (${produto.unidade_medida_sigla})`
+                            : ""
+                            }`,
+                    });
+                }
+
+                setUnidadesMedida(unidadesDisponiveis);
 
                 const dados: FormData = {
                     nome: produto.nome ?? "",
                     descricao: produto.descricao ?? "",
                     preco_custo: Number(produto.preco_custo ?? 0),
-                    porcentagem_lucro: Number(
-                        produto.porcentagem_lucro ?? 0
-                    ),
+                    porcentagem_lucro: Number(produto.porcentagem_lucro ?? 0),
                     preco_venda: Number(produto.preco_venda ?? 0),
                     estoque: Number(produto.estoque ?? 0),
-                    data_entrada: produto.data_entrada ?? null,
-                    validade: produto.validade ?? null,
-                    categoria_id: produto.categoria_id
-                        ? String(produto.categoria_id)
-                        : "",
-                    fornecedor_id: produto.fornecedor_id
-                        ? String(produto.fornecedor_id)
-                        : "",
-                    unidade_medida_id: produto.unidade_medida_id
-                        ? String(produto.unidade_medida_id)
-                        : "",
+                    data_entrada: dateFromApi(produto.data_entrada),
+                    validade: dateFromApi(produto.validade),
+                    categoria_id: produto.categoria_id ? String(produto.categoria_id) : "",
+                    fornecedor_id: produto.fornecedor_id ? String(produto.fornecedor_id) : "",
+                    unidade_medida_id: produto.unidade_medida_id ? String(produto.unidade_medida_id) : "",
                 };
 
                 reset(dados);

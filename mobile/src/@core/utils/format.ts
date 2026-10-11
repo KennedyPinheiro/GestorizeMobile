@@ -82,7 +82,8 @@ export const dateToApi = (
   return `${ano}-${mes.padStart(2, "0")}-${dia.padStart(2, "0")}`;
 };
 
-export const dateFromApi = (value: string) => {
+export const dateFromApi = (value: string | null | undefined
+): string | null => {
   if (!value) return "";
 
   const [ano, mes, dia] = value.split("-");
