@@ -42,17 +42,17 @@ export const onlyLetters = (value: string, maxLength?: number) => {
 };
 
 export const normalizeGenero = (
-    genero?: string | null
+  genero?: string | null
 ): Genero | null => {
-    if (
-        genero === "masculino" ||
-        genero === "feminino" ||
-        genero === "outro"
-    ) {
-        return genero;
-    }
+  if (
+    genero === "masculino" ||
+    genero === "feminino" ||
+    genero === "outro"
+  ) {
+    return genero;
+  }
 
-    return null;
+  return null;
 };
 
 export const onlyLettersAndNumbers = (
@@ -178,6 +178,17 @@ export function parsePercent(text: string): number {
   const clean = text.replace(/[^\d,]/g, '').replace(',', '.');
   return parseFloat(clean);
 }
+
+export const formatMoneyInput = (value: string): string => {
+  const digits = value.replace(/\D/g, '');
+
+  const cents = Number(digits || '0');
+
+  return (cents / 100).toLocaleString('pt-BR', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+};
 
 export function formatarMedida(titulo: string): string {
   const mapaFormatacao: { [key: string]: string } = {

@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import type { DimensionValue } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { formatMoneyInput } from '@core/utils/format';
 
 type Props = {
   label?: string;
@@ -18,7 +19,10 @@ type Props = {
   width?: DimensionValue;
   placeholder?: string;
   editable?: boolean;
+  money?: boolean;
 };
+
+
 
 const EditableTextCard = ({
   label = 'Campo',
@@ -28,16 +32,21 @@ const EditableTextCard = ({
   width = '100%',
   placeholder = '',
   editable = true,
+  money = false,
 }: Props) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [internalValue, setInternalValue] = useState(value);
+  const [internalValue, setInternalValue] = useState(
+    money ? formatMoneyInput(value) : value,
+  );
   const [secureText, setSecureText] = useState(true);
 
   const inputRef = useRef<TextInput>(null);
 
   useEffect(() => {
-    setInternalValue(value);
-  }, [value]);
+    setInternalValue(
+      money ? formatMoneyInput(value) : value,
+    );
+  }, [value, money]);
 
   const keyboardType: KeyboardTypeOptions =
     tipo === 'number' ? 'numeric' : 'default';
@@ -53,14 +62,17 @@ const EditableTextCard = ({
   const handleBlur = () => {
     setIsEditing(false);
 
-    if (onChangeText) {
-      onChangeText(internalValue);
-    }
+    onChangeText?.(internalValue);
   };
 
   const handleChangeText = (text: string) => {
-    setInternalValue(text);
-    onChangeText?.(text);
+    const formattedValue = money
+      ? formatMoneyInput(text)
+      : text;
+
+    setInternalValue(formattedValue);
+
+    onChangeText?.(formattedValue);
   };
 
   const displayValue =
@@ -105,7 +117,7 @@ const EditableTextCard = ({
               !editable && styles.inputDisabled,
               isPassword && { flex: 1 },
             ]}
-            value={internalValue}
+            value={displayValue}
             onChangeText={handleChangeText}
             onFocus={handleFocus}
             onBlur={handleBlur}
@@ -125,7 +137,11 @@ const EditableTextCard = ({
             disabled={!editable}
           >
             <Ionicons
-              name={secureText ? 'eye-off-outline' : 'eye-outline'}
+              name={
+                secureText
+                  ? 'eye-off-outline'
+                  : 'eye-outline'
+              }
               size={24}
               color={editable ? '#000' : '#999'}
             />
@@ -178,8 +194,7 @@ const styles = StyleSheet.create({
     minHeight: 25,
   },
 
-  inputReadOnly: {
-  },
+  inputReadOnly: {},
 
   inputDisabled: {
     color: '#666B73',

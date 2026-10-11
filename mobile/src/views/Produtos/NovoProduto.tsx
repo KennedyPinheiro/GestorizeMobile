@@ -372,11 +372,12 @@ export default function NovoProduto() {
                                 <EditableTextCard
                                     label="Preço de custo"
                                     placeholder="0,00"
-                                    value={value === null || value === undefined ? "" : String(value).replace(".", ",")}
+                                    value={value === null || value === undefined ? '0,00' : String(value).replace('.', ',')}
                                     tipo="number"
+                                    money
                                     onChangeText={(text) => {
                                         const valor = parseReal(text);
-                                        onChange(Number.isNaN(valor) ? 0 : valor);
+                                        onChange(Number.isNaN(valor) ? 0 : valor,);
                                     }}
                                 />
 
