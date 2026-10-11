@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AcessoController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ProdutoController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CategoriaController;
 use App\Http\Controllers\Api\ClienteController;
 use App\Http\Controllers\Api\FornecedorController;
 use App\Http\Controllers\Api\OrcamentoController;
@@ -12,6 +13,10 @@ use App\Http\Controllers\Api\UserController;
 Route::post('login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
+
+    Route::get('/categorias', [CategoriaController::class, 'index']);
+    Route::post('/categorias', [CategoriaController::class, 'store']);
+
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('refresh', [AuthController::class, 'refresh']);
 
@@ -46,7 +51,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::put('/{id}/imagem/principal', [ProdutoController::class, 'definirImagemPrincipal'])->middleware('permission:produtos.editar');
     });
-  
+
     Route::prefix('fornecedores')->group(function () {
         Route::get('/', [FornecedorController::class, 'index']);
         Route::post('/', [FornecedorController::class, 'store']);

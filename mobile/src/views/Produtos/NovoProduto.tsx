@@ -9,7 +9,8 @@ import { InputError } from "@components/InputError";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-
+import { CATEGORIAS_PRODUTO } from 'src/constants/categorias';
+import { UNIDADES_MEDIDA } from 'src/constants/unidadesMedida';
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import {
     ActivityIndicator,
@@ -487,7 +488,7 @@ export default function NovoProduto() {
                                             label="Unidade"
                                             placeholder="Selecionar"
                                             value={value}
-                                            options={unidadesMedida}
+                                            options={UNIDADES_MEDIDA}
                                             onChange={onChange}
                                         />
 
@@ -522,7 +523,7 @@ export default function NovoProduto() {
                                     label="Categoria"
                                     placeholder="Selecionar categoria"
                                     value={value}
-                                    options={categorias}
+                                    options={CATEGORIAS_PRODUTO}
                                     onChange={onChange}
                                 />
                                 <InputError message={error?.message} />

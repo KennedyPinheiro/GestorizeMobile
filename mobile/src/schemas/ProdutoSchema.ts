@@ -45,15 +45,18 @@ const produtoSchema = z.object({
 
   categoria_id: z
     .string()
-    .min(1, "A categoria é obrigatória."),
+    .nullable()
+    .optional(),
 
   fornecedor_id: z
     .string()
-    .min(1, "O fornecedor é obrigatório."),
+    .nullable()
+    .optional(),
 
   unidade_medida_id: z
     .string()
     .min(1, "A unidade de medida é obrigatória."),
+
 });
 
 export { produtoSchema };

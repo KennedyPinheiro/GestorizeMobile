@@ -20,8 +20,8 @@ class StoreProdutoRequest extends FormRequest
             'porcentagem_lucro' => ['required', 'numeric', 'min:0',],
             'preco_venda' => ['required', 'numeric', 'min:0',],
             'data_entrada' => ['required',  'date',],
-            'categoria_id' => ['required', 'uuid', 'exists:categorias,id',],
-            'fornecedor_id' => ['required', 'uuid', 'exists:fornecedores,id',],
+            'categoria_id' => ['nullable', 'uuid', 'exists:categorias,id'],
+            'fornecedor_id' => ['nullable', 'uuid', 'exists:fornecedores,id'],
             'unidade_medida_id' => ['required', 'uuid', 'exists:unidades_medida,id',],
             'estoque' => ['required', 'numeric', 'min:0',],
             'validade' => ['nullable', 'date',],
@@ -51,11 +51,9 @@ class StoreProdutoRequest extends FormRequest
             'data_entrada.required' => 'A data de entrada é obrigatória.',
             'data_entrada.date' => 'A data de entrada deve ser uma data válida.',
 
-            'categoria_id.required' => 'A categoria é obrigatória.',
             'categoria_id.uuid' => 'A categoria deve ser um UUID válido.',
             'categoria_id.exists' => 'A categoria selecionada não existe.',
 
-            'fornecedor_id.required' => 'O fornecedor é obrigatório.',
             'fornecedor_id.uuid' => 'O fornecedor deve ser um UUID válido.',
             'fornecedor_id.exists' => 'O fornecedor selecionado não existe.',
 
