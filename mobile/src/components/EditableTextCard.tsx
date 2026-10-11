@@ -43,10 +43,9 @@ const EditableTextCard = ({
   const inputRef = useRef<TextInput>(null);
 
   useEffect(() => {
-    setInternalValue(
-      money ? formatMoneyInput(value) : value,
-    );
-  }, [value, money]);
+    if (isEditing) { return; }
+    setInternalValue(money ? formatMoneyInput(value) : value,);
+  }, [value, money, isEditing]);
 
   const keyboardType: KeyboardTypeOptions =
     tipo === 'number' ? 'numeric' : 'default';
@@ -66,13 +65,15 @@ const EditableTextCard = ({
   };
 
   const handleChangeText = (text: string) => {
-    const formattedValue = money
-      ? formatMoneyInput(text)
-      : text;
+    if (money) {
+      const formattedValue = formatMoneyInput(text);
+      setInternalValue(formattedValue);
+      onChangeText?.(formattedValue);
+      return;
+    }
 
-    setInternalValue(formattedValue);
-
-    onChangeText?.(formattedValue);
+    setInternalValue(text);
+    onChangeText?.(text);
   };
 
   const displayValue =

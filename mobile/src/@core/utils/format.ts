@@ -170,24 +170,31 @@ export function formatPercent(value: number): string {
 }
 
 export function parseReal(text: string): number {
-  const clean = text.replace(/[^\d,]/g, '').replace(',', '.');
-  return parseFloat(clean);
-}
+  const clean = text
+    .replace(/\./g, '')
+    .replace(',', '.')
+    .replace(/[^\d.-]/g, '');
 
+  return Number.parseFloat(clean);
+}
 export function parsePercent(text: string): number {
   const clean = text.replace(/[^\d,]/g, '').replace(',', '.');
   return parseFloat(clean);
 }
-
 export const formatMoneyInput = (value: string): string => {
   const digits = value.replace(/\D/g, '');
+  const cents = BigInt(digits || '0');
+  const inteiro = cents / 100n;
+  const decimal = (cents % 100n)
+    .toString()
+    .padStart(2, '0');
 
-  const cents = Number(digits || '0');
+  const inteiroFormatado = inteiro.toString().replace(
+    /\B(?=(\d{3})+(?!\d))/g,
+    '.',
+  );
 
-  return (cents / 100).toLocaleString('pt-BR', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
+  return `${inteiroFormatado},${decimal}`;
 };
 
 export function formatarMedida(titulo: string): string {
