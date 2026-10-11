@@ -188,22 +188,36 @@ export function parsePercent(text: string): number {
   const clean = text.replace(/[^\d,]/g, '').replace(',', '.');
   return parseFloat(clean);
 }
+
+export const formatMoney = (value: string | number): string => {
+  const numero = Number(value);
+
+  if (!Number.isFinite(numero)) {
+    return "0,00";
+  }
+
+  return numero.toLocaleString("pt-BR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+};
+
 export const formatMoneyInput = (value: string): string => {
-  const digits = value.replace(/\D/g, '');
-  const cents = BigInt(digits || '0');
+  const digits = value.replace(/\D/g, "");
+  const cents = BigInt(digits || "0");
+
   const inteiro = cents / 100n;
   const decimal = (cents % 100n)
     .toString()
-    .padStart(2, '0');
+    .padStart(2, "0");
 
   const inteiroFormatado = inteiro.toString().replace(
     /\B(?=(\d{3})+(?!\d))/g,
-    '.',
+    ".",
   );
 
   return `${inteiroFormatado},${decimal}`;
 };
-
 export function formatarMedida(titulo: string): string {
   const mapaFormatacao: { [key: string]: string } = {
     unidade: 'UN',

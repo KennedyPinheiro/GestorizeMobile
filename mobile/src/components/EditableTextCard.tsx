@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import type { DimensionValue } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { formatMoneyInput } from '@core/utils/format';
+import { formatMoney, formatMoneyInput } from '@core/utils/format';
 
 type Props = {
   label?: string;
@@ -36,15 +36,17 @@ const EditableTextCard = ({
 }: Props) => {
   const [isEditing, setIsEditing] = useState(false);
   const [internalValue, setInternalValue] = useState(
-    money ? formatMoneyInput(value) : value,
+    money ? formatMoney(value) : value,
   );
   const [secureText, setSecureText] = useState(true);
 
   const inputRef = useRef<TextInput>(null);
 
   useEffect(() => {
-    if (isEditing) { return; }
-    setInternalValue(money ? formatMoneyInput(value) : value,);
+    if (isEditing) {
+      return;
+    }
+    setInternalValue(money ? formatMoney(value) : value);
   }, [value, money, isEditing]);
 
   const keyboardType: KeyboardTypeOptions =
