@@ -13,9 +13,6 @@ class FornecedorService
         private FornecedorImagemService $fornecedorImagemService
     ) {}
 
-    /**
-     * Lista os fornecedores cadastrados.
-     */
     public function listar()
     {
         return Fornecedor::with('endereco')
