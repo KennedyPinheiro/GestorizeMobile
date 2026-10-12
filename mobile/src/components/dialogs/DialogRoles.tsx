@@ -11,7 +11,6 @@ import {
 import BarraAdd from '@components/utilities/BarraAdd';
 import { supabase } from '@lib/supabase';
 import { RoleType } from '@context/types'; // Defina esse tipo com { id: number; nome: string }
-import DialogAdicionarRole from './DialogAdicionarRole';
 import Role from '@components/ui-lists/Role';
 
 type Props = {
