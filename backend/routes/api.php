@@ -45,14 +45,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/',        [ProdutoController::class, 'index'])->middleware('permission:produtos.ver');
         Route::post('/',       [ProdutoController::class, 'store'])->middleware('permission:produtos.criar');
         Route::get('/{id}',    [ProdutoController::class, 'show'])->middleware('permission:produtos.ver');
-        Route::put('/{id}',    [ProdutoController::class, 'update'])->middleware('permission:produtos.editar');
-        Route::delete('/{id}', [ProdutoController::class, 'destroy'])->middleware('permission:produtos.excluir');
-
-        Route::post('/{id}/imagem',   [ProdutoController::class, 'adicionarImagem'])->middleware('permission:produtos.editar');
+        Route::put('/{produto}', [ProdutoController::class, 'update'])->middleware('permission:produtos.editar');
+        Route::delete('/{produto}', [ProdutoController::class, 'destroy'])->middleware('permission:produtos.excluir');
+        Route::post('/{produto}/imagem', [ProdutoController::class, 'adicionarImagem'])->middleware('permission:produtos.editar');
         Route::delete('/{id}/imagem', [ProdutoController::class, 'removerImagem'])->middleware('permission:produtos.editar');
-
-        Route::put('/{id}/imagem/principal', [ProdutoController::class, 'definirImagemPrincipal'])->middleware('permission:produtos.criar');
-        Route::post('{id}/imagem/principal', [ProdutoController::class, 'substituirImagemPrincipal'])->middleware('permission:produtos.editar');
+        Route::put('/{id}/imagem/principal', [ProdutoController::class, 'definirImagemPrincipal'])->middleware('permission:produtos.editar');
+        Route::post('/{produto}/imagem/principal', [ProdutoController::class, 'substituirImagemPrincipal'])->middleware('permission:produtos.editar');
     });
 
     Route::prefix('fornecedores')->group(function () {

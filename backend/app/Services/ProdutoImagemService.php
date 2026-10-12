@@ -93,18 +93,20 @@ class ProdutoImagemService
             return $imagem->fresh();
         });
     }
-
-    public function remover(
-        ProdutoImagem $imagem
-    ): void {
+    public function remover(ProdutoImagem $imagem): void
+    {
         DB::transaction(function () use ($imagem) {
-            Storage::disk('public')->delete($imagem->caminho);
-
             $produto = $imagem->produto;
             $eraPrincipal = $imagem->principal;
+            $caminho = $imagem->caminho;
+
+            if (filled($caminho)) {
+                Storage::disk('public')->delete($caminho);
+            }
+
             $imagem->delete();
 
-            if ($eraPrincipal) {
+            if ($eraPrincipal && $produto) {
                 $novaPrincipal = $produto
                     ->imagens()
                     ->latest()

@@ -1,4 +1,6 @@
-import Avatar from "@components/Avatar";
+import GaleriaImagens, {
+    ImagemGaleria,
+} from "@components/GaleriaImagens";
 import Nav from "@components/utilities/Nav";
 import EditableTextCard from "@components/EditableTextCard";
 import Button from "@components/botoes/Button";
@@ -32,6 +34,7 @@ import { useTheme } from "@context/ThemeContext";
 import {
     adicionarImagemProduto,
     createProduto,
+    definirImagemPrincipal,
     deleteProduto,
     getProduto,
     removerImagemProduto,
@@ -53,18 +56,39 @@ type Route = NativeStackScreenProps<
     "NovoProduto"
 >["route"];
 
+
+const imagensIguais = (
+    atuais: ImagemGaleria[],
+    originais: ImagemGaleria[]
+): boolean => {
+    if (atuais.length !== originais.length) {
+        return false;
+    }
+
+    return atuais.every((imagem, index) => {
+        const original = originais[index];
+
+        return (
+            imagem.id === original.id &&
+            imagem.uri === original.uri &&
+            imagem.principal === original.principal &&
+            imagem.nova === original.nova
+        );
+    });
+};
+
 export default function NovoProduto() {
 
     const navigation = useNavigation<Navigation>();
     const route = useRoute<Route>();
     const { colors } = useTheme();
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-    const [imagem, setImagem] = useState<string | null>(null);
+    const [imagens, setImagens] = useState<ImagemGaleria[]>([]);
+    const [imagensOriginais, setImagensOriginais] = useState<ImagemGaleria[]>([]);
     const [fornecedores] = useState<Opcao[]>([]);
     const [categorias, setCategorias] = useState<Opcao[]>([]);
     const [carregandoCategorias, setCarregandoCategorias] = useState(false);
     const [unidadesMedida, setUnidadesMedida] = useState<Opcao[]>([]);
-    const [imagemOriginal, setImagemOriginal] = useState<string | null>(null);
     const [saving, setSaving] = useState(false);
     const modo = route.params?.modo ?? "criar";
     const produtoId = route.params?.produtoId;
@@ -73,9 +97,7 @@ export default function NovoProduto() {
     const [showCategoriaModal, setShowCategoriaModal] = useState(false);
     const [nomeCategoria, setNomeCategoria] = useState("");
     const [salvandoCategoria, setSalvandoCategoria] = useState(false);
-    const imagemAlterada =
-        imagem !== imagemOriginal;
-
+    const imagensAlteradas = !imagensIguais(imagens, imagensOriginais);
     const {
         control,
         handleSubmit,
@@ -208,11 +230,17 @@ export default function NovoProduto() {
 
                 reset(dados);
 
-                const imagemPrincipal =
-                    produto.imagem_principal?.url ?? null;
+                const imagensProduto: ImagemGaleria[] = (produto.imagens ?? []).map(
+                    (imagem: any) => ({
+                        id: String(imagem.id),
+                        uri: imagem.url,
+                        principal: Boolean(imagem.principal),
+                        nova: false,
+                    })
+                );
 
-                setImagem(imagemPrincipal);
-                setImagemOriginal(imagemPrincipal);
+                setImagens(imagensProduto);
+                setImagensOriginais(imagensProduto);
             } catch (error: any) {
                 Toast.show({
                     type: "error",
@@ -360,11 +388,68 @@ export default function NovoProduto() {
         }
     };
 
+    const sincronizarGaleria = async (id: string) => {
+        const imagensRemovidas = imagensOriginais.filter(
+            (original) =>
+                !imagens.some((atual) => atual.id === original.id)
+        );
 
+        for (const imagem of imagensRemovidas) {
+            await removerImagemProduto(id, imagem.id);
+        }
+
+        const imagensNovas = imagens.filter(
+            (imagem) => imagem.nova && !imagem.principal
+        );
+
+        for (const imagem of imagensNovas) {
+            await adicionarImagemProduto(
+                id,
+                imagem.uri,
+                false
+            );
+        }
+
+        const principal = imagens.find(
+            (imagem) => imagem.principal
+        );
+
+        if (!principal) {
+            return;
+        }
+
+        if (principal.nova) {
+            await adicionarImagemProduto(
+                id,
+                principal.uri,
+                true
+            );
+
+            return;
+        }
+
+        const principalOriginal = imagensOriginais.find(
+            (imagem) => imagem.id === principal.id
+        );
+
+        if (
+            principalOriginal &&
+            !principalOriginal.principal
+        ) {
+            await definirImagemPrincipal(
+                id,
+                principal.id
+            );
+        }
+    };
 
 
     const onSubmit = async (data: FormData) => {
-        if (!isCriar && !isDirty && !imagemAlterada) {
+        if (
+            !isCriar &&
+            !isDirty &&
+            !imagensAlteradas
+        ) {
             return;
         }
 
@@ -387,22 +472,32 @@ export default function NovoProduto() {
 
             if (isCriar) {
                 const response = await createProduto(payload);
+
                 const novoProdutoId = response.data.id;
 
-                if (imagem) {
-                    await adicionarImagemProduto(
-                        novoProdutoId,
-                        imagem,
-                        true
-                    );
+                if (imagens.length > 0) {
+                    const imagensOrdenadas = [
+                        ...imagens.filter(
+                            (imagem) => !imagem.principal
+                        ),
+                        ...imagens.filter(
+                            (imagem) => imagem.principal
+                        ),
+                    ];
+
+                    for (const imagem of imagensOrdenadas) {
+                        await adicionarImagemProduto(
+                            novoProdutoId,
+                            imagem.uri,
+                            imagem.principal
+                        );
+                    }
                 }
 
                 Toast.show({
                     type: "success",
                     text1: "Produto cadastrado",
-                    text2: imagem
-                        ? "Produto e imagem cadastrados com sucesso."
-                        : "O produto foi cadastrado com sucesso.",
+                    text2: "Produto e galeria salvos com sucesso.",
                 });
 
                 navigation.goBack();
@@ -413,16 +508,25 @@ export default function NovoProduto() {
                 if (isDirty) {
                     await updateProduto(produtoId, payload);
                 }
-                if (imagemAlterada) {
-                    if (imagem) {
-                        await substituirImagemPrincipal(
-                            produtoId,
-                            imagem
-                        );
-                    } else if (imagemOriginal) {
-                        await removerImagemProduto(produtoId);
-                    }
+
+                if (imagensAlteradas) {
+                    await sincronizarGaleria(produtoId);
                 }
+
+                const produtoAtualizado = await getProduto(produtoId);
+
+                const imagensAtualizadas: ImagemGaleria[] = (
+                    produtoAtualizado.data.imagens ?? []
+                ).map((imagem: any) => ({
+                    id: String(imagem.id),
+                    uri: imagem.url,
+                    principal: Boolean(imagem.principal),
+                    nova: false,
+                }));
+
+                setImagens(imagensAtualizadas);
+                setImagensOriginais(imagensAtualizadas);
+
                 Toast.show({
                     type: "success",
                     text1: "Produto atualizado",
@@ -430,7 +534,6 @@ export default function NovoProduto() {
                 });
 
                 reset(data);
-                setImagemOriginal(imagem);
             }
         } catch (error: any) {
             Toast.show({
@@ -443,14 +546,6 @@ export default function NovoProduto() {
         } finally {
             setSaving(false);
         }
-    };
-
-    const handleImageSelected = (uri: string) => {
-        setImagem(uri);
-    };
-
-    const handleRemoveImagem = () => {
-        setImagem(null);
     };
 
     const custo = watch("preco_custo");
@@ -481,19 +576,13 @@ export default function NovoProduto() {
                 enableAutomaticScroll
                 extraScrollHeight={50}
             >
-                <View style={styles.avatarContainer}>
-                    <Avatar
-                        nome={nomeProduto || "Produto"}
-                        imageUri={imagem}
-                        size={120}
+                <View style={styles.section}>
+                    <GaleriaImagens
+                        imagens={imagens}
+                        onChange={setImagens}
                         editable={true}
-                        onImageSelected={handleImageSelected}
-                        onImageRemoved={handleRemoveImagem}
+                        maxImagens={10}
                     />
-
-                    <Text style={[styles.avatarLabel, { color: colors.text, },]}>
-                        Foto do produto
-                    </Text>
                 </View>
 
                 <View style={styles.section}>
@@ -769,10 +858,19 @@ export default function NovoProduto() {
                 </View>
                 <View style={styles.actionsContainer}>
                     <Button
-                        title={saving ? "Salvando..." : isCriar ? "Cadastrar produto" : "Salvar alterações"}
+                        title={
+                            saving
+                                ? "Salvando..."
+                                : isCriar
+                                    ? "Cadastrar produto"
+                                    : "Salvar alterações"
+                        }
                         variant="contained"
                         color="primary"
-                        disabled={(!isCriar && !isDirty && !imagemAlterada) || saving}
+                        disabled={
+                            (!isCriar && !isDirty && !imagensAlteradas) ||
+                            saving
+                        }
                         onPress={handleSubmit(onSubmit)}
                     />
 

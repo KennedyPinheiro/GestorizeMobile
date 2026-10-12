@@ -29,7 +29,7 @@ const pfSchema = z.object({
 
   data_nascimento: z
     .string()
-    .min(1, "Informe a data de nascimento"),
+    .nullable(),
 });
 
 const pjSchema = z.object({

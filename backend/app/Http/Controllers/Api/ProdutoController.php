@@ -9,11 +9,11 @@ use App\Http\Requests\UpdateProdutoRequest;
 use App\Http\Resources\ProdutoImagemResource;
 use App\Http\Resources\ProdutoResource;
 use App\Models\Produto;
-use App\Models\ProdutoImagem;
 use App\Services\ProdutoImagemService;
 use App\Services\ProdutoService;
 use App\Services\ResponseService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class ProdutoController extends Controller
 {
@@ -40,8 +40,9 @@ class ProdutoController extends Controller
         );
     }
 
-    public function store(StoreProdutoRequest $request): JsonResponse
-    {
+    public function store(
+        StoreProdutoRequest $request
+    ): JsonResponse {
         $produto = $this->service->criar(
             $request->validated()
         );
@@ -68,8 +69,9 @@ class ProdutoController extends Controller
         );
     }
 
-    public function destroy(Produto $produto): JsonResponse
-    {
+    public function destroy(
+        Produto $produto
+    ): JsonResponse {
         $this->service->excluir($produto);
 
         return ResponseService::success(
@@ -109,10 +111,24 @@ class ProdutoController extends Controller
             'Imagem principal substituída com sucesso.'
         );
     }
+
     public function definirImagemPrincipal(
-        ProdutoImagem $imagem
+        Request $request,
+        string $id
     ): JsonResponse {
-        $imagem = $this->imagemService->definirPrincipal($imagem);
+        $dados = $request->validate([
+            'imagem_id' => ['required', 'uuid'],
+        ]);
+
+        $produto = Produto::findOrFail($id);
+
+        $imagem = $produto->imagens()
+            ->where('id', $dados['imagem_id'])
+            ->firstOrFail();
+
+        $imagem = $this->imagemService->definirPrincipal(
+            $imagem
+        );
 
         return ResponseService::success(
             new ProdutoImagemResource($imagem),
@@ -121,8 +137,19 @@ class ProdutoController extends Controller
     }
 
     public function removerImagem(
-        ProdutoImagem $imagem
+        Request $request,
+        string $id
     ): JsonResponse {
+        $dados = $request->validate([
+            'imagem_id' => ['required', 'uuid'],
+        ]);
+
+        $produto = Produto::findOrFail($id);
+
+        $imagem = $produto->imagens()
+            ->where('id', $dados['imagem_id'])
+            ->firstOrFail();
+
         $this->imagemService->remover($imagem);
 
         return ResponseService::success(

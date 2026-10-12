@@ -80,16 +80,41 @@ const substituirImagemPrincipal = async (
 };
 
 const adicionarImagemProduto = async (
-    id: string,
+    produtoId: string,
     uri: string,
     principal: boolean = false
-): Promise<ResponseType<any>> => {
+) => {
+    const extensao = uri
+        .split("?")[0]
+        .split(".")
+        .pop()
+        ?.toLowerCase();
+
+    const tiposMime: Record<string, string> = {
+        jpg: "image/jpeg",
+        jpeg: "image/jpeg",
+        png: "image/png",
+        webp: "image/webp",
+        heic: "image/heic",
+        heif: "image/heif",
+    };
+
+    const extensaoValida =
+        extensao && tiposMime[extensao]
+            ? extensao
+            : "jpg";
+
+    const tipoMime =
+        tiposMime[extensaoValida];
+
     const formData = new FormData();
 
     formData.append("imagem", {
         uri,
-        name: `produto-${id}-${Date.now()}.jpg`,
-        type: "image/jpeg",
+        name: `produto-${Date.now()}-${Math.random()
+            .toString(36)
+            .slice(2)}.${extensaoValida}`,
+        type: tipoMime,
     } as any);
 
     formData.append(
@@ -100,33 +125,41 @@ const adicionarImagemProduto = async (
     const response = await getAxios({
         contentType: "formData",
     }).post(
-        `/produtos/${id}/imagem`,
+        `/produtos/${produtoId}/imagem`,
         formData
     );
 
     return response.data;
 };
-
 const removerImagemProduto = async (
-    id: string
-): Promise<ResponseType<null>> => {
+    produtoId: string,
+    imagemId: string
+) => {
     const response = await getAxios().delete(
-        `/produtos/${id}/imagem`
+        `/produtos/${produtoId}/imagem`,
+        {
+            data: {
+                imagem_id: imagemId,
+            },
+        }
     );
 
     return response.data;
 };
 
 const definirImagemPrincipal = async (
-    id: string
-): Promise<ResponseType<any>> => {
+    produtoId: string,
+    imagemId: string
+) => {
     const response = await getAxios().put(
-        `/produtos/${id}/imagem/principal`
+        `/produtos/${produtoId}/imagem/principal`,
+        {
+            imagem_id: imagemId,
+        }
     );
 
     return response.data;
 };
-
 export {
     getProdutos,
     getProduto,
