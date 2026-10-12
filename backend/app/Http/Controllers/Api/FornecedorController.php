@@ -109,9 +109,6 @@ class FornecedorController extends Controller
         );
     }
 
-    /**
-     * Remove o avatar do fornecedor.
-     */
     public function removerAvatar(string $id): JsonResponse
     {
         return ResponseService::success(
