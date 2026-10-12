@@ -91,9 +91,6 @@ class FornecedorController extends Controller
         );
     }
 
-    /**
-     * Atualiza o avatar do fornecedor.
-     */
     public function atualizarAvatar(
         FornecedorImagemRequest $request,
         string $id
