@@ -85,8 +85,6 @@ export default function GaleriaImagens({
         }
 
         onChange(combinadas);
-
-        onChange(combinadas);
     };
 
     const removerImagem = (id: string) => {

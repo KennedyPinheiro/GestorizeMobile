@@ -14,7 +14,7 @@ class ProdutoImagemRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'imagem' => ['required', 'image', 'mimes:jpeg,jpg,png,webp', 'max:5120',],
+            'imagem' => ['required', 'image', 'mimes:jpeg,jpg,png,webp', 'max:10240',],
             'principal' => ['sometimes', 'boolean',],
         ];
     }

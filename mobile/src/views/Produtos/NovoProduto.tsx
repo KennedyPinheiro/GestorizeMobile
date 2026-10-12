@@ -239,6 +239,11 @@ export default function NovoProduto() {
                     })
                 );
 
+                console.log(
+                    'Imagens recebidas pela galeria:',
+                    JSON.stringify(imagensProduto, null, 2)
+                );
+
                 setImagens(imagensProduto);
                 setImagensOriginais(imagensProduto);
             } catch (error: any) {
@@ -477,20 +482,51 @@ export default function NovoProduto() {
 
                 if (imagens.length > 0) {
                     const imagensOrdenadas = [
-                        ...imagens.filter(
-                            (imagem) => !imagem.principal
-                        ),
-                        ...imagens.filter(
-                            (imagem) => imagem.principal
-                        ),
+                        ...imagens.filter((imagem) => !imagem.principal),
+                        ...imagens.filter((imagem) => imagem.principal),
                     ];
 
-                    for (const imagem of imagensOrdenadas) {
-                        await adicionarImagemProduto(
-                            novoProdutoId,
-                            imagem.uri,
-                            imagem.principal
+                    console.log(
+                        `[Galeria] Total de imagens: ${imagensOrdenadas.length}`
+                    );
+
+                    for (let index = 0; index < imagensOrdenadas.length; index++) {
+                        const imagem = imagensOrdenadas[index];
+
+                        console.log(
+                            `[Galeria] Enviando imagem ${index + 1}/${imagensOrdenadas.length}`,
+                            {
+                                uri: imagem.uri,
+                                principal: imagem.principal,
+                                nova: imagem.nova,
+                            }
                         );
+
+                        try {
+                            const response = await adicionarImagemProduto(
+                                novoProdutoId,
+                                imagem.uri,
+                                imagem.principal
+                            );
+
+                            console.log(
+                                `[Galeria] Imagem ${index + 1} enviada com sucesso`,
+                                response
+                            );
+                        } catch (error: any) {
+                            console.error(
+                                `[Galeria] Falha na imagem ${index + 1}`,
+                                {
+                                    status: error?.response?.status,
+                                    data: error?.response?.data,
+                                    message: error?.message,
+                                    code: error?.code,
+                                    uri: imagem.uri,
+                                }
+                            );
+
+                            throw error;
+                        }
                     }
                 }
 
