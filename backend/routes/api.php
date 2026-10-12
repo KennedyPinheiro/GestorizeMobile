@@ -54,11 +54,26 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::prefix('fornecedores')->group(function () {
-        Route::get('/', [FornecedorController::class, 'index']);
-        Route::post('/', [FornecedorController::class, 'store']);
-        Route::get('/{id}', [FornecedorController::class, 'show']);
-        Route::put('/{id}', [FornecedorController::class, 'update']);
-        Route::delete('/{id}', [FornecedorController::class, 'destroy']);
+        Route::get('/', [FornecedorController::class, 'index'])
+            ->middleware('permission:fornecedores.ver');
+
+        Route::post('/', [FornecedorController::class, 'store'])
+            ->middleware('permission:fornecedores.criar');
+
+        Route::get('/{id}', [FornecedorController::class, 'show'])
+            ->middleware('permission:fornecedores.ver');
+
+        Route::put('/{id}', [FornecedorController::class, 'atualizar'])
+            ->middleware('permission:fornecedores.editar');
+
+        Route::delete('/{id}', [FornecedorController::class, 'destroy'])
+            ->middleware('permission:fornecedores.excluir');
+
+        Route::post('/{id}/imagem', [FornecedorController::class, 'atualizarAvatar'])
+            ->middleware('permission:fornecedores.editar');
+
+        Route::delete('/{id}/imagem', [FornecedorController::class, 'removerAvatar'])
+            ->middleware('permission:fornecedores.editar');
     });
     Route::prefix('orcamentos')->group(function () {
         Route::get('/', [OrcamentoController::class, 'index']);
