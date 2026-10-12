@@ -62,9 +62,6 @@ class FornecedorService
         });
     }
 
-    /**
-     * Busca um fornecedor pelo identificador.
-     */
     public function buscar(string $id): Fornecedor
     {
         return Fornecedor::with('endereco')
