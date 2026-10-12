@@ -200,7 +200,6 @@ const Produtos = () => {
                 renderItem={({ item }) => (
                     <Produto
                         nome={item.nome}
-                        descricao={item.descricao}
                         preco={item.preco_venda}
                         estoque={item.estoque}
                         unidade={item.unidade_medida_sigla}
