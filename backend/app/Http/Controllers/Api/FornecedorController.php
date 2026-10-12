@@ -48,9 +48,6 @@ class FornecedorController extends Controller
         ], 201);
     }
 
-    /**
-     * Busca um fornecedor.
-     */
     public function show(string $id): JsonResponse
     {
         return ResponseService::success(
