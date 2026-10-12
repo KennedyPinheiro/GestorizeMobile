@@ -19,9 +19,6 @@ class FornecedorController extends Controller
         private FornecedorImagemService $imagemService,
     ) {}
 
-    /**
-     * Lista os fornecedores.
-     */
     public function index(): JsonResponse
     {
         return ResponseService::success(
