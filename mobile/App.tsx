@@ -14,8 +14,6 @@ import Produtos from '@views/Produtos/index';
 import Fornecedores from '@views/Fornecedores/index';
 import Funcionarios from '@views/Funcionarios/index';
 import { RootStackParamList } from '@context/types';
-import ForgoutPassword from '@views/ForgoutPassword';
-import ResetPassword from '@views/ResetPasswor';
 import UserPerfil from '@views/perfil/UserPerfil';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { ThemeProvider, useThemeToggle } from '@context/ThemeContext';
@@ -51,8 +49,6 @@ const AppNavigator = () => {
         {!token ? (
           <>
             <Stack.Screen name="Login" component={Login} />
-            <Stack.Screen name="ForgoutPassword" component={ForgoutPassword} />
-            <Stack.Screen name="ResetPassword" component={ResetPassword} />
           </>
         ) : (
           <>
