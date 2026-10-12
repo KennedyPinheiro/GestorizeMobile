@@ -31,9 +31,6 @@ class FornecedorController extends Controller
         );
     }
 
-    /**
-     * Cadastra um fornecedor.
-     */
     public function store(
         StoreFornecedorRequest $request
     ): JsonResponse {
