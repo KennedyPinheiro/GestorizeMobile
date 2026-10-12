@@ -130,7 +130,6 @@ const supabase = {
       }
     },
     async getSession() {
-      // não há endpoint dedicado; retornamos token já usado no axios (se salvo)
       return { data: { session: null }, error: null };
     },
     onAuthStateChange() {
