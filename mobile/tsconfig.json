@@ -2,7 +2,6 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
-    "baseUrl": ".",
     "paths": {
       "@components/*": ["./src/components/*"],
       "@images*": ["./assets/images/*"],
@@ -10,13 +9,14 @@
       "@routes/*": ["./routes/*"],
       "@lib/*": ["./lib/*"],
       "@core/*": ["./src/@core/*"],
-      "@App": ["App.tsx"],
+      "@App": ["./App.tsx"],
       "@context/*": ["./src/context/*"],
       "@api/*": ["./src/api/*"],
       "@configs/*": ["./src/configs/*"],
       "@utils/*": ["./src/utils/*"],
       "@@core/*": ["./src/@core/*"],
-      "@assets/*": ["assets/*"]
+      "@assets/*": ["./assets/*"],
+      "@schemas/*":["./src/schemas"]
     }
   }
 }
