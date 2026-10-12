@@ -78,9 +78,6 @@ class FornecedorController extends Controller
         );
     }
 
-    /**
-     * Exclui um fornecedor.
-     */
     public function destroy(string $id): JsonResponse
     {
         $result = $this->service->deletar($id);
