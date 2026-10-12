@@ -9,7 +9,7 @@ export type Avatar = {
 export type Opcao = {
   id?: string;
   nome?: string;
-  
+
 
 };
 export type ErrorResponseType = {
@@ -228,6 +228,10 @@ export type RootStackParamList = {
   NovoProduto: {
     modo: "criar" | "editar"
     produtoId?: string
+  }
+  NovoFornecedor: {
+    modo: "criar" | "editar"
+    fornecedorId?: string
   }
 
 
