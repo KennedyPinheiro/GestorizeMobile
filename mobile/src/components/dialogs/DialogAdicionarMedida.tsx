@@ -9,8 +9,6 @@ import {
 import EditableTextCard from '@components/EditableTextCard';
 import Button from '@components/botoes/Button';
 import ErrorSidebarAlert from '@components/sidebars/ErrorSidebarAlert';
-import { MedidaType } from '@context/types';
-import { supabase } from '@lib/supabase';
 
 interface Props {
   open: boolean;

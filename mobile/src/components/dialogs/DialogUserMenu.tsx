@@ -9,12 +9,11 @@ import {
 } from 'react-native';
 import HomeButton from '@components/botoes/HomeButton';
 import { MaterialIcons } from '@expo/vector-icons';
-import { supabase } from '@lib/supabase';
 import ErrorSidebarAlert from '@components/sidebars/ErrorSidebarAlert';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '@context/AuthContext';
-import { EnderecoTipo, RootStackParamList } from '@context/types';
+import {  RootStackParamList } from '@context/types';
 import { formatarCampo } from '@core/utils/format';
 
 type Props = {
@@ -30,7 +29,6 @@ const DialogUserMenu = ({ show, onClose }: Props) => {
   const slideAnim = useRef(new Animated.Value(width)).current;
   const [errorVisible, setErrorVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [endereco, setEndereco] = useState<EnderecoTipo[]>([]);
 
   const { user, signOut } = useAuth();
 

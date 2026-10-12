@@ -11,7 +11,6 @@ import * as Linking from 'expo-linking';
 import PasswordInputCard from '@components/PasswordInpuCard';
 import Button from '@components/botoes/Button';
 import { useNavigation } from '@react-navigation/native';
-import { supabase } from '@lib/supabase';
 
 const styles = StyleSheet.create({
   container: {

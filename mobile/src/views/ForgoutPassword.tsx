@@ -8,7 +8,6 @@ import {
 } from 'react-native';
 import InputCard from '@components/InputCard';
 import Button from '@components/botoes/Button';
-import { supabase } from '@lib/supabase';
 import { useNavigation } from '@react-navigation/native';
 import Voltar from '@components/botoes/Voltar';
 
