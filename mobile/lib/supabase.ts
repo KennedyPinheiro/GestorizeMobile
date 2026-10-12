@@ -29,7 +29,6 @@ class TableQuery {
       const { data } = await api.get(`/${this.table}`);
       let rows: any[] = data?.data ?? data ?? [];
 
-      // filtros simples
       rows = rows.filter((row) =>
         Object.entries(this.filters).every(([col, val]) => row[col] === val),
       );
