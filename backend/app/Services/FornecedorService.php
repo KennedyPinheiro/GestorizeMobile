@@ -117,9 +117,7 @@ class FornecedorService
         });
     }
 
-    /**
-     * Exclui um fornecedor.
-     */
+  
     public function deletar(string $id): array
     {
         $fornecedor = Fornecedor::findOrFail($id);
