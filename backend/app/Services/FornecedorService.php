@@ -23,9 +23,6 @@ class FornecedorService
             ->get();
     }
 
-    /**
-     * Cadastra um fornecedor.
-     */
     public function criar(array $dados): Fornecedor
     {
         return DB::transaction(function () use ($dados) {
