@@ -60,9 +60,6 @@ class FornecedorController extends Controller
         );
     }
 
-    /**
-     * Atualiza os dados de um fornecedor.
-     */
     public function atualizar(
         UpdateFornecedorRequest $request,
         string $id
