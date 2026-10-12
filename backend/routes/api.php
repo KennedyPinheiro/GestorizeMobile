@@ -15,9 +15,9 @@ Route::post('login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
-    Route::get('/categorias', [CategoriaController::class, 'index']);
-    Route::post('/categorias', [CategoriaController::class, 'store']);
-    Route::get('/unidades-medida', [UnidadeMedidaController::class, 'index']);
+    Route::get('/categorias', [CategoriaController::class, 'index'])->middleware('permission:produtos.ver');
+    Route::post('/categorias', [CategoriaController::class, 'store'])->middleware('permission:produtos.criar');;
+    Route::get('/unidades-medida', [UnidadeMedidaController::class, 'index'])->middleware('permission:produtos.ver');;
 
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('refresh', [AuthController::class, 'refresh']);
@@ -51,7 +51,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/{id}/imagem',   [ProdutoController::class, 'adicionarImagem'])->middleware('permission:produtos.editar');
         Route::delete('/{id}/imagem', [ProdutoController::class, 'removerImagem'])->middleware('permission:produtos.editar');
 
-        Route::put('/{id}/imagem/principal', [ProdutoController::class, 'definirImagemPrincipal'])->middleware('permission:produtos.editar');
+        Route::put('/{id}/imagem/principal', [ProdutoController::class, 'definirImagemPrincipal'])->middleware('permission:produtos.criar');
+        Route::post('{id}/imagem/principal', [ProdutoController::class, 'substituirImagemPrincipal'])->middleware('permission:produtos.editar');
     });
 
     Route::prefix('fornecedores')->group(function () {

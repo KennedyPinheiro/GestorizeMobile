@@ -5,7 +5,7 @@ import {
     ResponseType,
 } from "@context/types";
 
-import { produtoSchema } from "src/schemas/ProdutoSchema";
+import { produtoSchema } from "@schemas/ProdutoSchema";
 import { z } from "zod";
 
 const getProdutos = async (): Promise<
@@ -52,6 +52,28 @@ const deleteProduto = async (
 ): Promise<ResponseType<null>> => {
     const response = await getAxios().delete(
         `/produtos/${id}`
+    );
+
+    return response.data;
+};
+
+const substituirImagemPrincipal = async (
+    id: string,
+    uri: string
+): Promise<ResponseType<any>> => {
+    const formData = new FormData();
+
+    formData.append("imagem", {
+        uri,
+        name: `produto-${id}-${Date.now()}.jpg`,
+        type: "image/jpeg",
+    } as any);
+
+    const response = await getAxios({
+        contentType: "formData",
+    }).post(
+        `/produtos/${id}/imagem/principal`,
+        formData
     );
 
     return response.data;
@@ -114,4 +136,5 @@ export {
     adicionarImagemProduto,
     removerImagemProduto,
     definirImagemPrincipal,
+    substituirImagemPrincipal,
 };

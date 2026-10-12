@@ -16,7 +16,7 @@
       "@utils/*": ["./src/utils/*"],
       "@@core/*": ["./src/@core/*"],
       "@assets/*": ["./assets/*"],
-      "@schemas/*":["./src/schemas"]
+      "@schemas/*":["./src/schemas/*"]
     }
   }
 }

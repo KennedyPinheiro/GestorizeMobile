@@ -95,6 +95,20 @@ class ProdutoController extends Controller
         );
     }
 
+    public function substituirImagemPrincipal(
+        ProdutoImagemRequest $request,
+        Produto $produto
+    ): JsonResponse {
+        $imagem = $this->imagemService->substituirPrincipal(
+            $produto,
+            $request->file('imagem')
+        );
+
+        return ResponseService::success(
+            new ProdutoImagemResource($imagem),
+            'Imagem principal substituída com sucesso.'
+        );
+    }
     public function definirImagemPrincipal(
         ProdutoImagem $imagem
     ): JsonResponse {

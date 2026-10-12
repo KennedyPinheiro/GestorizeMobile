@@ -30,18 +30,19 @@ import { Opcao, RootStackParamList } from "@context/types";
 import { useTheme } from "@context/ThemeContext";
 
 import {
+    adicionarImagemProduto,
     createProduto,
     deleteProduto,
     getProduto,
+    removerImagemProduto,
+    substituirImagemPrincipal,
     updateProduto,
 } from "@api/apiProdutos";
-
-import { produtoSchema } from "src/schemas/ProdutoSchema";
-
 import Toast from "react-native-toast-message";
 import Selector from "@components/Selector";
 import { dateFromApi, dateToApi, formatDate, onlyLettersAndNumbers, onlyNumbers, parsePercent, parseReal } from "@core/utils/format";
 import { createCategoria, getCategorias, getUnidadesMedida } from "@api/apiCategoria";
+import { produtoSchema } from "@schemas/ProdutoSchema";
 type Navigation =
     NativeStackNavigationProp<RootStackParamList>;
 
@@ -386,11 +387,22 @@ export default function NovoProduto() {
 
             if (isCriar) {
                 const response = await createProduto(payload);
+                const novoProdutoId = response.data.id;
+
+                if (imagem) {
+                    await adicionarImagemProduto(
+                        novoProdutoId,
+                        imagem,
+                        true
+                    );
+                }
 
                 Toast.show({
                     type: "success",
                     text1: "Produto cadastrado",
-                    text2: "O produto foi cadastrado com sucesso.",
+                    text2: imagem
+                        ? "Produto e imagem cadastrados com sucesso."
+                        : "O produto foi cadastrado com sucesso.",
                 });
 
                 navigation.goBack();
@@ -399,14 +411,24 @@ export default function NovoProduto() {
 
             if (isEditar && produtoId) {
                 if (isDirty) {
-                    const response = await updateProduto(produtoId, payload);
-
-                    Toast.show({
-                        type: "success",
-                        text1: "Produto atualizado",
-                        text2: response.message ?? "Alterações salvas com sucesso.",
-                    });
+                    await updateProduto(produtoId, payload);
                 }
+                if (imagemAlterada) {
+                    if (imagem) {
+                        await substituirImagemPrincipal(
+                            produtoId,
+                            imagem
+                        );
+                    } else if (imagemOriginal) {
+                        await removerImagemProduto(produtoId);
+                    }
+                }
+                Toast.show({
+                    type: "success",
+                    text1: "Produto atualizado",
+                    text2: "Alterações salvas com sucesso.",
+                });
+
                 reset(data);
                 setImagemOriginal(imagem);
             }
@@ -414,7 +436,9 @@ export default function NovoProduto() {
             Toast.show({
                 type: "error",
                 text1: "Erro ao salvar produto",
-                text2: error?.response?.data?.message ?? "Não foi possível salvar as alterações.",
+                text2:
+                    error?.response?.data?.message ??
+                    "Não foi possível salvar as alterações.",
             });
         } finally {
             setSaving(false);

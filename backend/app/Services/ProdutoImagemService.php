@@ -35,7 +35,48 @@ class ProdutoImagemService
             ]);
         });
     }
+    public function substituirPrincipal(
+        Produto $produto,
+        UploadedFile $imagem
+    ): ProdutoImagem {
+        return DB::transaction(function () use ($produto, $imagem) {
+            $imagemAnterior = $produto->imagens()
+                ->where('principal', true)
+                ->first();
 
+            $caminhoAnterior = $imagemAnterior?->caminho;
+
+            $caminho = $imagem->store(
+                "produtos/{$produto->id}",
+                'public'
+            );
+
+            if (!$caminho) {
+                throw new \RuntimeException(
+                    'Não foi possível armazenar a imagem do produto.'
+                );
+            }
+
+            if ($imagemAnterior) {
+                $imagemAnterior->update([
+                    'caminho' => $caminho,
+                ]);
+
+                $imagemAnterior->save();
+
+                if ($caminhoAnterior) {
+                    Storage::disk('public')->delete($caminhoAnterior);
+                }
+
+                return $imagemAnterior->fresh();
+            }
+
+            return $produto->imagens()->create([
+                'caminho' => $caminho,
+                'principal' => true,
+            ]);
+        });
+    }
     public function definirPrincipal(
         ProdutoImagem $imagem
     ): ProdutoImagem {
