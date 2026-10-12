@@ -30,7 +30,6 @@ const toDate = (value?: string | null): Date => {
         );
     }
 
-    // Sem data selecionada, utiliza a data atual.
     return new Date();
 };
 
