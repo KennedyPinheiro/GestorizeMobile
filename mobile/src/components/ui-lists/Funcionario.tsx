@@ -27,7 +27,6 @@ const Funcionario = ({ nome, email, role, onPress }: Props) => {
   const circleColor = isDark ? '#09377B' : 'rgba(6, 32, 70, 0.22)';
   const arrowColor = isDark ? '#ffffff' : '#062046';
 
-  // 🎯 badge com leve diferenciação por role
   const badgeBg = isDark
     ? role === 'Gestor'
       ? 'rgba(255,215,0,0.3)'
