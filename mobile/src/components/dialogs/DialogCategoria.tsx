@@ -12,7 +12,6 @@ import BarraAdd from '@components/utilities/BarraAdd';
 import DialogAdicionarCategoria from '@components/dialogs/DialogAdicionarCategoria';
 import { CategoriaType } from '@context/types';
 import Categoria from '@components/ui-lists/Categoria';
-import { supabase } from '@lib/supabase'; // ajuste conforme seu caminho real
 
 type props = {
   open?: boolean;
