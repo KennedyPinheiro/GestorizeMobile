@@ -102,17 +102,6 @@ export type PessoaJuridicaType = {
   telefone: string;
 };
 
-export type FornecedorTipo = {
-  id: number;
-  razao_social: string;
-  ramo_de_atividade: string;
-  telefone: string;
-  cnpj?: string;
-  email: string;
-  endereco_id: number;
-  nome_responsavel: string;
-  chave_pix: string;
-};
 export type FuncionarioTipo = {
   id: string;
   nome: string;
@@ -139,13 +128,14 @@ export type EnderecoType = {
 };
 
 export type FornecedorType = {
-  id: number;
-  razao_social: string;
+  id: string;
+  nome: string;
   cnpj: string;
   ramo_atividade: string;
   telefone: string;
   email: string;
-  endereco_id: EnderecoType;
+  endereco: EnderecoType | null;
+  avatar_url:string;
   nome_responsavel: string;
   chave_pix: string;
   data_criacao: StringfiedDate;

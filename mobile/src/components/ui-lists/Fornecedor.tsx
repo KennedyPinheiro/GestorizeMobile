@@ -6,6 +6,7 @@ type Props = {
   nome: string;
   email: string;
   local?: string;
+  avatar?: string
   tipo?: string;
   onPress?: () => void;
 };
