@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -21,5 +23,28 @@ class Fornecedor extends Model
         'nome_responsavel',
         'chave_pix',
         'endereco_id',
+        'avatar',
     ];
+
+    protected $appends = [
+        'avatar_url',
+    ];
+    protected $hidden = [
+        'avatar',
+    ];
+
+
+    protected function avatarUrl(): Attribute
+    {
+        return Attribute::get(
+            fn() => $this->avatar
+                ? url(Storage::disk('public')->url($this->avatar))
+                : null
+        );
+    }
+
+    public function endereco()
+    {
+        return $this->belongsTo(Endereco::class);
+    }
 }
