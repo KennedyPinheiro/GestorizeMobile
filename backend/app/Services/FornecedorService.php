@@ -71,9 +71,6 @@ class FornecedorService
             ->findOrFail($id);
     }
 
-    /**
-     * Atualiza os dados de um fornecedor.
-     */
     public function atualizar(
         string $id,
         array $dados
