@@ -1,6 +1,6 @@
 import { getAxios } from "@configs/axios";
 import { ArrayResponseType, ClienteType, ResponseType } from "@context/types";
-import { clienteSchema } from "src/schemas/ClienteSchema";
+import { clienteSchema } from "@schemas/ClienteSchema";
 import { z } from "zod";
 
 const getClientes = async (): Promise<ArrayResponseType<ClienteType>> => {

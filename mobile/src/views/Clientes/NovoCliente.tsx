@@ -19,7 +19,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { RootStackParamList } from "@context/types";
 import { useTheme } from "@context/ThemeContext";
-import { clienteSchema } from "src/schemas/ClienteSchema";
+import { clienteSchema } from "@schemas/ClienteSchema";
 import { createCliente, deleteCliente, getCliente, removeClienteAvatar, updateCliente, updateClienteAvatar } from "@api/apiClientes";
 import Toast from "react-native-toast-message";
 import DialogConfirmarAcao from "@components/dialogs/DialogConfirmarAcao";
