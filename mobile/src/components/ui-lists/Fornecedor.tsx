@@ -230,7 +230,6 @@ const Fornecedor = ({
                 </View>
               )}
 
-              {/* Ramo de atividade no modo compacto */}
               {compactLists && ramo_atividade ? (
                 <Text
                   numberOfLines={1}
