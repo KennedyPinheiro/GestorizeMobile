@@ -153,7 +153,6 @@ const Fornecedor = ({
                 ) : null}
               </View>
 
-              {/* E-mail */}
               <Text
                 numberOfLines={1}
                 style={[
