@@ -6,12 +6,10 @@ use App\Enums\PermissionEnum;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class FuncionarioStoreRequest extends FormRequest
+class StoreFuncionarioRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        // A autorização também deve ser garantida pelas permissões
-        // aplicadas às rotas da API.
         return true;
     }
 

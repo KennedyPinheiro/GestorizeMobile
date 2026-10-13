@@ -3,14 +3,14 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\FuncionarioStoreRequest;
+use App\Http\Requests\FuncionarioImagemRequest;
+use App\Http\Requests\StoreFuncionarioRequest;
+use App\Http\Requests\UpdateFuncionarioRequest;
 use App\Http\Resources\FuncionarioResource;
 use App\Services\FuncionarioImagemService;
 use App\Services\FuncionarioService;
 use App\Services\ResponseService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-
 
 class FuncionarioController extends Controller
 {
@@ -19,8 +19,17 @@ class FuncionarioController extends Controller
         private FuncionarioImagemService $imagemService,
     ) {}
 
+    public function index(): JsonResponse
+    {
+        return ResponseService::success(
+            FuncionarioResource::collection(
+                $this->service->listar()
+            )
+        );
+    }
+
     public function store(
-        FuncionarioStoreRequest $request
+        StoreFuncionarioRequest $request
     ): JsonResponse {
         $funcionario = $this->service->criar(
             $request->validated()
@@ -28,32 +37,54 @@ class FuncionarioController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Funcionário criado com sucesso.',
+            'message' => 'Funcionário cadastrado com sucesso.',
             'data' => new FuncionarioResource($funcionario),
         ], 201);
     }
 
-    public function atualizarAvatar(
-        Request $request,
+    public function show(string $id): JsonResponse
+    {
+        $funcionario = $this->service->buscar($id);
+
+        return ResponseService::success(
+            new FuncionarioResource($funcionario)
+        );
+    }
+
+    public function atualizar(
+        UpdateFuncionarioRequest $request,
         string $id
     ): JsonResponse {
-        $request->validate([
-            'avatar' => [
-                'required',
-                'image',
-                'mimes:jpeg,jpg,png,webp',
-                'max:5120',
-            ],
-        ]);
+        $funcionario = $this->service->atualizar(
+            $id,
+            $request->validated()
+        );
 
+        return ResponseService::success(
+            new FuncionarioResource($funcionario)
+        );
+    }
+
+    public function destroy(string $id): JsonResponse
+    {
+        $this->service->deletar($id);
+
+        return ResponseService::success([
+            'message' => 'Funcionário removido com sucesso.',
+        ]);
+    }
+
+    public function atualizarAvatar(
+        FuncionarioImagemRequest $request,
+        string $id
+    ): JsonResponse {
         $funcionario = $this->imagemService->salvar(
             $id,
             $request->file('avatar')
         );
 
         return ResponseService::success(
-            new FuncionarioResource($funcionario),
-            'Avatar atualizado com sucesso.'
+            new FuncionarioResource($funcionario)
         );
     }
 
@@ -62,10 +93,7 @@ class FuncionarioController extends Controller
         $funcionario = $this->imagemService->remover($id);
 
         return ResponseService::success(
-            new FuncionarioResource($funcionario),
-            'Avatar removido com sucesso.'
+            new FuncionarioResource($funcionario)
         );
     }
-
-    
 }
