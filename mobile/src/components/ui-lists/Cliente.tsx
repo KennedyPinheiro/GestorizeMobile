@@ -165,7 +165,6 @@ const Cliente = ({
                 {email || 'E-mail não informado'}
               </Text>
 
-              {/* Estado */}
               {!compactLists && estado ? (
                 <View style={styles.detailRow}>
                   <Ionicons
