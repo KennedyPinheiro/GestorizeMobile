@@ -120,7 +120,6 @@ const Fornecedor = ({
             </TouchableOpacity>
 
             <View style={styles.info}>
-              {/* Nome e ramo de atividade */}
               <View style={styles.header}>
                 <Text
                   numberOfLines={1}
