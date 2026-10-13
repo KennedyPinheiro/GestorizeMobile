@@ -61,8 +61,7 @@ export default function NovoCliente() {
         setValue,
         formState: {
             isDirty,
-            isValid,
-            errors,
+
         },
     } = useForm<FormData>({
         resolver: zodResolver(clienteSchema),
@@ -129,8 +128,10 @@ export default function NovoCliente() {
         }
 
         if (!clienteId) {
-            Toast.error("Cliente não informado");
-            navigation.goBack();
+            Toast.show({
+                type: "error",
+                text1: "Cliente não informado",
+            }); navigation.goBack();
             return;
         }
 
@@ -202,7 +203,10 @@ export default function NovoCliente() {
                 setAvatarOriginal(avatarUrl);
                 setAvatar(cliente.avatar_url ?? null);
             } catch (error) {
-                Toast.error("Erro ao carregar cliente");
+                Toast.show({
+                    type: "error",
+                    text1: "Erro ao carregar cliente",
+                });
             } finally {
                 setLoading(false);
             }
@@ -260,42 +264,36 @@ export default function NovoCliente() {
             }
 
             if (isEditar && clienteId) {
-                if (isDirty) {
-                    const response = await updateCliente(
-                        clienteId,
-                        payload
-                    );
+                let dadosAtualizados = false;
 
+                if (isDirty) {
+                    await updateCliente(clienteId, payload);
+                    dadosAtualizados = true;
+                }
+
+                if (avatarAlterado) {
+                    if (avatar) {
+                        await updateClienteAvatar(clienteId, avatar);
+                    } else if (avatarOriginal) {
+                        await removeClienteAvatar(clienteId);
+                    }
+
+                    dadosAtualizados = true;
+                }
+
+                if (dadosAtualizados) {
                     Toast.show({
                         type: "success",
                         text1: "Cliente atualizado",
-                        text2:
-                            response.message ??
-                            "Alterações salvas com sucesso.",
+                        text2: "As alterações foram salvas com sucesso.",
                     });
-                }
-                if (avatar !== avatarOriginal) {
-                    if (avatar) {
-                        await updateClienteAvatar(
-                            clienteId,
-                            avatar
-                        );
-                    } else if (avatarOriginal) {
-                        await removeClienteAvatar(
-                            clienteId
-                        );
-                    }
                 }
 
                 reset(data);
                 setAvatarOriginal(avatar);
             }
         } catch (error: any) {
-            console.error(
-                "Erro ao salvar cliente:",
-                error?.response?.data ?? error
-            );
-
+         
             Toast.show({
                 type: "error",
                 text1: "Erro ao salvar cliente",

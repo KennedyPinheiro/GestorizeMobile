@@ -86,7 +86,6 @@ export default function NovoFornecedor() {
         watch,
         formState: {
             isDirty,
-            errors,
         },
     } = useForm<FormData>({
         resolver: zodResolver(fornecedorSchema),
@@ -199,10 +198,7 @@ export default function NovoFornecedor() {
             setAvatar(avatarUrl);
             setAvatarOriginal(avatarUrl);
         } catch (error: any) {
-            console.error(
-                "Erro ao carregar fornecedor:",
-                error?.response?.data ?? error,
-            );
+
 
             Toast.show({
                 type: "error",
@@ -324,40 +320,36 @@ export default function NovoFornecedor() {
             }
 
             if (isEditar && fornecedorId) {
-                if (isDirty) {
-                    const response = await updateFornecedor(
-                        fornecedorId,
-                        payload,
-                    );
+                let dadosAtualizados = false;
 
-                    Toast.show({
-                        type: "success",
-                        text1: "Fornecedor atualizado",
-                        text2:
-                            response.message ??
-                            "Alterações salvas com sucesso.",
-                    });
+                if (isDirty) {
+                    await updateFornecedor(fornecedorId, payload);
+                    dadosAtualizados = true;
                 }
 
                 if (avatarAlterado) {
                     if (avatar) {
-                        await updateFornecedorAvatar(
-                            fornecedorId,
-                            avatar,
-                        );
+                        await updateFornecedorAvatar(fornecedorId, avatar);
                     } else if (avatarOriginal) {
                         await removeFornecedorAvatar(fornecedorId);
                     }
+
+                    dadosAtualizados = true;
+                }
+
+                if (dadosAtualizados) {
+                    Toast.show({
+                        type: "success",
+                        text1: "Fornecedor atualizado",
+                        text2: "As alterações foram salvas com sucesso.",
+                    });
                 }
 
                 reset(data);
                 setAvatarOriginal(avatar);
             }
         } catch (error: any) {
-            console.error(
-                "Erro ao salvar fornecedor:",
-                error?.response?.data ?? error,
-            );
+
 
             Toast.show({
                 type: "error",
