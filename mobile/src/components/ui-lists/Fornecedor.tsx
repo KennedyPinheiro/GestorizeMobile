@@ -165,7 +165,6 @@ const Fornecedor = ({
                 {email || 'E-mail não informado'}
               </Text>
 
-              {/* Informações adicionais */}
               {!compactLists && (
                 <View style={styles.details}>
                   {telefone ? (
