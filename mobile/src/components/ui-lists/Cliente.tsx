@@ -85,7 +85,6 @@ const Cliente = ({
             },
           ]}
         >
-          {/* Avatar e informações do cliente */}
           <View style={styles.left}>
             <TouchableOpacity
               activeOpacity={avatar ? 0.75 : 1}
