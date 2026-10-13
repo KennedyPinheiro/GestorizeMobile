@@ -153,7 +153,6 @@ const Cliente = ({
                 )}
               </View>
 
-              {/* E-mail */}
               <Text
                 numberOfLines={1}
                 style={[
