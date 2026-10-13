@@ -244,7 +244,6 @@ const Cliente = ({
             />
           </TouchableOpacity>
 
-          {/* Imagem ampliada */}
           {avatar && (
             <Pressable
               style={styles.imageContainer}
