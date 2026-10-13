@@ -243,7 +243,6 @@ const Fornecedor = ({
                 </Text>
               ) : null}
 
-              {/* Telefone no modo compacto */}
               {compactLists && telefone ? (
                 <Text
                   numberOfLines={1}
