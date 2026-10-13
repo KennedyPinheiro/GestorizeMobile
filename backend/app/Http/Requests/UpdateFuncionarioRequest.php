@@ -17,17 +17,19 @@ class UpdateFuncionarioRequest extends FormRequest
     {
         $funcionario = $this->route('funcionario');
 
-        $funcionarioId = is_object($funcionario) ? $funcionario->id : $funcionario;
+        $userId = is_object($funcionario)
+            ? $funcionario->user_id
+            : $funcionario;
 
         return [
-            'name' => ['nullable', 'string', 'max:255',],
-            'email' => ['nullable', 'email', 'max:255', Rule::unique('users', 'email')->ignore($funcionarioId),],
-            'password' => ['nullable', 'string', 'min:8', 'confirmed',],
-            'telefone' => ['nullable', 'string', 'max:20',],
-            'data_nascimento' => ['nullable', 'date', 'before:today',],
-            'cpf' => ['nullable', 'string', 'size:11', Rule::unique('funcionarios', 'cpf')->ignore($funcionarioId),],
-            'endereco_id' => ['nullable', 'uuid', Rule::exists('enderecos', 'id'),],
-            'role' => ['nullable', 'string', Rule::in(['gestor', 'funcionario',]),],
+            'name' => ['sometimes', 'required', 'string', 'max:255',],
+            'email' => ['sometimes', 'required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($userId),],
+            'password' => ['sometimes', 'nullable', 'string', 'min:8', 'confirmed',],
+            'telefone' => ['sometimes', 'nullable', 'string', 'max:20',],
+            'data_nascimento' => ['sometimes', 'nullable', 'date', 'before:today',],
+            'cpf' => ['sometimes', 'nullable', 'string', 'size:11', Rule::unique('funcionarios', 'cpf')->where('user_id', '!=', $userId),],
+            'endereco_id' => ['sometimes', 'nullable', 'uuid', Rule::exists('enderecos', 'id'),],
+            'role' => ['sometimes', 'nullable', 'string', Rule::in(['gestor', 'funcionario']),],
             'permissions' => ['sometimes', 'array',],
             'permissions.*' => ['required', 'string', 'distinct', Rule::in(PermissionEnum::values()),],
         ];

@@ -64,12 +64,17 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/{id}/imagem', [FornecedorController::class, 'atualizarAvatar'])->middleware('permission:fornecedores.editar');
         Route::delete('/{id}/imagem', [FornecedorController::class, 'removerAvatar'])->middleware('permission:fornecedores.editar');
     });
-    
-        Route::prefix('funcionarios')->middleware('auth:sanctum')->group(function () {
-            Route::post('/', [FuncionarioController::class, 'store',]);
-            Route::post('/{id}/avatar', [FuncionarioController::class, 'atualizarAvatar',]);
-            Route::delete('/{id}/avatar', [FuncionarioController::class, 'removerAvatar',]);
-        });
+
+    Route::prefix('funcionarios')->group(function () {
+        Route::get('/', [FuncionarioController::class, 'index'])->middleware('permission:funcionarios.ver');
+        Route::post('/', [FuncionarioController::class, 'store'])->middleware('permission:funcionarios.criar');
+        Route::get('/{id}', [FuncionarioController::class, 'show'])->middleware('permission:funcionarios.ver');
+        Route::put('/{id}', [FuncionarioController::class, 'atualizar'])->middleware('permission:funcionarios.editar');
+        Route::delete('/{id}', [FuncionarioController::class, 'destroy'])->middleware('permission:funcionarios.excluir');
+        
+        Route::post('/{id}/avatar', [FuncionarioController::class, 'atualizarAvatar'])->middleware('permission:funcionarios.editar');
+        Route::delete('/{id}/avatar', [FuncionarioController::class, 'removerAvatar'])->middleware('permission:funcionarios.editar');
+    });
 
     Route::prefix('orcamentos')->group(function () {
         Route::get('/', [OrcamentoController::class, 'index']);
