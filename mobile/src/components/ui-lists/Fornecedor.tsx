@@ -268,7 +268,6 @@ const Fornecedor = ({
         </View>
       </TouchableOpacity>
 
-      {/* Modal para ampliar o avatar */}
       <Modal
         visible={avatarVisivel}
         transparent
