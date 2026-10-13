@@ -300,7 +300,6 @@ const Fornecedor = ({
             />
           </TouchableOpacity>
 
-          {/* Imagem ampliada */}
           {avatar && (
             <Pressable
               style={styles.imageContainer}
