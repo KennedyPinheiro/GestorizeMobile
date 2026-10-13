@@ -229,7 +229,6 @@ const Cliente = ({
           style={styles.modalOverlay}
           onPress={fecharAvatar}
         >
-          {/* Botão de fechar */}
           <TouchableOpacity
             style={styles.closeButton}
             onPress={fecharAvatar}
