@@ -119,7 +119,6 @@ const Cliente = ({
             </TouchableOpacity>
 
             <View style={styles.info}>
-              {/* Nome e tipo de cliente */}
               <View style={styles.header}>
                 <Text
                   numberOfLines={1}
