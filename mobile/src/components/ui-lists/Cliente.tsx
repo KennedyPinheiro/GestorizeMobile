@@ -186,7 +186,6 @@ const Cliente = ({
                 </View>
               ) : null}
 
-              {/* Tipo de cliente no modo compacto */}
               {compactLists && (
                 <Text
                   numberOfLines={1}
