@@ -27,7 +27,6 @@ class FuncionarioStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // Dados do usuário
             'name' => [
                 'required',
                 'string',
@@ -48,7 +47,6 @@ class FuncionarioStoreRequest extends FormRequest
                 'confirmed',
             ],
 
-            // Dados do funcionário
             'telefone' => [
                 'required',
                 'string',
@@ -74,7 +72,6 @@ class FuncionarioStoreRequest extends FormRequest
                 Rule::exists('enderecos', 'id'),
             ],
 
-            // Perfil do usuário
             'role' => [
                 'required',
                 'string',
@@ -84,7 +81,6 @@ class FuncionarioStoreRequest extends FormRequest
                 ]),
             ],
 
-            // Permissões adicionais atribuídas diretamente ao usuário
             'permissions' => [
                 'sometimes',
                 'array',
