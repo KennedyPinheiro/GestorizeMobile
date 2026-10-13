@@ -259,7 +259,6 @@ const Fornecedor = ({
             </View>
           </View>
 
-          {/* Indicador de navegação */}
           <Ionicons
             name="chevron-forward"
             size={22}
