@@ -70,8 +70,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/', [FuncionarioController::class, 'store'])->middleware('permission:funcionarios.criar');
         Route::get('/{id}', [FuncionarioController::class, 'show'])->middleware('permission:funcionarios.ver');
         Route::put('/{id}', [FuncionarioController::class, 'atualizar'])->middleware('permission:funcionarios.editar');
-        Route::delete('/{id}', [FuncionarioController::class, 'destroy'])->middleware('permission:funcionarios.excluir');
-        
+        Route::delete('/{id}', [FuncionarioController::class, 'destroy'])->middleware('permission:funcionarios.excluir', 'prevent.admin.self.deletion');
+
         Route::post('/{id}/avatar', [FuncionarioController::class, 'atualizarAvatar'])->middleware('permission:funcionarios.editar');
         Route::delete('/{id}/avatar', [FuncionarioController::class, 'removerAvatar'])->middleware('permission:funcionarios.editar');
     });
