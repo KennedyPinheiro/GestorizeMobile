@@ -268,6 +268,9 @@ const Fornecedores = () => {
                     <Fornecedor
                         nome={item.nome}
                         email={item.email}
+                        telefone={item.telefone}
+                        ramo_atividade={item.ramo_atividade}
+                        nome_responsavel={item.nome_responsavel}
                         avatar={item.avatar_url}
                         onPress={() =>
                             navigation.navigate('NovoFornecedor', {

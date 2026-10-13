@@ -1,14 +1,17 @@
-import React from 'react';
+import { useState } from 'react';
+
 import {
-  View,
-  StyleSheet,
-  Text,
+  Image,
+  Modal,
   TouchableOpacity,
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  StatusBar,
 } from 'react-native';
 
 import { Ionicons } from '@expo/vector-icons';
-
-import Avatar from '@components/Avatar';
 
 import { useTheme, useThemeToggle } from '@context/ThemeContext';
 
@@ -17,7 +20,7 @@ type Props = {
   nome: string;
   email: string | null;
   avatar?: string | null;
-  estado?: string;
+  estado?: string | null;
   onPress?: () => void;
 };
 
@@ -29,6 +32,8 @@ const Cliente = ({
   estado,
   onPress,
 }: Props) => {
+  const [avatarVisivel, setAvatarVisivel] = useState(false);
+
   const { colors } = useTheme();
   const { compactLists } = useThemeToggle();
 
@@ -38,132 +43,229 @@ const Cliente = ({
   const textColor = isDark ? '#ffffff' : '#0f172a';
   const subText = isDark ? '#cbd5e1' : '#6b7280';
 
-  const arrowColor = isDark
-    ? '#ffffff'
-    : '#062046';
+  const circleColor = isDark
+    ? '#09377B'
+    : 'rgba(6, 32, 70, 0.22)';
 
-  const badgeBackground = isDark
-    ? tipo === 'PJ'
-      ? 'rgba(0,0,0,0.35)'
-      : 'rgba(255,255,255,0.18)'
-    : tipo === 'PJ'
-      ? 'rgba(0,104,255,0.15)'
-      : 'rgba(0,104,255,0.10)';
+  const arrowColor = isDark ? '#ffffff' : '#062046';
 
-  const badgeTextColor = isDark
-    ? '#ffffff'
-    : '#062046';
+  const badgeBg = isDark
+    ? 'rgba(255,255,255,0.2)'
+    : 'rgba(0,104,255,0.2)';
+
+  const badgeText = isDark ? '#ffffff' : '#062046';
+
+  const iconName =
+    tipo === 'PF' ? 'person-outline' : 'business-outline';
+
+  const abrirAvatar = () => {
+    if (avatar) {
+      setAvatarVisivel(true);
+    }
+  };
+
+  const fecharAvatar = () => {
+    setAvatarVisivel(false);
+  };
 
   return (
-    <TouchableOpacity
-      activeOpacity={0.9}
-      onPress={onPress}
-    >
-      <View
-        style={[
-          styles.card,
-          compactLists && styles.cardCompact,
-          {
-            backgroundColor: cardBg,
-            shadowColor: isDark
-              ? '#ffffff'
-              : '#000000',
-            shadowOpacity: isDark ? 0.08 : 0.8,
-          },
-        ]}
+    <>
+      <TouchableOpacity
+        activeOpacity={0.9}
+        onPress={onPress}
       >
-        <View style={styles.left}>
-
-          <Avatar
-            nome={nome}
-            imageUri={avatar}
-            size={compactLists ? 40 : 85}
-          />
-
-          <View style={styles.info}>
-
-            <Text
-              numberOfLines={1}
-              style={[
-                styles.title,
-                compactLists && styles.titleCompact,
-                { color: textColor },
-              ]}
+        <View
+          style={[
+            styles.card,
+            compactLists && styles.cardCompact,
+            {
+              backgroundColor: cardBg,
+              shadowColor: isDark ? '#ffffff' : '#000000',
+              shadowOpacity: isDark ? 0.08 : 0.8,
+            },
+          ]}
+        >
+          {/* Avatar e informações do cliente */}
+          <View style={styles.left}>
+            <TouchableOpacity
+              activeOpacity={avatar ? 0.75 : 1}
+              onPress={abrirAvatar}
+              disabled={!avatar}
+              accessibilityRole={avatar ? 'button' : undefined}
+              accessibilityLabel={
+                avatar ? `Ampliar foto de ${nome}` : undefined
+              }
             >
-              {nome}
-            </Text>
-
-            <View style={styles.typeRow}>
               <View
                 style={[
-                  styles.badge,
-                  compactLists && styles.badgeCompact,
-                  {
-                    backgroundColor: badgeBackground,
-                    borderColor: badgeTextColor,
-                  },
+                  styles.circle,
+                  compactLists && styles.circleCompact,
+                  { backgroundColor: circleColor },
                 ]}
               >
-                <Ionicons
-                  name={
-                    tipo === 'PF'
-                      ? 'person'
-                      : 'business'
-                  }
-                  size={compactLists ? 11 : 13}
-                  color={badgeTextColor}
-                />
-
-                <Text
-                  style={[
-                    styles.badgeText,
-                    compactLists && styles.badgeTextCompact,
-                    { color: badgeTextColor },
-                  ]}
-                >
-                  {tipo === 'PF'
-                    ? 'PESSOA FÍSICA'
-                    : 'PESSOA JURÍDICA'}
-                </Text>
+                {avatar ? (
+                  <Image
+                    source={{ uri: avatar }}
+                    style={styles.image}
+                    resizeMode="cover"
+                  />
+                ) : (
+                  <Ionicons
+                    name={iconName}
+                    size={compactLists ? 30 : 46}
+                    color={isDark ? '#ffffff' : '#062046'}
+                  />
+                )}
               </View>
-            </View>
+            </TouchableOpacity>
 
-            {!compactLists && (
-              <>
+            <View style={styles.info}>
+              {/* Nome e tipo de cliente */}
+              <View style={styles.header}>
                 <Text
                   numberOfLines={1}
                   style={[
-                    styles.subtitle,
-                    { color: subText },
+                    styles.title,
+                    compactLists && styles.titleCompact,
+                    { color: textColor },
                   ]}
                 >
-                  {email || 'Sem e-mail'}
+                  {nome}
                 </Text>
 
-                {estado && (
+                {!compactLists && (
+                  <View
+                    style={[
+                      styles.badge,
+                      { backgroundColor: badgeBg },
+                    ]}
+                  >
+                    <Text
+                      numberOfLines={1}
+                      style={[
+                        styles.badgeText,
+                        { color: badgeText },
+                      ]}
+                    >
+                      {tipo === 'PF'
+                        ? 'Pessoa física'
+                        : 'Pessoa jurídica'}
+                    </Text>
+                  </View>
+                )}
+              </View>
+
+              {/* E-mail */}
+              <Text
+                numberOfLines={1}
+                style={[
+                  styles.subtitle,
+                  compactLists && styles.subtitleCompact,
+                  { color: subText },
+                ]}
+              >
+                {email || 'E-mail não informado'}
+              </Text>
+
+              {/* Estado */}
+              {!compactLists && estado ? (
+                <View style={styles.detailRow}>
+                  <Ionicons
+                    name="location-outline"
+                    size={15}
+                    color={subText}
+                  />
+
                   <Text
                     numberOfLines={1}
                     style={[
-                      styles.subtitle,
+                      styles.detailText,
                       { color: subText },
                     ]}
                   >
                     {estado}
                   </Text>
-                )}
-              </>
-            )}
+                </View>
+              ) : null}
 
+              {/* Tipo de cliente no modo compacto */}
+              {compactLists && (
+                <Text
+                  numberOfLines={1}
+                  style={[
+                    styles.compactCategory,
+                    { color: subText },
+                  ]}
+                >
+                  {tipo === 'PF'
+                    ? 'Pessoa física'
+                    : 'Pessoa jurídica'}
+                </Text>
+              )}
+            </View>
           </View>
-        </View>
 
-        <Ionicons
-          name="chevron-forward"
-          size={compactLists ? 16 : 20}
-          color={arrowColor}
+          {/* Indicador de navegação */}
+          <Ionicons
+            name="chevron-forward"
+            size={22}
+            color={arrowColor}
+          />
+        </View>
+      </TouchableOpacity>
+
+      {/* Modal para ampliar o avatar */}
+      <Modal
+        visible={avatarVisivel}
+        transparent
+        animationType="fade"
+        statusBarTranslucent
+        onRequestClose={fecharAvatar}
+      >
+        <StatusBar
+          backgroundColor="rgba(0,0,0,0.92)"
+          barStyle="light-content"
         />
-      </View>
-    </TouchableOpacity>
+
+        <Pressable
+          style={styles.modalOverlay}
+          onPress={fecharAvatar}
+        >
+          {/* Botão de fechar */}
+          <TouchableOpacity
+            style={styles.closeButton}
+            onPress={fecharAvatar}
+            activeOpacity={0.8}
+            accessibilityRole="button"
+            accessibilityLabel="Fechar imagem ampliada"
+          >
+            <Ionicons
+              name="close"
+              size={30}
+              color="#ffffff"
+            />
+          </TouchableOpacity>
+
+          {/* Imagem ampliada */}
+          {avatar && (
+            <Pressable
+              style={styles.imageContainer}
+              onPress={(event) => event.stopPropagation()}
+            >
+              <Image
+                source={{ uri: avatar }}
+                style={styles.expandedImage}
+                resizeMode="contain"
+              />
+
+              <Text style={styles.avatarName}>
+                {nome}
+              </Text>
+            </Pressable>
+          )}
+        </Pressable>
+      </Modal>
+    </>
   );
 };
 
@@ -184,69 +286,140 @@ const styles = StyleSheet.create({
 
   cardCompact: {
     borderRadius: 12,
-    paddingVertical: 8,
-    paddingHorizontal: 10,
-    marginBottom: 7,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    marginBottom: 8,
   },
 
   left: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
-    flex: 1,
+    gap: 12,
+    minWidth: 0,
   },
 
   info: {
     flex: 1,
+    minWidth: 0,
+  },
+
+  circle: {
+    width: 65,
+    height: 65,
+    borderRadius: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
+
+  circleCompact: {
+    width: 44,
+    height: 44,
+  },
+
+  image: {
+    width: '100%',
+    height: '100%',
+  },
+
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    minWidth: 0,
+    marginBottom: 3,
   },
 
   title: {
     flexShrink: 1,
-    fontSize: 16,
-    fontWeight: '800',
-    marginBottom: 4,
+    fontSize: 18,
+    fontWeight: '900',
   },
 
   titleCompact: {
-    fontSize: 13,
-    marginBottom: 2,
-  },
-
-  typeRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 2,
+    fontSize: 15,
   },
 
   badge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 5,
-    alignSelf: 'flex-start',
-    paddingHorizontal: 8,
+    maxWidth: 115,
+    flexShrink: 1,
+    paddingHorizontal: 9,
     paddingVertical: 4,
-    borderRadius: 7,
-  },
-
-  badgeCompact: {
-    paddingHorizontal: 7,
-    paddingVertical: 3,
-    borderRadius: 6,
+    borderRadius: 12,
   },
 
   badgeText: {
-    fontWeight: '800',
-    fontSize: 10,
-    letterSpacing: 0.2,
-  },
-
-  badgeTextCompact: {
-    fontSize: 8,
-    letterSpacing: 0.1,
+    fontSize: 11,
+    fontWeight: '700',
   },
 
   subtitle: {
-    fontSize: 12,
+    fontSize: 16,
     marginTop: 3,
+  },
+
+  subtitleCompact: {
+    fontSize: 12,
+    marginTop: 2,
+  },
+
+  detailRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    minWidth: 0,
+    marginTop: 5,
+  },
+
+  detailText: {
+    flex: 1,
+    fontSize: 13,
+  },
+
+  compactCategory: {
+    fontSize: 12,
+    marginTop: 2,
+  },
+
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.92)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+  },
+
+  closeButton: {
+    position: 'absolute',
+    top: 45,
+    right: 20,
+    zIndex: 2,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255,255,255,0.15)',
+  },
+
+  imageContainer: {
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  expandedImage: {
+    width: '100%',
+    height: '75%',
+    maxHeight: 550,
+  },
+
+  avatarName: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '700',
+    marginTop: 16,
+    textAlign: 'center',
   },
 });

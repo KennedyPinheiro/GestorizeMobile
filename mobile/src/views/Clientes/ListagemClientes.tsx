@@ -114,7 +114,7 @@ const Clientes = () => {
     >
       <Nav
         title="Clientes"
-        subtitle={`${clientes.length} cadastrados`}
+        subtitle={`${filteredData.length} de ${clientes.length} cadastrados`}
         onBackPress={() => navigation.goBack()}
         rightType="add"
         onAddPress={() => navigation.navigate("NovoCliente", {

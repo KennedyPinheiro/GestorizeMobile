@@ -1,9 +1,14 @@
+import { useState } from 'react';
+
 import {
+  Image,
+  Modal,
   TouchableOpacity,
   View,
   Text,
   StyleSheet,
-  Image,
+  Pressable,
+  StatusBar,
 } from 'react-native';
 
 import { Ionicons } from '@expo/vector-icons';
@@ -14,40 +19,25 @@ type Props = {
   nome: string;
   email?: string | null;
   telefone?: string | null;
-  cnpj?: string | null;
   ramo_atividade?: string | null;
   nome_responsavel?: string | null;
-  local?: string;
+  local?: string | null;
   avatar?: string | null;
-  tipo?: string;
   onPress?: () => void;
-};
-
-const formatarCnpj = (valor?: string | null) => {
-  if (!valor) return null;
-
-  const numeros = valor.replace(/\D/g, '');
-
-  if (numeros.length !== 14) return valor;
-
-  return numeros.replace(
-    /^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/,
-    '$1.$2.$3/$4-$5',
-  );
 };
 
 const Fornecedor = ({
   nome,
   email,
   telefone,
-  cnpj,
   ramo_atividade,
   nome_responsavel,
   local,
   avatar,
-  tipo,
   onPress,
 }: Props) => {
+  const [avatarVisivel, setAvatarVisivel] = useState(false);
+
   const { colors } = useTheme();
   const { compactLists } = useThemeToggle();
 
@@ -57,197 +47,280 @@ const Fornecedor = ({
   const textColor = isDark ? '#ffffff' : '#0f172a';
   const subText = isDark ? '#cbd5e1' : '#6b7280';
 
-  const circleColor = isDark ? '#09377B' : '#e8eef7';
+  const circleColor = isDark
+    ? '#09377B'
+    : 'rgba(6, 32, 70, 0.22)';
+
   const arrowColor = isDark ? '#ffffff' : '#062046';
 
   const badgeBg = isDark
-    ? 'rgba(255,255,255,0.18)'
-    : 'rgba(0,104,255,0.10)';
+    ? 'rgba(255,255,255,0.2)'
+    : 'rgba(0,104,255,0.2)';
 
   const badgeText = isDark ? '#ffffff' : '#062046';
 
-  const cnpjFormatado = formatarCnpj(cnpj);
+  const abrirAvatar = () => {
+    if (avatar) {
+      setAvatarVisivel(true);
+    }
+  };
+
+  const fecharAvatar = () => {
+    setAvatarVisivel(false);
+  };
 
   return (
-    <TouchableOpacity activeOpacity={0.9} onPress={onPress}>
-      <View
-        style={[
-          styles.card,
-          compactLists && styles.cardCompact,
-          {
-            backgroundColor: cardBg,
-            shadowColor: isDark ? '#ffffff' : '#000000',
-            shadowOpacity: isDark ? 0.08 : 0.12,
-          },
-        ]}
+    <>
+      <TouchableOpacity
+        activeOpacity={0.9}
+        onPress={onPress}
       >
-        <View style={[styles.left, compactLists && styles.leftCompact]}>
-          {/* Avatar */}
-          <View
-            style={[
-              styles.circle,
-              compactLists && styles.circleCompact,
-              { backgroundColor: circleColor },
-            ]}
-          >
-            {avatar ? (
-              <Image
-                source={{ uri: avatar }}
-                style={styles.avatar}
-                resizeMode="cover"
-              />
-            ) : (
-              <Ionicons
-                name="business-outline"
-                size={compactLists ? 24 : 42}
-                color={isDark ? '#ffffff' : '#062046'}
-              />
-            )}
-          </View>
-
-          <View style={styles.info}>
-            {/* Nome */}
-            <Text
-              numberOfLines={1}
-              style={[
-                styles.title,
-                compactLists && styles.titleCompact,
-                { color: textColor },
-              ]}
+        <View
+          style={[
+            styles.card,
+            compactLists && styles.cardCompact,
+            {
+              backgroundColor: cardBg,
+              shadowColor: isDark ? '#ffffff' : '#000000',
+              shadowOpacity: isDark ? 0.08 : 0.8,
+            },
+          ]}
+        >
+          {/* Ícone e informações */}
+          <View style={styles.left}>
+            <TouchableOpacity
+              activeOpacity={avatar ? 0.75 : 1}
+              onPress={abrirAvatar}
+              disabled={!avatar}
+              accessibilityRole={avatar ? 'button' : undefined}
+              accessibilityLabel={
+                avatar ? `Ampliar foto de ${nome}` : undefined
+              }
             >
-              {nome}
-            </Text>
+              <View
+                style={[
+                  styles.circle,
+                  compactLists && styles.circleCompact,
+                  { backgroundColor: circleColor },
+                ]}
+              >
+                {avatar ? (
+                  <Image
+                    source={{ uri: avatar }}
+                    style={styles.image}
+                    resizeMode="cover"
+                  />
+                ) : (
+                  <Ionicons
+                    name="business-outline"
+                    size={compactLists ? 30 : 46}
+                    color={isDark ? '#ffffff' : '#062046'}
+                  />
+                )}
+              </View>
+            </TouchableOpacity>
 
-            {/* Ramo de atividade */}
-            {!compactLists && ramo_atividade ? (
-              <View style={[styles.badge, { backgroundColor: badgeBg }]}>
+            <View style={styles.info}>
+              {/* Nome e ramo de atividade */}
+              <View style={styles.header}>
                 <Text
                   numberOfLines={1}
-                  style={[styles.badgeText, { color: badgeText }]}
+                  style={[
+                    styles.title,
+                    compactLists && styles.titleCompact,
+                    { color: textColor },
+                  ]}
+                >
+                  {nome}
+                </Text>
+
+                {!compactLists && ramo_atividade ? (
+                  <View
+                    style={[
+                      styles.badge,
+                      { backgroundColor: badgeBg },
+                    ]}
+                  >
+                    <Text
+                      numberOfLines={1}
+                      style={[
+                        styles.badgeText,
+                        { color: badgeText },
+                      ]}
+                    >
+                      {ramo_atividade}
+                    </Text>
+                  </View>
+                ) : null}
+              </View>
+
+              {/* E-mail */}
+              <Text
+                numberOfLines={1}
+                style={[
+                  styles.subtitle,
+                  compactLists && styles.subtitleCompact,
+                  { color: subText },
+                ]}
+              >
+                {email || 'E-mail não informado'}
+              </Text>
+
+              {/* Informações adicionais */}
+              {!compactLists && (
+                <View style={styles.details}>
+                  {telefone ? (
+                    <View style={styles.detailRow}>
+                      <Ionicons
+                        name="call-outline"
+                        size={15}
+                        color={subText}
+                      />
+
+                      <Text
+                        numberOfLines={1}
+                        style={[
+                          styles.detailText,
+                          { color: subText },
+                        ]}
+                      >
+                        {telefone}
+                      </Text>
+                    </View>
+                  ) : null}
+
+                  {nome_responsavel ? (
+                    <View style={styles.detailRow}>
+                      <Ionicons
+                        name="person-outline"
+                        size={15}
+                        color={subText}
+                      />
+
+                      <Text
+                        numberOfLines={1}
+                        style={[
+                          styles.detailText,
+                          { color: subText },
+                        ]}
+                      >
+                        {nome_responsavel}
+                      </Text>
+                    </View>
+                  ) : null}
+
+                  {local ? (
+                    <View style={styles.detailRow}>
+                      <Ionicons
+                        name="location-outline"
+                        size={15}
+                        color={subText}
+                      />
+
+                      <Text
+                        numberOfLines={1}
+                        style={[
+                          styles.detailText,
+                          { color: subText },
+                        ]}
+                      >
+                        {local}
+                      </Text>
+                    </View>
+                  ) : null}
+                </View>
+              )}
+
+              {/* Ramo de atividade no modo compacto */}
+              {compactLists && ramo_atividade ? (
+                <Text
+                  numberOfLines={1}
+                  style={[
+                    styles.compactCategory,
+                    { color: subText },
+                  ]}
                 >
                   {ramo_atividade}
                 </Text>
-              </View>
-            ) : null}
+              ) : null}
 
-            {/* E-mail */}
-            {email ? (
-              <View style={styles.detailRow}>
-                {!compactLists && (
-                  <Ionicons
-                    name="mail-outline"
-                    size={15}
-                    color={subText}
-                  />
-                )}
-
+              {/* Telefone no modo compacto */}
+              {compactLists && telefone ? (
                 <Text
                   numberOfLines={1}
                   style={[
                     styles.subtitle,
-                    compactLists && styles.subtitleCompact,
+                    styles.subtitleCompact,
                     { color: subText },
                   ]}
                 >
-                  {email}
+                  {telefone}
                 </Text>
-              </View>
-            ) : !compactLists ? (
-              <Text style={[styles.subtitle, { color: subText }]}>
-                Sem e-mail
-              </Text>
-            ) : null}
-
-            {/* Informações adicionais no modo normal */}
-            {!compactLists && (
-              <>
-                {telefone ? (
-                  <View style={styles.detailRow}>
-                    <Ionicons
-                      name="call-outline"
-                      size={15}
-                      color={subText}
-                    />
-
-                    <Text
-                      numberOfLines={1}
-                      style={[styles.subtitle, { color: subText }]}
-                    >
-                      {telefone}
-                    </Text>
-                  </View>
-                ) : null}
-
-                {cnpjFormatado ? (
-                  <View style={styles.detailRow}>
-                    <Ionicons
-                      name="document-text-outline"
-                      size={15}
-                      color={subText}
-                    />
-
-                    <Text
-                      numberOfLines={1}
-                      style={[styles.subtitle, { color: subText }]}
-                    >
-                      CNPJ: {cnpjFormatado}
-                    </Text>
-                  </View>
-                ) : null}
-
-                {nome_responsavel ? (
-                  <View style={styles.detailRow}>
-                    <Ionicons
-                      name="person-outline"
-                      size={15}
-                      color={subText}
-                    />
-
-                    <Text
-                      numberOfLines={1}
-                      style={[styles.subtitle, { color: subText }]}
-                    >
-                      {nome_responsavel}
-                    </Text>
-                  </View>
-                ) : null}
-
-                {local ? (
-                  <View style={styles.detailRow}>
-                    <Ionicons
-                      name="location-outline"
-                      size={15}
-                      color={subText}
-                    />
-
-                    <Text
-                      numberOfLines={1}
-                      style={[styles.subtitle, { color: subText }]}
-                    >
-                      {local}
-                    </Text>
-                  </View>
-                ) : null}
-
-                {tipo ? (
-                  <View style={[styles.typeRow, { backgroundColor: badgeBg }]}>
-                    <Text style={[styles.typeText, { color: badgeText }]}>
-                      {tipo}
-                    </Text>
-                  </View>
-                ) : null}
-              </>
-            )}
+              ) : null}
+            </View>
           </View>
-        </View>
 
-        <Ionicons
-          name="chevron-forward"
-          size={compactLists ? 16 : 20}
-          color={arrowColor}
+          {/* Indicador de navegação */}
+          <Ionicons
+            name="chevron-forward"
+            size={22}
+            color={arrowColor}
+          />
+        </View>
+      </TouchableOpacity>
+
+      {/* Modal para ampliar o avatar */}
+      <Modal
+        visible={avatarVisivel}
+        transparent
+        animationType="fade"
+        statusBarTranslucent
+        onRequestClose={fecharAvatar}
+      >
+        <StatusBar
+          backgroundColor="rgba(0,0,0,0.92)"
+          barStyle="light-content"
         />
-      </View>
-    </TouchableOpacity>
+
+        <Pressable
+          style={styles.modalOverlay}
+          onPress={fecharAvatar}
+        >
+          {/* Botão de fechar */}
+          <TouchableOpacity
+            style={styles.closeButton}
+            onPress={fecharAvatar}
+            activeOpacity={0.8}
+            accessibilityRole="button"
+            accessibilityLabel="Fechar imagem ampliada"
+          >
+            <Ionicons
+              name="close"
+              size={30}
+              color="#ffffff"
+            />
+          </TouchableOpacity>
+
+          {/* Imagem ampliada */}
+          {avatar && (
+            <Pressable
+              style={styles.imageContainer}
+              onPress={(event) => event.stopPropagation()}
+            >
+              <Image
+                source={{ uri: avatar }}
+                style={styles.expandedImage}
+                resizeMode="contain"
+              />
+
+              <Text style={styles.avatarName}>
+                {nome}
+              </Text>
+            </Pressable>
+          )}
+        </Pressable>
+      </Modal>
+    </>
   );
 };
 
@@ -268,21 +341,17 @@ const styles = StyleSheet.create({
 
   cardCompact: {
     borderRadius: 12,
-    paddingVertical: 8,
-    paddingHorizontal: 10,
-    marginBottom: 7,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    marginBottom: 8,
   },
 
   left: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
-    flex: 1,
-    marginRight: 8,
-  },
-
-  leftCompact: {
-    marginRight: 6,
+    gap: 12,
+    minWidth: 0,
   },
 
   info: {
@@ -291,8 +360,8 @@ const styles = StyleSheet.create({
   },
 
   circle: {
-    width: 85,
-    height: 85,
+    width: 65,
+    height: 65,
     borderRadius: 50,
     alignItems: 'center',
     justifyContent: 'center',
@@ -300,72 +369,116 @@ const styles = StyleSheet.create({
   },
 
   circleCompact: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 44,
+    height: 44,
   },
 
-  avatar: {
+  image: {
     width: '100%',
     height: '100%',
   },
 
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    minWidth: 0,
+    marginBottom: 3,
+  },
+
   title: {
     flexShrink: 1,
-    fontSize: 16,
-    fontWeight: '800',
-    marginBottom: 4,
+    fontSize: 18,
+    fontWeight: '900',
   },
 
   titleCompact: {
-    fontSize: 13,
-    marginBottom: 2,
+    fontSize: 15,
   },
 
   badge: {
-    alignSelf: 'flex-start',
-    maxWidth: '100%',
-    paddingHorizontal: 8,
+    maxWidth: 115,
+    flexShrink: 1,
+    paddingHorizontal: 9,
     paddingVertical: 4,
-    borderRadius: 7,
-    marginBottom: 4,
+    borderRadius: 12,
   },
 
   badgeText: {
-    fontWeight: '800',
-    fontSize: 10,
-    letterSpacing: 0.2,
+    fontSize: 11,
+    fontWeight: '700',
+  },
+
+  subtitle: {
+    fontSize: 16,
+    marginTop: 3,
+  },
+
+  subtitleCompact: {
+    fontSize: 12,
+    marginTop: 2,
+  },
+
+  details: {
+    marginTop: 5,
+    gap: 4,
   },
 
   detailRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 5,
-    marginTop: 3,
+    gap: 6,
     minWidth: 0,
   },
 
-  subtitle: {
+  detailText: {
     flex: 1,
+    fontSize: 13,
+  },
+
+  compactCategory: {
     fontSize: 12,
-    marginTop: 3,
+    marginTop: 2,
   },
 
-  subtitleCompact: {
-    fontSize: 11,
-    marginTop: 0,
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.92)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
   },
 
-  typeRow: {
-    alignSelf: 'flex-start',
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 6,
-    marginTop: 5,
+  closeButton: {
+    position: 'absolute',
+    top: 45,
+    right: 20,
+    zIndex: 2,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255,255,255,0.15)',
   },
 
-  typeText: {
-    fontSize: 10,
-    fontWeight: '800',
+  imageContainer: {
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  expandedImage: {
+    width: '100%',
+    height: '75%',
+    maxHeight: 550,
+  },
+
+  avatarName: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '700',
+    marginTop: 16,
+    textAlign: 'center',
   },
 });

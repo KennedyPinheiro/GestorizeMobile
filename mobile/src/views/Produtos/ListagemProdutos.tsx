@@ -126,7 +126,7 @@ const Produtos = () => {
         >
             <Nav
                 title="Produtos"
-                subtitle={`${produtos.length} cadastrados`}
+                subtitle={`${filteredData.length} de ${produtos.length} cadastrados`}
                 onBackPress={() => navigation.goBack()}
                 rightType="add"
                 onAddPress={() =>
