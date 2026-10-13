@@ -86,7 +86,6 @@ const Fornecedor = ({
             },
           ]}
         >
-          {/* Ícone e informações */}
           <View style={styles.left}>
             <TouchableOpacity
               activeOpacity={avatar ? 0.75 : 1}
