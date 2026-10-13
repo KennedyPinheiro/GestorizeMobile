@@ -27,71 +27,16 @@ class FuncionarioStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => [
-                'required',
-                'string',
-                'max:255',
-            ],
-
-            'email' => [
-                'required',
-                'email',
-                'max:255',
-                Rule::unique('users', 'email'),
-            ],
-
-            'password' => [
-                'required',
-                'string',
-                'min:8',
-                'confirmed',
-            ],
-
-            'telefone' => [
-                'required',
-                'string',
-                'max:20',
-            ],
-
-            'data_nascimento' => [
-                'required',
-                'date',
-                'before:today',
-            ],
-
-            'cpf' => [
-                'required',
-                'string',
-                'size:11',
-                Rule::unique('funcionarios', 'cpf'),
-            ],
-
-            'endereco_id' => [
-                'nullable',
-                'uuid',
-                Rule::exists('enderecos', 'id'),
-            ],
-
-            'role' => [
-                'required',
-                'string',
-                Rule::in([
-                    'gestor',
-                    'funcionario',
-                ]),
-            ],
-
-            'permissions' => [
-                'sometimes',
-                'array',
-            ],
-
-            'permissions.*' => [
-                'required',
-                'string',
-                'distinct',
-                Rule::in(PermissionEnum::values()),
-            ],
+            'name' => ['required', 'string', 'max:255',],
+            'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email'),],
+            'password' => ['required', 'string', 'min:8', 'confirmed',],
+            'telefone' => ['nullable', 'string', 'max:20',],
+            'data_nascimento' => ['required', 'date', 'before:today',],
+            'cpf' => ['required', 'string', 'size:11', Rule::unique('funcionarios', 'cpf'),],
+            'endereco_id' => ['nullable', 'uuid', Rule::exists('enderecos', 'id'),],
+            'role' => ['required', 'string', Rule::in(['gestor', 'funcionario',]),],
+            'permissions' => ['sometimes', 'array',],
+            'permissions.*' => ['required', 'string', 'distinct', Rule::in(PermissionEnum::values()),],
         ];
     }
 
@@ -107,8 +52,6 @@ class FuncionarioStoreRequest extends FormRequest
             'password.required' => 'A senha é obrigatória.',
             'password.min' => 'A senha deve possuir pelo menos 8 caracteres.',
             'password.confirmed' => 'A confirmação da senha não corresponde.',
-
-            'telefone.required' => 'O telefone é obrigatório.',
 
             'data_nascimento.required' => 'A data de nascimento é obrigatória.',
             'data_nascimento.date' => 'Informe uma data de nascimento válida.',
