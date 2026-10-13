@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoriaController;
 use App\Http\Controllers\Api\ClienteController;
 use App\Http\Controllers\Api\FornecedorController;
+use App\Http\Controllers\Api\FuncionarioController;
 use App\Http\Controllers\Api\OrcamentoController;
 use App\Http\Controllers\Api\UnidadeMedidaController;
 use App\Http\Controllers\Api\UserController;
@@ -63,6 +64,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/{id}/imagem', [FornecedorController::class, 'atualizarAvatar'])->middleware('permission:fornecedores.editar');
         Route::delete('/{id}/imagem', [FornecedorController::class, 'removerAvatar'])->middleware('permission:fornecedores.editar');
     });
+    
+        Route::prefix('funcionarios')->middleware('auth:sanctum')->group(function () {
+            Route::post('/', [FuncionarioController::class, 'store',]);
+            Route::post('/{id}/avatar', [FuncionarioController::class, 'atualizarAvatar',]);
+            Route::delete('/{id}/avatar', [FuncionarioController::class, 'removerAvatar',]);
+        });
 
     Route::prefix('orcamentos')->group(function () {
         Route::get('/', [OrcamentoController::class, 'index']);
@@ -71,6 +78,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/{id}', [OrcamentoController::class, 'update']);
         Route::delete('/{id}', [OrcamentoController::class, 'destroy']);
     });
+
 
     Route::prefix('users')->group(function () {
         Route::get('/', [UserController::class, 'index']);
