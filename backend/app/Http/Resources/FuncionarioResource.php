@@ -11,30 +11,30 @@ class FuncionarioResource extends JsonResource
     {
         return [
             'id' => $this->id,
-
             'telefone' => $this->telefone,
-            'data_nascimento' => $this->data_nascimento,
             'cpf' => $this->cpf,
-
+            'data_nascimento' => $this->data_nascimento,
             'avatar_url' => $this->whenLoaded(
                 'user',
                 fn() => $this->user?->avatar_url
             ),
-
-            'user' => $this->whenLoaded('user', function () {
-                return [
-                    'id' => $this->user->id,
-                    'name' => $this->user->name,
-                    'email' => $this->user->email,
-                    'role' => $this->user
-                        ->getRoleNames()
-                        ->first(),
-                ];
-            }),
-
+            'nome' => $this->whenLoaded(
+                'user',
+                fn() => $this->user?->name
+            ),
+            'email' => $this->whenLoaded(
+                'user',
+                fn() => $this->user?->email
+            ),
+            'role' => $this->whenLoaded(
+                'user',
+                fn() => $this->user?->getRoleNames()->first()
+            ),
             'endereco' => $this->whenLoaded(
                 'endereco',
                 fn() => $this->endereco
+                    ? new EnderecoResource($this->endereco)
+                    : null
             ),
 
             'created_at' => $this->created_at,

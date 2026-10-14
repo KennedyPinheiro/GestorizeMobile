@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Enums\PermissionEnum;
+use App\Models\Funcionario;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -17,9 +18,11 @@ class UpdateFuncionarioRequest extends FormRequest
     {
         $funcionario = $this->route('funcionario');
 
-        $userId = is_object($funcionario)
-            ? $funcionario->user_id
-            : $funcionario;
+        if (! $funcionario instanceof Funcionario) {
+            $funcionario = Funcionario::findOrFail($funcionario);
+        }
+
+        $userId = $funcionario->user_id;
 
         return [
             'name' => ['sometimes', 'required', 'string', 'max:255',],

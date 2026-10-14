@@ -2,28 +2,31 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Funcionario extends Model
 {
-    use HasUuids, HasFactory;
-    
+    protected $primaryKey = 'id';
+
+    public $incrementing = false;
+
+    protected $keyType = 'string';
+
     protected $fillable = [
-        'user_id',
+        'id',
         'telefone',
         'data_nascimento',
         'cpf',
-        'endereco_id'
+        'endereco_id',
     ];
 
-    public function user()
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'id', 'id');
     }
 
-    public function endereco()
+    public function endereco(): BelongsTo
     {
         return $this->belongsTo(Endereco::class);
     }

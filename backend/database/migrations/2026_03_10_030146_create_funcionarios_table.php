@@ -12,19 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('funcionarios', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->uuid('user_id');
-            $table->foreign('user_id')
-                ->references('id')
-                ->on('users')
+            $table->foreignUuid('id')
+                ->primary()
+                ->constrained('users')
                 ->cascadeOnDelete();
-            $table->string('telefone')->nullable();
+
+            $table->string('telefone', 20)->nullable();
             $table->date('data_nascimento')->nullable();
-            $table->string('cpf')->nullable();
-            $table->uuid('endereco_id')->nullable();
-            $table->foreign('endereco_id')
-                 ->references('id') 
-                ->on('enderecos')
+            $table->string('cpf', 14)->unique();
+
+            $table->foreignUuid('endereco_id')
+                ->nullable()
+                ->constrained('enderecos')
                 ->nullOnDelete();
 
             $table->timestamps();

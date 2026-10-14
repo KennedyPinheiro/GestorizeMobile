@@ -2,144 +2,121 @@
 
 namespace App\Services;
 
+use App\Models\Endereco;
 use App\Models\Funcionario;
 use App\Models\User;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 
 class FuncionarioService
 {
+
+
+    private const CAMPOS_USER = ['name', 'email'];
+    private const CAMPOS_PERFIL = ['telefone', 'data_nascimento', 'cpf'];
+
     public function criar(array $dados): Funcionario
     {
         return DB::transaction(function () use ($dados) {
+            $endereco = isset($dados['endereco'])
+                ? Endereco::create($dados['endereco'])
+                : null;
 
             $user = User::create([
-                'name' => $dados['name'],
-                'email' => $dados['email'],
+                'name'     => $dados['name'],
+                'email'    => $dados['email'],
                 'password' => $dados['password'],
             ]);
-            $user->assignRole($dados['role']);
 
-            $user->syncPermissions(
-                $dados['permissions'] ?? []
-            );
+            $this->definirAcesso($user, $dados);
 
             $funcionario = $user->funcionario()->create([
-                'telefone' => $dados['telefone'],
-                'data_nascimento' => $dados['data_nascimento'],
-                'cpf' => $dados['cpf'],
-                'endereco_id' => $dados['endereco_id'] ?? null,
+                ...Arr::only($dados, self::CAMPOS_PERFIL),
+                'endereco_id' => $endereco?->id ?? ($dados['endereco_id'] ?? null),
             ]);
 
-            return $funcionario->load([
-                'user',
-                'endereco',
-            ]);
+            return $this->carregar($funcionario);
         });
     }
 
     public function listar(): LengthAwarePaginator
     {
-        return Funcionario::with([
-            'user.roles',
-            'endereco',
-        ])
-            ->orderBy('created_at', 'desc')
+        return Funcionario::with(['user.roles', 'user.permissions', 'endereco'])
+            ->latest()
             ->paginate(15);
     }
 
     public function buscar(string $id): Funcionario
     {
         return Funcionario::with([
-            'user.roles',
+            'user',
             'endereco',
         ])->findOrFail($id);
     }
 
-    public function atualizar(
-        string $id,
-        array $dados
-    ): Funcionario {
+    public function atualizar(string $id, array $dados): Funcionario
+    {
         return DB::transaction(function () use ($id, $dados) {
-            $funcionario = Funcionario::with('user')
-                ->findOrFail($id);
-
+            $funcionario = Funcionario::with(['user', 'endereco'])->findOrFail($id);
             $user = $funcionario->user;
 
-            $dadosUsuario = [];
+            $user->fill(Arr::only($dados, self::CAMPOS_USER));
+            if (filled($dados['password'] ?? null)) {
+                $user->password = $dados['password'];
+            }
+            $user->save();
 
-            if (array_key_exists('name', $dados)) {
-                $dadosUsuario['name'] = $dados['name'];
+            $funcionario->fill(Arr::only($dados, [...self::CAMPOS_PERFIL, 'endereco_id']))->save();
+
+            if (isset($dados['endereco'])) {
+                $funcionario->endereco
+                    ? $funcionario->endereco->update($dados['endereco'])
+                    : $funcionario->update([
+                        'endereco_id' => Endereco::create($dados['endereco'])->id,
+                    ]);
             }
 
-            if (array_key_exists('email', $dados)) {
-                $dadosUsuario['email'] = $dados['email'];
-            }
+            $this->definirAcesso($user, $dados);
 
-            if (
-                array_key_exists('password', $dados)
-                && filled($dados['password'])
-            ) {
-                $dadosUsuario['password'] = $dados['password'];
-            }
-
-            if (! empty($dadosUsuario)) {
-                $user->update($dadosUsuario);
-            }
-
-            if (array_key_exists('role', $dados)) {
-                $user->syncRoles([$dados['role']]);
-            }
-
-            if (array_key_exists('permissions', $dados)) {
-                $user->syncPermissions(
-                    $dados['permissions'] ?? []
-                );
-            }
-            $dadosFuncionario = [];
-
-            foreach (
-                [
-                    'telefone',
-                    'data_nascimento',
-                    'cpf',
-                    'endereco_id',
-                ] as $campo
-            ) {
-                if (array_key_exists($campo, $dados)) {
-                    $dadosFuncionario[$campo] = $dados[$campo];
-                }
-            }
-
-            if (! empty($dadosFuncionario)) {
-                $funcionario->update($dadosFuncionario);
-            }
-
-            return $funcionario->fresh([
-                'user.roles',
-                'endereco',
-            ]);
+            return $this->carregar($funcionario);
         });
     }
 
+
     public function deletar(string $id): void
     {
-        DB::transaction(function () use ($id) {
-            $funcionario = Funcionario::with('user')
-                ->findOrFail($id);
+        $funcionario = Funcionario::with(['user', 'endereco'])->findOrFail($id);
+        $avatar = $funcionario->user->avatar;
 
-            $user = $funcionario->user;
-
-            if ($user?->avatar) {
-                Storage::disk('public')->delete(
-                    $user->avatar
-                );
-            }
-
-            $funcionario->delete();
-            $user?->delete();
+        DB::transaction(function () use ($funcionario) {
+            $funcionario->user->tokens()->delete();
+            $funcionario->user->delete();
+            $funcionario->endereco?->delete();
         });
+
+        if ($avatar) {
+            Storage::disk('public')->delete($avatar);
+        }
+    }
+
+    private function definirAcesso(User $user, array $dados): void
+    {
+        if (array_key_exists('role', $dados)) {
+            $user->syncRoles([$dados['role']]);
+        }
+
+        if (array_key_exists('permissions', $dados)) {
+            $doPapel = $user->getPermissionsViaRoles()->pluck('name')->all();
+            $extras  = array_values(array_diff($dados['permissions'] ?? [], $doPapel));
+            $user->syncPermissions($extras);
+        }
+    }
+
+    private function carregar(Funcionario $f): Funcionario
+    {
+        return $f->fresh(['user.roles', 'user.permissions', 'endereco']);
     }
 }

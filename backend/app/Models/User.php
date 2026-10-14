@@ -12,6 +12,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class User extends Authenticatable
 {
@@ -67,9 +68,9 @@ class User extends Authenticatable
         return Storage::disk('public')->url($this->avatar);
     }
 
-    public function funcionario()
+    public function funcionario(): HasOne
     {
-        return $this->hasOne(Funcionario::class);
+        return $this->hasOne(Funcionario::class, 'id', 'id');
     }
 
     public function getRoleEnumAttribute(): ?RoleEnum
