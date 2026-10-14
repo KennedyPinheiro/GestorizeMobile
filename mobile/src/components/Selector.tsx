@@ -17,6 +17,7 @@ type SelectorProps = {
     value?: string | null;
     options: Opcao[];
     onOpen?: () => void;
+    loading?: boolean;
     onChange: (value: string) => void;
     disabled?: boolean;
 
@@ -29,6 +30,7 @@ export default function Selector({
     placeholder,
     value,
     options,
+    loading,
     onOpen,
     onChange,
     disabled = false,
@@ -49,18 +51,18 @@ export default function Selector({
         onAdd?.();
     };
 
+    const abrir = () => {
+        if (disabled) return;
+        onOpen?.();
+        setVisible(true);
+    };
     return (
         <>
             <ClickableTextCard
                 label={label}
                 value={labelSelecionado}
                 placeholder={placeholder}
-                onPress={() => {
-                    if (!disabled) {
-                        setVisible(true);
-                        onOpen?.();
-                    }
-                }}
+                onPress={() => abrir()}
             />
 
             <Modal

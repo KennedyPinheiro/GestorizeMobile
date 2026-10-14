@@ -1,30 +1,58 @@
-import { TouchableOpacity, View, Text, StyleSheet } from 'react-native';
+import { useState } from 'react';
+
+import {
+  Image,
+  Modal,
+  TouchableOpacity,
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  StatusBar,
+} from 'react-native';
+
 import { Ionicons } from '@expo/vector-icons';
+
 import { useTheme, useThemeToggle } from '@context/ThemeContext';
 
 type Props = {
-  nome: string;
-  email: string;
+  nome?: string;
+  email?: string;
   role: 'Gestor' | 'Funcionario';
+  avatar?: string | null;
   onPress?: () => void;
 };
 
 export type FuncionarioType = {
   id: string;
-  nome: string;
-  email: string;
+  nome?: string ;
+  email?: string;
   role: 'Gestor' | 'Funcionario';
+  avatar?: string | null;
 };
-const Funcionario = ({ nome, email, role, onPress }: Props) => {
+
+const Funcionario = ({
+  nome,
+  email,
+  role,
+  avatar,
+  onPress,
+}: Props) => {
+  const [avatarVisivel, setAvatarVisivel] = useState(false);
+
   const { colors } = useTheme();
   const { compactLists } = useThemeToggle();
+
   const isDark = colors.background !== '#ffffff';
 
   const cardBg = isDark ? '#0A4191' : '#ffffff';
   const textColor = isDark ? '#ffffff' : '#0f172a';
   const subText = isDark ? '#cbd5e1' : '#6b7280';
 
-  const circleColor = isDark ? '#09377B' : 'rgba(6, 32, 70, 0.22)';
+  const circleColor = isDark
+    ? '#09377B'
+    : 'rgba(6, 32, 70, 0.22)';
+
   const arrowColor = isDark ? '#ffffff' : '#062046';
 
   const badgeBg = isDark
@@ -38,79 +66,197 @@ const Funcionario = ({ nome, email, role, onPress }: Props) => {
   const badgeText = isDark ? '#ffffff' : '#062046';
 
   const iconName =
-    role === 'Gestor' ? 'person-circle-outline' : 'person-outline';
+    role === 'Gestor'
+      ? 'person-circle-outline'
+      : 'person-outline';
+
+  const abrirAvatar = () => {
+    if (avatar) {
+      setAvatarVisivel(true);
+    }
+  };
+
+  const fecharAvatar = () => {
+    setAvatarVisivel(false);
+  };
 
   return (
-    <TouchableOpacity activeOpacity={0.9} onPress={onPress}>
-      <View
-        style={[
-          styles.card,
-          compactLists && styles.cardCompact,
-          {
-            backgroundColor: cardBg,
-            shadowColor: isDark ? '#ffffff' : '#000000',
-            shadowOpacity: isDark ? 0.08 : 0.8,
-          },
-        ]}
+    <>
+      <TouchableOpacity
+        activeOpacity={0.9}
+        onPress={onPress}
       >
-        <View style={styles.left}>
-          <View
-            style={[
-              styles.circle,
-              compactLists && styles.circleCompact,
-              { backgroundColor: circleColor },
-            ]}
-          >
-            <Ionicons
-              name={iconName}
-              size={compactLists ? 32 : 50}
-              color={isDark ? '#ffffff' : '#062046'}
-            />
-          </View>
+        <View
+          style={[
+            styles.card,
+            compactLists && styles.cardCompact,
+            {
+              backgroundColor: cardBg,
+              shadowColor: isDark ? '#ffffff' : '#000000',
+              shadowOpacity: isDark ? 0.08 : 0.8,
+            },
+          ]}
+        >
+          <View style={styles.left}>
+            <TouchableOpacity
+              activeOpacity={avatar ? 0.75 : 1}
+              onPress={abrirAvatar}
+              disabled={!avatar}
+              accessibilityRole={
+                avatar ? 'button' : undefined
+              }
+              accessibilityLabel={
+                avatar
+                  ? `Ampliar foto de ${nome}`
+                  : undefined
+              }
+            >
+              <View
+                style={[
+                  styles.circle,
+                  compactLists && styles.circleCompact,
+                  { backgroundColor: circleColor },
+                ]}
+              >
+                {avatar ? (
+                  <Image
+                    source={{ uri: avatar }}
+                    style={styles.image}
+                    resizeMode="cover"
+                  />
+                ) : (
+                  <Ionicons
+                    name={iconName}
+                    size={compactLists ? 30 : 46}
+                    color={
+                      isDark
+                        ? '#ffffff'
+                        : '#062046'
+                    }
+                  />
+                )}
+              </View>
+            </TouchableOpacity>
 
-          <View>
-            {/* NOME + ROLE */}
-            <View style={styles.row}>
+            <View style={styles.info}>
+              <View style={styles.header}>
+                <Text
+                  numberOfLines={1}
+                  style={[
+                    styles.title,
+                    compactLists &&
+                    styles.titleCompact,
+                    { color: textColor },
+                  ]}
+                >
+                  {nome}
+                </Text>
+
+                {!compactLists && (
+                  <View
+                    style={[
+                      styles.badge,
+                      { backgroundColor: badgeBg },
+                    ]}
+                  >
+                    <Text
+                      numberOfLines={1}
+                      style={[
+                        styles.badgeText,
+                        { color: badgeText },
+                      ]}
+                    >
+                      {role}
+                    </Text>
+                  </View>
+                )}
+              </View>
+
               <Text
                 numberOfLines={1}
                 style={[
-                  styles.title,
-                  compactLists && styles.titleCompact,
-                  { color: textColor },
+                  styles.subtitle,
+                  compactLists &&
+                  styles.subtitleCompact,
+                  { color: subText },
                 ]}
               >
-                {nome}
+                {email || 'E-mail não informado'}
               </Text>
 
-              <View style={[styles.badge, { backgroundColor: badgeBg }]}>
+              {compactLists && (
                 <Text
-                  style={{
-                    color: badgeText,
-                    fontWeight: '700',
-                    fontSize: 12,
-                  }}
+                  numberOfLines={1}
+                  style={[
+                    styles.compactCategory,
+                    { color: subText },
+                  ]}
                 >
                   {role}
                 </Text>
-              </View>
+              )}
             </View>
-
-            <Text
-              numberOfLines={1}
-              style={[
-                styles.subtitle,
-                compactLists && styles.subtitleCompact,
-                { color: subText },
-              ]}
-            >
-              {email}
-            </Text>
           </View>
-        </View>
 
-        <Ionicons name="chevron-forward" size={22} color={arrowColor} />
-      </View>
-    </TouchableOpacity>
+          <Ionicons
+            name="chevron-forward"
+            size={22}
+            color={arrowColor}
+          />
+        </View>
+      </TouchableOpacity>
+
+      <Modal
+        visible={avatarVisivel}
+        transparent
+        animationType="fade"
+        statusBarTranslucent
+        onRequestClose={fecharAvatar}
+      >
+        <StatusBar
+          backgroundColor="rgba(0,0,0,0.92)"
+          barStyle="light-content"
+        />
+
+        <Pressable
+          style={styles.modalOverlay}
+          onPress={fecharAvatar}
+        >
+          <TouchableOpacity
+            style={styles.closeButton}
+            onPress={fecharAvatar}
+            activeOpacity={0.8}
+            accessibilityRole="button"
+            accessibilityLabel="Fechar imagem ampliada"
+          >
+            <Ionicons
+              name="close"
+              size={30}
+              color="#ffffff"
+            />
+          </TouchableOpacity>
+
+          {avatar && (
+            <Pressable
+              style={styles.imageContainer}
+              onPress={(event) =>
+                event.stopPropagation()
+              }
+            >
+              <Image
+                source={{ uri: avatar }}
+                style={styles.expandedImage}
+                resizeMode="contain"
+              />
+
+              <Text style={styles.avatarName}>
+                {nome}
+              </Text>
+            </Pressable>
+          )}
+        </Pressable>
+      </Modal>
+    </>
   );
 };
 
@@ -128,6 +274,7 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 5,
   },
+
   cardCompact: {
     borderRadius: 12,
     paddingVertical: 10,
@@ -136,9 +283,16 @@ const styles = StyleSheet.create({
   },
 
   left: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
+    minWidth: 0,
+  },
+
+  info: {
+    flex: 1,
+    minWidth: 0,
   },
 
   circle: {
@@ -147,40 +301,103 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     alignItems: 'center',
     justifyContent: 'center',
+    overflow: 'hidden',
   },
+
   circleCompact: {
     width: 44,
     height: 44,
   },
 
-  row: {
+  image: {
+    width: '100%',
+    height: '100%',
+  },
+
+  header: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: 8,
+    minWidth: 0,
+    marginBottom: 3,
+  },
+
+  title: {
+    flexShrink: 1,
+    fontSize: 18,
+    fontWeight: '900',
+  },
+
+  titleCompact: {
+    fontSize: 15,
   },
 
   badge: {
-    paddingHorizontal: 10,
+    maxWidth: 115,
+    flexShrink: 1,
+    paddingHorizontal: 9,
     paddingVertical: 4,
     borderRadius: 12,
   },
 
-  title: {
-    fontSize: 18,
-    fontWeight: '900',
-    marginBottom: 4,
-  },
-  titleCompact: {
-    fontSize: 15,
-    marginBottom: 0,
+  badgeText: {
+    fontSize: 11,
+    fontWeight: '700',
   },
 
   subtitle: {
     fontSize: 16,
+    marginTop: 3,
+  },
+
+  subtitleCompact: {
+    fontSize: 12,
     marginTop: 2,
   },
-  subtitleCompact: {
-    fontSize: 13,
-    marginTop: 0,
+
+  compactCategory: {
+    fontSize: 12,
+    marginTop: 2,
+  },
+
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.92)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+  },
+
+  closeButton: {
+    position: 'absolute',
+    top: 45,
+    right: 20,
+    zIndex: 2,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255,255,255,0.15)',
+  },
+
+  imageContainer: {
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  expandedImage: {
+    width: '100%',
+    height: '75%',
+    maxHeight: 550,
+  },
+
+  avatarName: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '700',
+    marginTop: 16,
+    textAlign: 'center',
   },
 });

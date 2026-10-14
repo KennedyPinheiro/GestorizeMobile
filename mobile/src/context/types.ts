@@ -56,7 +56,8 @@ export type UserType = {
   id: string;
   nome: string;
   email: string;
-  rolee: string;
+  role: string;
+  permissions?: string[];
 };
 
 export type StringfiedDate = string;

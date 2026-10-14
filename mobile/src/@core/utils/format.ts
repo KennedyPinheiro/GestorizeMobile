@@ -121,17 +121,19 @@ export function formatCNPJ(cnpj: string): string {
     .replace(/^(\d{2})\.(\d{3})\.(\d{3})(\d)/, '$1.$2.$3/$4')
     .replace(/^(\d{2})\.(\d{3})\.(\d{3})\/(\d{4})(\d)/, '$1.$2.$3/$4-$5');
 }
+const textoSeguro = (valor: unknown): string =>
+  typeof valor === "string" ? valor : "";
 
-export function formatTelefone(telefone: string) {
-  const value = clearNumber(telefone);
+export function formatTelefone(telefone: unknown) {
+  const value = clearNumber(textoSeguro(telefone));
 
   return value
     .replace(/(\d{2})(\d)/, '($1) $2')
     .replace(/(\d{4,5})(\d{4})$/, '$1-$2');
 }
 
-export function formatCpf(cpf: string) {
-  const value = clearNumber(cpf);
+export function formatCpf(cpf: unknown) {
+  const value = clearNumber(textoSeguro(cpf));
 
   return value
     .replace(/(\d{3})(\d)/, '$1.$2')

@@ -1,12 +1,12 @@
-import type { RootStackParamList } from '@context/types';
-import type { UserType } from '@context/types';
+import type { RootStackParamList, UserType } from '@context/types';
 
-export const can = (
-  user: UserType | null,
-  permission: string,
-): boolean => {
-  return !!user?.permissions?.includes(permission);
+export const can = (user: UserType | null, permission: string): boolean => {
+  if (!user) return false;
+  if (user.role === 'admin') return true;
+
+  return !!user.permissions?.includes(permission);
 };
+
 const routePermission: Partial<Record<keyof RootStackParamList, string>> = {
   Clientes: 'clientes.ver',
   Produtos: 'produtos.ver',
