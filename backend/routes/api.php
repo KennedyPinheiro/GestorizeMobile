@@ -23,12 +23,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('refresh', [AuthController::class, 'refresh']);
 
-    Route::prefix('acessos')->middleware('permission:acessos.gerenciar')->group(function () {
-        Route::get('papeis', [AcessoController::class, 'papeis']);
-        Route::get('permissoes', [AcessoController::class, 'permissoes']);
 
-        Route::put('papeis/{role}/permissoes', [AcessoController::class, 'definirDoPapel']);
-        Route::put('users/{user}/permissoes', [AcessoController::class, 'definirDoUsuario']);
+    Route::prefix('acessos')->middleware(['auth:sanctum', 'permission:acessos.gerenciar'])->group(function () {
+        Route::get('/papeis', [AcessoController::class, 'papeis']);
+        Route::get('/permissoes', [AcessoController::class, 'permissoes']);
+
+        Route::put('/papeis/{role}/permissoes', [AcessoController::class, 'definirDoPapel',]);
+        Route::put('/users/{user}/permissoes', [AcessoController::class, 'definirDoUsuario',]);
     });
 
     Route::prefix('clientes')->group(function () {

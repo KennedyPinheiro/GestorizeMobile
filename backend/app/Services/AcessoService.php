@@ -7,6 +7,7 @@ use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
 use App\Exceptions\DomainException;
+use App\Http\Resources\PermissionResource;
 use Symfony\Component\HttpFoundation\Response;
 
 class AcessoService
@@ -16,13 +17,21 @@ class AcessoService
         return Role::with('permissions:id,name')->get();
     }
 
-    public function listarPermissoes()
+    public function listarPermissoes(): array
     {
-        return Permission::orderBy('name')->pluck('name');
+        $permissoes = Permission::query()
+            ->where('guard_name', 'api')
+            ->orderBy('name')
+            ->get();
+
+        return PermissionResource::collection($permissoes)
+            ->resolve();
     }
 
-    public function definirPermissoesDoPapel(string $roleId, array $permissoes): Role
-    {
+    public function definirPermissoesDoPapel(
+        string $roleId,
+        array $permissoes
+    ): Role {
         $role = Role::findOrFail($roleId);
 
         if ($role->name === RoleEnum::ADMIN->value) {
@@ -37,9 +46,12 @@ class AcessoService
         return $role->load('permissions:id,name');
     }
 
-    public function definirPermissoesDoUsuario(string $userId, array $permissoes): User
-    {
+    public function definirPermissoesDoUsuario(
+        string $userId,
+        array $permissoes
+    ): User {
         $user = User::findOrFail($userId);
+
         $user->syncPermissions($permissoes);
 
         return $user;

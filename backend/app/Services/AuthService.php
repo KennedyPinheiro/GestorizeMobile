@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Permission;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Support\Facades\Hash;
@@ -11,11 +11,8 @@ use Illuminate\Validation\ValidationException;
 class AuthService implements IAuthService
 {
     /**
-     *
-     *
      * @param array{email:string,password:string} $credentials
      */
-
     public function login(array $credentials): array
     {
         $user = User::where('email', $credentials['email'])->first();
@@ -30,28 +27,26 @@ class AuthService implements IAuthService
 
         return [
             'token' => $token,
-            'user' => $this->userPayload($user),
+            'user' => (new UserResource($user))->resolve(),
         ];
     }
 
     public function logout(): void
     {
         $user = request()->user();
-        if (!$user) {
+
+        if (! $user) {
             throw new AuthenticationException('Não autenticado');
         }
 
         $user->currentAccessToken()?->delete();
     }
 
-    /**
-     * @return array{token:string,user:array{id:int,name:string,email:string,roles:mixed}}
-     */
     public function refresh(): array
     {
         $user = auth()->user();
 
-        if (!$user) {
+        if (! $user) {
             throw new AuthenticationException('Não autenticado');
         }
 
@@ -61,20 +56,7 @@ class AuthService implements IAuthService
 
         return [
             'token' => $newToken,
-            'user' => $this->userPayload($user),
-        ];
-    }
-
-    private function userPayload(User $user): array
-    {
-        return [
-            'id'          => $user->id,
-            'name'        => $user->name,
-            'email'       => $user->email,
-            'roles'       => $user->getRoleNames(),
-            'permissions' => $user->isAdmin()
-                ? Permission::pluck('name')
-                : $user->getAllPermissions()->pluck('name'),
+            'user' => (new UserResource($user))->resolve(),
         ];
     }
 }

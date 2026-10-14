@@ -56,7 +56,7 @@ export type UserType = {
   id: string;
   nome: string;
   email: string;
-  roles: string[];
+  roles: RoleType[];
   permissions: string[];
 };
 
@@ -102,31 +102,9 @@ export type PessoaJuridicaType = {
   telefone: string;
 };
 
-export type FuncionarioTipo = {
-  id: string;
-  nome: string;
-  cargo: string;
-  email: string;
-  data_nascimento: string;
-  endereco_id: number;
-  genero: string;
-  estado_civil: string;
-  rg: string;
-  cpf: string;
-  telefone: string;
-};
 
-export type EnderecoType = {
-  id: string;
-  cep: string;
-  logradouro: string;
-  numero: string;
-  complemento: string | null;
-  bairro: string;
-  cidade: string;
-  estado: string;
-};
 
+export type Genero = "masculino" | "feminino" | "outro";
 export type FornecedorType = {
   id: string;
   nome: string;
@@ -135,7 +113,7 @@ export type FornecedorType = {
   telefone: string;
   email: string;
   endereco: EnderecoType | null;
-  avatar_url:string;
+  avatar_url: string;
   nome_responsavel: string;
   chave_pix: string;
   data_criacao: StringfiedDate;
@@ -186,14 +164,42 @@ export type ProdutoType = {
   updated_at: StringfiedDate;
 };
 
-
 export type RoleType = {
-  id: number;
+  id: string;
   nome: string;
   descricao?: string;
 };
 
-export type Genero = "masculino" | "feminino" | "outro";
+export type PermissaoType = {
+  id: string;
+  nome: string;
+  descricao: string | null;
+};
+
+export type FuncionarioType = {
+  id: string;
+  nome: string | null;
+  email: string | null;
+  role: string | null;
+  telefone: string | null;
+  cpf: string | null;
+  data_nascimento: StringfiedDate | null;
+  avatar_url: string | null;
+  endereco: EnderecoType | null;
+  created_at: StringfiedDate;
+  updated_at: StringfiedDate;
+};
+
+export type EnderecoType = {
+  id: string;
+  cep: string;
+  logradouro: string;
+  numero: string;
+  complemento: string | null;
+  bairro: string;
+  cidade: string;
+  estado: string;
+};
 
 export type RootStackParamList = {
   Relatorios: undefined;
@@ -208,113 +214,26 @@ export type RootStackParamList = {
   Clientes: { novoCliente: boolean } | undefined;
   Produtos: { novoProduto: boolean } | undefined;
   Fornecedores: { novoFornecedor: boolean } | undefined;
-  NovoCliente:
-  | {
+  NovoCliente: {
     modo: "criar" | "editar";
     clienteId?: string;
-  }
-  | undefined;
+  } | undefined;
 
   NovoProduto: {
     modo: "criar" | "editar"
     produtoId?: string
-  }
+  } | undefined;
+
   NovoFornecedor: {
     modo: "criar" | "editar"
     fornecedorId?: string
-  }
+  } | undefined;
 
+  NovoFuncionario: {
+    modo: "criar" | "editar",
+    funcionarioId?: string
+  } | undefined;
 
-  CadastroFornecedores: undefined;
-  CadastroFuncionarios: undefined;
-  PerfilProduto: {
-    id: number;
-    nome: string;
-    quantidade: number;
-    descricao?: string;
-    data_validade?: string;
-    data_de_entrada?: string;
-    preco_custo?: string | number;
-    margem_lucro?: string | number;
-    fornecedor_razao_social?: string;
-    categoria_titulo: string;
-    categoria_id: number;
-    fornecedor_id: number;
-    medida_id: number;
-    medida_titulo: string;
-  };
-  PerfilFornecedor: {
-    id: number;
-    razao_social: string;
-    email: string;
-    ramo_de_atividade: string;
-    cnpj: string;
-    nome_responsavel: string;
-    telefone: string;
-    chave_pix: string;
-    rua: string;
-    bairro: string;
-    cidade: string;
-    estado: string;
-    cep: string;
-    numero: string;
-    endereco_id: number;
-  };
-  PerfilPessoaJuridica: {
-    id: number;
-    razao_social: string;
-    email: string;
-    nome_fantasia: string;
-    cnpj: string;
-    nome_do_responsavel: string;
-    cpf_responsavel: string;
-    cargo_do_respresentante: string;
-    telefone: string;
-    rua: string;
-    bairro: string;
-    cidade: string;
-    estado: string;
-    cep: string;
-    numero: string;
-    endereco_id: number;
-  };
-  PerfilPessoaFisica: {
-    id: number;
-    nome: string;
-    email: string;
-    telefone: string;
-    genero: string;
-    estado_civil: string;
-    data_nascimento: string;
-    rg: string;
-    cpf: string;
-    rua: string;
-    bairro: string;
-    cidade: string;
-    estado: string;
-    cep: string;
-    numero: string;
-    endereco_id: number;
-  };
-  PerfilFuncionario: {
-    id: string;
-    nome: string;
-    funcao: string;
-    email: string;
-    data_nascimento: string;
-    genero: string;
-    estado_civil: string;
-    rg: string;
-    cpf: string;
-    telefone: string;
-    rua: string;
-    bairro: string;
-    cidade: string;
-    estado: string;
-    cep: string;
-    numero: string;
-    endereco_id: number;
-  };
   UserPerfil:
   | {
     id: string;
