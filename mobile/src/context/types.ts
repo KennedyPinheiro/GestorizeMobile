@@ -56,12 +56,10 @@ export type UserType = {
   id: string;
   nome: string;
   email: string;
-  roles: RoleType[];
-  permissions: string[];
+  rolee: string;
 };
 
 export type StringfiedDate = string;
-
 
 export type ClienteType = {
   id: string;
@@ -74,7 +72,6 @@ export type ClienteType = {
   pf: PessoaFisicaType | null;
   pj: PessoaJuridicaType | null;
 };
-
 
 export type PessoaFisicaType = {
   id: string;
@@ -102,9 +99,8 @@ export type PessoaJuridicaType = {
   telefone: string;
 };
 
-
-
 export type Genero = "masculino" | "feminino" | "outro";
+
 export type FornecedorType = {
   id: string;
   nome: string;
@@ -173,7 +169,12 @@ export type RoleType = {
 export type PermissaoType = {
   id: string;
   nome: string;
-  descricao: string | null;
+  grupo: string;
+  acao: string;
+};
+
+export type AcessoType = {
+  permissions: string[];
 };
 
 export type FuncionarioType = {
