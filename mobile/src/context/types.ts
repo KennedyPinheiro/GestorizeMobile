@@ -160,10 +160,13 @@ export type ProdutoType = {
   updated_at: StringfiedDate;
 };
 
+export type RoleName = "admin" | "gestor" | "funcionario" | "cliente";
+
 export type RoleType = {
   id: string;
-  nome: string;
-  descricao?: string;
+  name: RoleName;
+  label: string;
+  permissions: string[];
 };
 
 export type PermissaoType = {
