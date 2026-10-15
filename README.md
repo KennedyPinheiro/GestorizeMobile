@@ -1,4 +1,4 @@
-# GestorizeMobile
+# Gestorize
 
 ## Descrição do Projeto
 
